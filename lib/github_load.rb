@@ -55,6 +55,7 @@ class GithubLoad
 
       PullRequest.create(
         :repo_id => repo.id,
+        :user_id => user.id,
         :git_id => pr[:attrs][:id].to_i,
         :pr_number => pr[:attrs][:number],
         :body => pr[:attrs][:body],
@@ -100,7 +101,7 @@ class GithubLoad
   end
 
   def self.create_company_if_not_exist(company_name, src)
-    company = Company.find_by(name: company_name)
+    company = Company.find_by(name: company_name, source: src)
 
     unless company
       puts "---------"
@@ -116,8 +117,20 @@ class GithubLoad
   end
 
   def self.fix_users_without_companies()
-    # For each organization
+    client = OctokitUtils.get_octokit_client
 
-      # ORGANIZATIONS
+    # For each organization
+    ORG_TO_COMPANY.each { |org_name, company_name|
+      company = Company.find_by(name: company_name, source: "org")
+
+      orgMembers = client.organization(org_name)[:_rels][:members]
+      orgMembers.get.data.each { |member|
+        user = User.find_by(login: member[:attrs][:login])
+        if user
+          user.company = company
+          user.save
+        end
+      }
+    }
   end
 end
