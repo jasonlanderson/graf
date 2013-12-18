@@ -1,0 +1,47 @@
+<h1>Listing pull_requests</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Repo</th>
+      <th>User</th>
+      <th>Git</th>
+      <th>Pr number</th>
+      <th>Body</th>
+      <th>Title</th>
+      <th>State</th>
+      <th>Date created</th>
+      <th>Date closed</th>
+      <th>Date update</th>
+      <th>Date merged</th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @pull_requests.each do |pull_request| %>
+      <tr>
+        <td><%= pull_request.repo %></td>
+        <td><%= pull_request.user %></td>
+        <td><%= pull_request.git_id %></td>
+        <td><%= pull_request.pr_number %></td>
+        <td><%= pull_request.body %></td>
+        <td><%= pull_request.title %></td>
+        <td><%= pull_request.state %></td>
+        <td><%= pull_request.date_created %></td>
+        <td><%= pull_request.date_closed %></td>
+        <td><%= pull_request.date_updated %></td>
+        <td><%= pull_request.date_merged %></td>
+        <td><%= link_to 'Show', pull_request %></td>
+        <td><%= link_to 'Edit', edit_pull_request_path(pull_request) %></td>
+        <td><%= link_to 'Destroy', pull_request, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Pull request', new_pull_request_path %>

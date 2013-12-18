@@ -11,7 +11,26 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20131217234446) do
+ActiveRecord::Schema.define(version: 20131218014342) do
+
+  create_table "pull_requests", force: true do |t|
+    t.integer  "repo_id"
+    t.integer  "user_id"
+    t.integer  "git_id"
+    t.integer  "pr_number"
+    t.string   "body"
+    t.string   "title"
+    t.string   "state"
+    t.date     "date_created"
+    t.date     "date_closed"
+    t.date     "date_updated"
+    t.date     "date_merged"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "pull_requests", ["repo_id"], name: "index_pull_requests_on_repo_id"
+  add_index "pull_requests", ["user_id"], name: "index_pull_requests_on_user_id"
 
   create_table "repos", force: true do |t|
     t.integer  "git_id"
@@ -19,7 +38,7 @@ ActiveRecord::Schema.define(version: 20131217234446) do
     t.string   "full_name"
     t.boolean  "fork"
     t.date     "date_created"
-    t.date     "date_update"
+    t.date     "date_updated"
     t.date     "date_pushed"
     t.datetime "created_at"
     t.datetime "updated_at"

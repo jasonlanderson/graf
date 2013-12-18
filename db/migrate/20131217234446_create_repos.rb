@@ -6,7 +6,7 @@ class CreateRepos < ActiveRecord::Migration
       t.string :full_name
       t.boolean :fork
       t.date :date_created
-      t.date :date_update
+      t.date :date_updated
       t.date :date_pushed
 
       t.timestamps

@@ -1,0 +1,27 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  repo_id: 
+  user_id: 
+  git_id: 1
+  pr_number: 1
+  body: MyString
+  title: MyString
+  state: MyString
+  date_created: 2013-12-17
+  date_closed: 2013-12-17
+  date_updated: 2013-12-17
+  date_merged: 2013-12-17
+
+two:
+  repo_id: 
+  user_id: 
+  git_id: 1
+  pr_number: 1
+  body: MyString
+  title: MyString
+  state: MyString
+  date_created: 2013-12-17
+  date_closed: 2013-12-17
+  date_updated: 2013-12-17
+  date_merged: 2013-12-17

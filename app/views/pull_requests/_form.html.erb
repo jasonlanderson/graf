@@ -1,0 +1,61 @@
+<%= form_for(@pull_request) do |f| %>
+  <% if @pull_request.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@pull_request.errors.count, "error") %> prohibited this pull_request from being saved:</h2>
+
+      <ul>
+      <% @pull_request.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :repo_id %><br>
+    <%= f.text_field :repo_id %>
+  </div>
+  <div class="field">
+    <%= f.label :user_id %><br>
+    <%= f.text_field :user_id %>
+  </div>
+  <div class="field">
+    <%= f.label :git_id %><br>
+    <%= f.number_field :git_id %>
+  </div>
+  <div class="field">
+    <%= f.label :pr_number %><br>
+    <%= f.number_field :pr_number %>
+  </div>
+  <div class="field">
+    <%= f.label :body %><br>
+    <%= f.text_field :body %>
+  </div>
+  <div class="field">
+    <%= f.label :title %><br>
+    <%= f.text_field :title %>
+  </div>
+  <div class="field">
+    <%= f.label :state %><br>
+    <%= f.text_field :state %>
+  </div>
+  <div class="field">
+    <%= f.label :date_created %><br>
+    <%= f.date_select :date_created %>
+  </div>
+  <div class="field">
+    <%= f.label :date_closed %><br>
+    <%= f.date_select :date_closed %>
+  </div>
+  <div class="field">
+    <%= f.label :date_updated %><br>
+    <%= f.date_select :date_updated %>
+  </div>
+  <div class="field">
+    <%= f.label :date_merged %><br>
+    <%= f.date_select :date_merged %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

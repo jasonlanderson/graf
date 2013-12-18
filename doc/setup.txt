@@ -6,7 +6,7 @@ git commit -a -m "Initial Add"
 git remote add gerrit ssh://jason.anderson@gerrit.w3.bluemix.net:29418/graf
 git push gerrit master:refs/heads/master
 
-rails g scaffold Repo git_id:integer name:string full_name:string fork:boolean date_created:date date_update:date date_pushed:date
-rails g scaffold PullRequest repo:references user:references git_id:integer pr_number:integer body:string title:string state:string date_created:date date_closed:date date_update:date date_merged:date
+rails g scaffold Repo git_id:integer name:string full_name:string fork:boolean date_created:date date_updated:date date_pushed:date
+rails g scaffold PullRequest repo:references user:references git_id:integer pr_number:integer body:string title:string state:string date_created:date date_closed:date date_updated:date date_merged:date
 rails g scaffold User company:references login:string email:string
-rails g scaffold Company name:string
+rails g scaffold Company name:stringx

@@ -6,7 +6,7 @@ one:
   full_name: MyString
   fork: false
   date_created: 2013-12-17
-  date_update: 2013-12-17
+  date_updated: 2013-12-17
   date_pushed: 2013-12-17
 
 two:
@@ -15,5 +15,5 @@ two:
   full_name: MyString
   fork: false
   date_created: 2013-12-17
-  date_update: 2013-12-17
+  date_updated: 2013-12-17
   date_pushed: 2013-12-17

@@ -1,5 +1,6 @@
 require 'github_load'
 
+
 # This file should contain all the record creation needed to seed the database with its default values.
 # The data can then be loaded with the rake db:seed (or created alongside the db with db:setup).
 #
@@ -9,10 +10,11 @@ require 'github_load'
 #   Mayor.create(name: 'Emanuel', city: cities.first)
 
 # Initial Load of Repos
-GithubLoad.load_repos()
+GithubLoad.load_repos
+GithubLoad.load_all_prs
 
 
 # load_users(nil)
-# load_company(nil)
-# load_pr(nil)
+# load_companies(nil)
+
 

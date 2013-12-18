@@ -18,7 +18,7 @@ class ReposControllerTest < ActionController::TestCase
 
   test "should create repo" do
     assert_difference('Repo.count') do
-      post :create, repo: { date_created: @repo.date_created, date_pushed: @repo.date_pushed, date_update: @repo.date_update, fork: @repo.fork, full_name: @repo.full_name, git_id: @repo.git_id, name: @repo.name }
+      post :create, repo: { date_created: @repo.date_created, date_pushed: @repo.date_pushed, date_updated: @repo.date_updated, fork: @repo.fork, full_name: @repo.full_name, git_id: @repo.git_id, name: @repo.name }
     end
 
     assert_redirected_to repo_path(assigns(:repo))
@@ -35,7 +35,7 @@ class ReposControllerTest < ActionController::TestCase
   end
 
   test "should update repo" do
-    patch :update, id: @repo, repo: { date_created: @repo.date_created, date_pushed: @repo.date_pushed, date_update: @repo.date_update, fork: @repo.fork, full_name: @repo.full_name, git_id: @repo.git_id, name: @repo.name }
+    patch :update, id: @repo, repo: { date_created: @repo.date_created, date_pushed: @repo.date_pushed, date_updated: @repo.date_updated, fork: @repo.fork, full_name: @repo.full_name, git_id: @repo.git_id, name: @repo.name }
     assert_redirected_to repo_path(assigns(:repo))
   end
 
