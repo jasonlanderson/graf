@@ -4,6 +4,18 @@ class GithubLoad
 
   ORG_NAME = "cloudfoundry"
   REPO_NAME = ORG_NAME + "/bosh"
+  ORG_TO_COMPANY = Hash["vmware" => "VMware",
+    "pivotal" => "Pivotal",
+    "cloudfoundry" => "Pivotal",
+    "pivotallabs" => "Pivotal",
+    "Springsource" => "Pivotal",
+    "cfibmers" => "IBM"]
+
+  def self.load_org_companies()
+    ORG_TO_COMPANY.each { |org, company|
+      create_company_if_not_exist(company, "org")
+    } 
+  end
 
   def self.load_repos()
   	client = OctokitUtils.get_octokit_client
@@ -19,18 +31,8 @@ class GithubLoad
     		:date_pushed => repo[:attrs][:date_pushed]
     		)
     }
-
   end
 
-  def self.load_users()
-  	client = OctokitUtils.get_octokit_client
-
-    # To Finishes
-    contributors = client.repo(@name)[:rels][:contributors]
-    pull_requests.each { |pr|
-      User.create(:login => pr[:attrs][:login])
-    }
-  end
 
   def self.load_all_prs()
     Repo.all().each { |repo|
@@ -39,11 +41,17 @@ class GithubLoad
   end
 
   def self.load_prs_for_repo(repo)
+    puts "---------"
+    puts "--- Loading PRs for #{repo.full_name}"
+    puts "---------"
   	client = OctokitUtils.get_octokit_client
 
     pull_requests = client.pulls(repo.full_name, state = "open")
     pull_requests.concat(client.pulls(repo.full_name, state = "closed"))
     pull_requests.each { |pr|
+
+      # Get user and insert if doesn't already exist
+      user = create_user_if_not_exist(pr[:attrs][:user])
 
       PullRequest.create(
         :repo_id => repo.id,
@@ -60,8 +68,56 @@ class GithubLoad
     }
   end
 
-  def self.load_companies()
-  	client = OctokitUtils.get_octokit_client
 
+  def self.create_user_if_not_exist(pr_user)
+
+    user = User.find_by(login: pr_user[:attrs][:login])
+
+    unless user
+      puts "---------"
+      puts "--- Creating User: #{pr_user[:attrs][:login]}"
+      puts "---------"
+      user_details = pr_user[:_rels][:self].get.data
+
+      company = nil
+      if user_details[:attrs][:company] != "" && user_details[:attrs][:company] != nil
+        company = create_company_if_not_exist(user_details[:attrs][:company], "user")
+      end
+
+      user = User.create(
+        :company => company,
+        :git_id => user_details[:attrs][:id].to_i,
+        :login => user_details[:attrs][:login],
+        :name => user_details[:attrs][:name],
+        :location => user_details[:attrs][:location],
+        :email => user_details[:attrs][:email],
+        :date_created => user_details[:attrs][:created_at],
+        :date_updated => user_details[:attrs][:updated_at]
+        )
+    end
+
+    return user
+  end
+
+  def self.create_company_if_not_exist(company_name, src)
+    company = Company.find_by(name: company_name)
+
+    unless company
+      puts "---------"
+      puts "--- Creating Company: #{company_name}"
+      puts "---------"
+      company = Company.create(
+        :name => company_name,
+        :source => src
+        )
+    end
+
+    return company
+  end
+
+  def self.fix_users_without_companies()
+    # For each organization
+
+      # ORGANIZATIONS
   end
 end

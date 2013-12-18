@@ -10,11 +10,8 @@ require 'github_load'
 #   Mayor.create(name: 'Emanuel', city: cities.first)
 
 # Initial Load of Repos
+#GithubLoad.load_org_companies
 GithubLoad.load_repos
 GithubLoad.load_all_prs
 
-
-# load_users(nil)
-# load_companies(nil)
-
-
+#GithubLoad.fix_users_without_companies

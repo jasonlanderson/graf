@@ -11,7 +11,14 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20131218014342) do
+ActiveRecord::Schema.define(version: 20131218191625) do
+
+  create_table "companies", force: true do |t|
+    t.string   "name"
+    t.string   "source"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "pull_requests", force: true do |t|
     t.integer  "repo_id"
@@ -43,5 +50,20 @@ ActiveRecord::Schema.define(version: 20131218014342) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  create_table "users", force: true do |t|
+    t.integer  "company_id"
+    t.integer  "git_id"
+    t.string   "login"
+    t.string   "name"
+    t.string   "location"
+    t.string   "email"
+    t.date     "date_created"
+    t.date     "date_updated"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "users", ["company_id"], name: "index_users_on_company_id"
 
 end

@@ -1,4 +1,8 @@
 Graf::Application.routes.draw do
+  resources :companies
+
+  resources :users
+
   resources :pull_requests
 
   resources :repos
