@@ -9,4 +9,4 @@ git push gerrit master:refs/heads/master
 rails g scaffold Repo git_id:integer name:string full_name:string fork:boolean date_created:date date_updated:date date_pushed:date
 rails g scaffold PullRequest repo:references user:references git_id:integer pr_number:integer body:string title:string state:string date_created:date date_closed:date date_updated:date date_merged:date
 rails g scaffold User company:references git_id:integer login:string name:string location:string email:string date_created:date date_updated:date
-rails g scaffold Company name:string name:source
+rails g scaffold Company name:string source:string
