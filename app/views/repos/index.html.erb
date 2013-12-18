@@ -1,0 +1,39 @@
+<h1>Listing repos</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Git</th>
+      <th>Name</th>
+      <th>Full name</th>
+      <th>Fork</th>
+      <th>Date created</th>
+      <th>Date update</th>
+      <th>Date pushed</th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @repos.each do |repo| %>
+      <tr>
+        <td><%= repo.git_id %></td>
+        <td><%= repo.name %></td>
+        <td><%= repo.full_name %></td>
+        <td><%= repo.fork %></td>
+        <td><%= repo.date_created %></td>
+        <td><%= repo.date_update %></td>
+        <td><%= repo.date_pushed %></td>
+        <td><%= link_to 'Show', repo %></td>
+        <td><%= link_to 'Edit', edit_repo_path(repo) %></td>
+        <td><%= link_to 'Destroy', repo, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Repo', new_repo_path %>

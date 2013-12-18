@@ -1,0 +1,39 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Git:</strong>
+  <%= @repo.git_id %>
+</p>
+
+<p>
+  <strong>Name:</strong>
+  <%= @repo.name %>
+</p>
+
+<p>
+  <strong>Full name:</strong>
+  <%= @repo.full_name %>
+</p>
+
+<p>
+  <strong>Fork:</strong>
+  <%= @repo.fork %>
+</p>
+
+<p>
+  <strong>Date created:</strong>
+  <%= @repo.date_created %>
+</p>
+
+<p>
+  <strong>Date update:</strong>
+  <%= @repo.date_update %>
+</p>
+
+<p>
+  <strong>Date pushed:</strong>
+  <%= @repo.date_pushed %>
+</p>
+
+<%= link_to 'Edit', edit_repo_path(@repo) %> |
+<%= link_to 'Back', repos_path %>
