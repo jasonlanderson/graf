@@ -1,8 +1,6 @@
 <script type="text/javascript">
-var indiv_data = <%= raw @chartData %>;
-
 $(document).ready(function () {
-$.plot($("#<%= @chartHandle %>"), indiv_data, {
+$.plot($("#<%= @chartHandle %>"), <%= raw @chartData %>, {
          series: {
             pie: {
                 show: true,
