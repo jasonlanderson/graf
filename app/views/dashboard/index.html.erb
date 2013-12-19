@@ -1,4 +1,5 @@
-This is our dashboard
+This is our dashboard<br>
+
 
 <style type="text/css">
 #placeholder { width: 660px; height: 660px; font-size:18px; position:relative; }
@@ -7,7 +8,7 @@ This is our dashboard
 
 
 <script type="text/javascript">
-var indiv_data = [{ label: "drnic", data: 43 },{ label: "frodenas", data: 107 },{ label: "rkoster", data: 2 },{ label: "Kaixiang", data: 15 },{ label: "amhuber", data: 2 },{ label: "tader", data: 2 },{ label: "oppegard", data: 7 },{ label: "blueboxjesse", data: 5 },{ label: "ajackson", data: 2 },{ label: "fraenkel", data: 2 },{ label: "yudai", data: 9 },{ label: "TieWei", data: 10 },{ label: "hgadgil", data: 2 },{ label: "syslxg", data: 2 },{ label: "mmb", data: 18 },{ label: "pmenglund", data: 29 },{ label: "cf-frontend", data: 2 },{ label: "hiremaga", data: 2 },{ label: "stefanschneider", data: 5 },{ label: "cf-bosh", data: 2 },{ label: "danhigham", data: 2 },{ label: "cf-frameworks", data: 8 },{ label: "ankurcha", data: 11 },{ label: "anfernee", data: 4 },{ label: "rajdeepd", data: 2 },];
+var indiv_data = <%= raw @user_pie_data %>;
 
 $(document).ready(function () {
 $.plot($("#placeholder"), indiv_data, {
@@ -31,5 +32,4 @@ $.plot($("#placeholder"), indiv_data, {
     });
 });
 </script>
-
-<div id="placeholder" style="margin:0 auto; float:left; bottom:40px; left:150px;"></div>
+<div id="placeholder" style="margin:0 auto; float:left;  left:150px;"></div>

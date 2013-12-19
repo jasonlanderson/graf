@@ -14,7 +14,7 @@ class GithubLoad
   def self.load_org_companies()
     ORG_TO_COMPANY.each { |org, company|
       create_company_if_not_exist(company, "org")
-    } 
+    }
   end
 
   def self.load_repos()
