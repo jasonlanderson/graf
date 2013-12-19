@@ -1,8 +1,9 @@
+require "analytic_utils"
+
 class DashboardController < ApplicationController
 
   def index
-
-    results = ActiveRecord::Base.connection.execute("SELECT u.login, COUNT(*) num_prs FROM pull_requests pr LEFT OUTER JOIN users u ON pr.user_id = u.id  LEFT OUTER JOIN companies c ON u.company_id = c.id GROUP BY u.login ORDER BY num_prs LIMIT 15")
+    results = AnalyticUtils.get_pull_request_stats()
     @user_pie_data = "["
     results.each{ |rec|
       if @user_pie_data != "["

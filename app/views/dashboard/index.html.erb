@@ -1,35 +1,12 @@
-This is our dashboard<br>
-
+<h1>GitHub Repo Analytics for Graphing</h1>
 
 <style type="text/css">
-#placeholder { width: 660px; height: 660px; font-size:18px; position:relative; }
-
+#user_chart { width: 660px; height: 660px; font-size:18px; position:relative; }
 </style>
 
 
-<script type="text/javascript">
-var indiv_data = <%= raw @user_pie_data %>;
+<% @chartHandle = "user_chart" %>
+<% @chartData = @user_pie_data %>
+<%= render 'pie_chart' %>
+<div id="user_chart" style="margin:0 auto; float:left;  left:150px;"></div>
 
-$(document).ready(function () {
-$.plot($("#placeholder"), indiv_data, {
-         series: {
-            pie: {
-                show: true,
-                radius: 1,
-                label: {
-                    show: true,
-                    radius: 2/3,
-                    formatter: function(label, series){
-                        return '<div style="font-size:8pt;text-align:center;padding:2px;color:white;">'+label+'<br/>'+Math.round(series.percent)+'%</div>';
-                    },
-                    threshold: 0.1
-                }       
-            }
-         },
-         legend: {
-            labelBoxBorderColor: "none"
-         }
-    });
-});
-</script>
-<div id="placeholder" style="margin:0 auto; float:left;  left:150px;"></div>

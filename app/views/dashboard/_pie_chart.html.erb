@@ -1,0 +1,25 @@
+<script type="text/javascript">
+var indiv_data = <%= raw @chartData %>;
+
+$(document).ready(function () {
+$.plot($("#<%= @chartHandle %>"), indiv_data, {
+         series: {
+            pie: {
+                show: true,
+                radius: 1,
+                label: {
+                    show: true,
+                    radius: 2/3,
+                    formatter: function(label, series){
+                        return '<div style="font-size:8pt;text-align:center;padding:2px;color:white;">'+label+'<br/>'+Math.round(series.percent)+'%</div>';
+                    },
+                    threshold: 0.1
+                }       
+            }
+         },
+         legend: {
+            labelBoxBorderColor: "none"
+         }
+    });
+});
+</script>
