@@ -17,5 +17,6 @@
 //= require jquery.flot.navigate
 //= require jquery.flot.resize
 //= require jquery.flot.stack
+//= require dataTables/jquery.dataTables
 //= require turbolinks
 //= require_tree .

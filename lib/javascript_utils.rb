@@ -16,4 +16,15 @@ class JavascriptUtils
     result += "]"
     return result
   end
+
+
+  def self.create_pull_request_table(dataset, label_index, val_index)
+    result = "<thead><tr><th>Users</th><th>Contributions</th></tr></thead><tbody>"
+    dataset.each{ |rec|
+
+      result += "<tr><td> #{rec[label_index]} </td><td> #{rec[val_index]} </td></tr>"
+    }
+    return result
+  end
+
 end

@@ -5,10 +5,32 @@
 #company_chart { width: 660px; height: 660px; font-size:18px; position:relative; }
 </style>
 
+<script type="text/javascript">
+$(document).ready( function () {
+                        $('#user_table').dataTable({
+                        "sScrollY": "350px",
+						"sScrollX": "800px",
+                        "bPaginate": false,
+                        "bSort": false,
+                        "bAutoWidth" : false,
+                        "bFilter": false
+                } );
+ } );
+
+
+</script>
+
+
+
+
 <% @chartHandle = "user_chart" %>
+<% @tableHandle = "user_table" %>
 <% @chartData = @prs_by_user_pie_str %>
+<% @tableData = @prs_by_user_table_str %>
 <%= render 'pie_chart' %>
 <div id="user_chart"></div>
+
+<%= render 'table' %>
 
 <% @chartHandle = "company_chart" %>
 <% @chartData = @prs_by_company_pie_str %>
