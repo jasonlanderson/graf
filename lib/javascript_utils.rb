@@ -21,8 +21,12 @@ class JavascriptUtils
   def self.create_pull_request_table(dataset, label_index, val_index)
     result = "<thead><tr><th>Users</th><th>Contributions</th></tr></thead><tbody>"
     dataset.each{ |rec|
-
-      result += "<tr><td> #{rec[label_index]} </td><td> #{rec[val_index]} </td></tr>"
+      label = rec[label_index]
+      if label == nil || label == ""
+        label = "Independent"
+      end
+    
+      result += "<tr><td> #{label} </td><td> #{rec[val_index]} </td></tr>"
     }
     return result
   end
