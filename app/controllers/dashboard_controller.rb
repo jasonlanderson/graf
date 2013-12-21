@@ -12,6 +12,7 @@ class DashboardController < ApplicationController
     prs_by_company = AnalyticUtils.get_pull_request_stats('c.name')
     prs_by_company_top_x = AnalyticUtils.top_x_with_rollup(prs_by_company, "name", "calculated_value", 5, "Others")
     @prs_by_company_pie_str = JavascriptUtils.get_pull_request_stats(prs_by_company_top_x, 'name', 'calculated_value')
+    @prs_by_company_table_str = JavascriptUtils.create_pull_request_table(prs_by_company, 'login', 'calculated_value')
   end
 
 end

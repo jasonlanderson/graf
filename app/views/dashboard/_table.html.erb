@@ -1,3 +1,14 @@
-<table id="<%= @tableHandle %>" class="display" > 
-<%= raw @tableData %>
-</tbody> </table>
+<script type="text/javascript">
+$(document).ready( function () {
+                        $('#<%= @tableHandle %>').dataTable({
+                        "sScrollY": "350px",
+						"sScrollX": "800px",
+                        "bPaginate": false,
+                        "bSort": false,
+                        "bAutoWidth" : true,
+                        "bFilter": true
+                } );
+ } );
+
+
+</script>
