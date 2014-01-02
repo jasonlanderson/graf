@@ -38,8 +38,5 @@ class AnalyticUtils
 
 	  	return result
 	end
-  	
-  	
-  end
-
+  end	
 end

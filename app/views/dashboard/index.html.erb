@@ -6,37 +6,34 @@
 #user_prs_table_container { width: 660px; height: 660px; font-size:18px; position:relative; }
 </style>
 
-<script type="text/javascript">
-$(document).ready(function () {
-  $('#user_prs_table').dataTable()
-});
-</script>
-
-<% @chartHandle = "user_prs_chart" %>
-<% @chartData = @prs_by_user_pie_str %>
+<%# For User Statistics %>
+<% @chart_handle = "user_prs_chart" %>
+<% @chart_data = @prs_by_user_pie_str %>
 <%= render 'pie_chart' %>
 <div id="user_prs_chart"></div>
 
-<% @chartHandle = "company_prs_chart" %>
-<% @chartData = @prs_by_company_pie_str %>
+<% @table_handle = "user_prs_table" %>
+<% @table_data = @prs_by_user %>
+<% @label_header = "User" %>
+<% @data_header = "Contributions" %>
+<% @label_index_name = "login" %>
+<% @data_index_name = "num_prs" %>
+<div id="user_prs_table_container">
+<%= render 'hash_as_table' %>
+</div>
+
+
+
+<%# For Company Statistics %>
+<% @chart_handle = "company_prs_chart" %>
+<% @chart_data = @prs_by_company_pie_str %>
 <%= render 'pie_chart' %>
 <div id="company_prs_chart"></div>
 
-<div id="user_prs_table_container">
-<table id="user_prs_table">
-  <thead>
-    <tr>
-      <th>Login</th>
-      <th>Num Pull Requests</th>
-    </tr>
-  </thead>
-  <tbody>
-    <% @prs_by_user.each { |rec| %>
-      <tr>
-        <td><%= rec["login"] %></td>
-        <td><%= rec["num_prs"] %></td>
-      </tr>
-    <% } %>
-  </tbody>
-</table>
-</div>
+<% @table_handle = "company_prs_table" %>
+<% @table_data = @prs_by_company %>
+<% @label_header = "Company" %>
+<% @data_header = "Contributions" %>
+<% @label_index_name = "name" %>
+<% @data_index_name = "num_prs" %>
+<%= render 'hash_as_table' %>

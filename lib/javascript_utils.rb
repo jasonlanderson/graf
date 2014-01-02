@@ -16,4 +16,5 @@ class JavascriptUtils
     result += "]"
     return result
   end
+
 end

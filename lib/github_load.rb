@@ -53,6 +53,13 @@ class GithubLoad
       # Get user and insert if doesn't already exist
       user = create_user_if_not_exist(pr[:attrs][:user])
 
+      # Merged code
+      if client.pull_merged?(repo.full_name, pr[:number])
+         state = "merged"
+      else
+         state = pr[:attrs][:state]
+      end
+
       PullRequest.create(
         :repo_id => repo.id,
         :user_id => user.id,
@@ -60,7 +67,7 @@ class GithubLoad
         :pr_number => pr[:attrs][:number],
         :body => pr[:attrs][:body],
         :title => pr[:attrs][:title],
-        :state => pr[:attrs][:state],
+        :state => state,
         :date_created => pr[:attrs][:created_at],
         :date_closed => pr[:attrs][:closed_at],
         :date_updated => pr[:attrs][:updated_at],
