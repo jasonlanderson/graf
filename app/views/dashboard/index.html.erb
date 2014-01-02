@@ -1,11 +1,97 @@
 <h1>GitHub Repo Analytics for graPHing</h1>
+<hr>
 
 <style type="text/css">
-#user_chart { width: 660px; height: 660px; font-size:18px; position:relative; }
-#company_chart { width: 660px; height: 660px; font-size:18px; position:relative; }
+#user_prs_chart { width: 660px; height: 660px; font-size:18px; position:relative; }
+#company_prs_chart { width: 660px; height: 660px; font-size:18px; position:relative; }
 #user_prs_table_container { width: 660px; height: 660px; font-size:18px; position:relative; }
 </style>
 
+<script type="text/javascript">
+  function changeTimeframe(timeframe) {
+    year = $("#select_year_dropdown").val()
+    updatePRsUserChart(timeframe, year)
+    //updatePRsUserTable(timeframe, year)
+    //updatePRsCompanyChart(timeframe, year)
+    //updatePRsCompanyTable(timeframe, year)
+  }
+
+  function updatePRsUserChart(timeframe, year){
+    // then fetch the data with jQuery
+    function onDataReceived(result) {
+        alert('In Callback');
+        $("#user_prs_chart_timeframe").innerHTML = "Jason";
+        // extract the first coordinate pair so you can see that
+        // data is now an ordinary Javascript object
+        //var firstcoordinate = '(' + series.data[0][0] + ', ' + series.data[0][1] + ')';
+
+        //button.siblings('span').text('Fetched ' + series.label + ', first point: ' + firstcoordinate);
+
+        // let's add it to our current data
+        //if (!alreadyFetched[series.label]) {
+        //    alreadyFetched[series.label] = true;
+        //    data.push(series);
+        //}
+        
+        // and plot all we got
+        //$.plot(placeholder, data, options);
+     }
+    
+    $.ajax({
+        url: "api?timeframe=" + timeframe + "&year=" + year,
+        method: 'GET',
+        dataType: 'json',
+        success: onDataReceived
+    });
+  }
+
+  $(document).ready(function () {
+    $("#prs_button_q1").click(function () {
+      changeTimeframe("q1")
+    //create_pie(indiv_data, comp_data);
+    //plotAccordingToChoices(1356998400, 1364774400);
+    });
+
+    $("#prs_button_q2").click(function () {
+      changeTimeframe("q2")
+    //create_pie(indiv_data, comp_data);
+    //plotAccordingToChoices(1356998400, 1364774400);
+    });
+
+    $("#prs_button_q3").click(function () {
+      changeTimeframe("q3")
+    //create_pie(indiv_data, comp_data);
+    //plotAccordingToChoices(1356998400, 1364774400);
+    });
+
+    $("#prs_button_q4").click(function () {
+      changeTimeframe("q4")
+    //create_pie(indiv_data, comp_data);
+    //plotAccordingToChoices(1356998400, 1364774400);
+    });
+
+    $("#prs_button_year").click(function () {
+      changeTimeframe("year")
+    //create_pie(indiv_data, comp_data);
+    //plotAccordingToChoices(1356998400, 1364774400);
+    });
+  });
+</script>
+
+
+<button id="prs_button_q1" style="margin:0 auto; width:120px; height:50px;">Q1</button>
+<button id="prs_button_q2" style="margin:0 auto; width:120px; height:50px;">Q2</button>
+<button id="prs_button_q3" style="margin:0 auto; width:120px; height:50px;">Q3</button>
+<button id="prs_button_q4" style="margin:0 auto; width:120px; height:50px;">Q4</button>
+<button id="prs_button_year" style="margin:0 auto; width:120px; height:50px;">Full Year</button>
+<select id="select_year_dropdown">
+  <option value="2012">2012</option>
+  <option value="2013" selected>2013</option>
+  <option value="2014">2014</option>
+</select>
+
+<table cellpadding="50px" border="1px"><tr><td>
+<h2>Contributions by Users <div id="user_prs_chart_timeframe"style="display:inline">2014 Year</div></h2>
 <%# For User Statistics %>
 <% @chart_handle = "user_prs_chart" %>
 <% @chart_data = @prs_by_user_pie_str %>
@@ -18,12 +104,10 @@
 <% @data_header = "Contributions" %>
 <% @label_index_name = "login" %>
 <% @data_index_name = "num_prs" %>
-<div id="user_prs_table_container">
 <%= render 'hash_as_table' %>
-</div>
 
-
-
+</td><td>
+Contributions by Companies
 <%# For Company Statistics %>
 <% @chart_handle = "company_prs_chart" %>
 <% @chart_data = @prs_by_company_pie_str %>
@@ -35,5 +119,8 @@
 <% @label_header = "Company" %>
 <% @data_header = "Contributions" %>
 <% @label_index_name = "name" %>
-<% @data_index_name = "num_prs" %>
+<% @data_index_name = "num_prs" %>	
 <%= render 'hash_as_table' %>
+
+
+</td></tr></table>

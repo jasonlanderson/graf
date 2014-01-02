@@ -1,0 +1,29 @@
+<script type="text/javascript">
+$(document).ready( function () {
+    $('#<%= @table_handle %>').dataTable({
+      "sScrollY": "350px", "sScrollX": "800px",
+      "bPaginate": false,
+      "bSort": false,
+      "bAutoWidth" : true,
+      "bFilter": true
+    } );
+ } );
+</script>
+
+
+<table id="<%= @table_handle %>" class="display">
+  <thead>
+    <tr>
+      <th><%= @label_header %></th>
+      <th><%= @data_header %></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @table_data.each { |rec| %>
+    <tr>
+      <td><%= rec[@label_index_name] %></td>
+      <td><%= rec[@data_index_name] %></td>
+    </tr>
+    <% } %>
+  </tbody>
+</table>
