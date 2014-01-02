@@ -1,9 +1,9 @@
 class AnalyticUtils
-  def self.get_pull_request_stats(group_by_col)
-  	sql_stmt = "SELECT #{group_by_col}, COUNT(*) calculated_value FROM pull_requests pr " \
+  def self.get_pull_request_stats(group_by_col, data_index_name)
+  	sql_stmt = "SELECT #{group_by_col}, COUNT(*) #{data_index_name} FROM pull_requests pr " \
 	  	"LEFT OUTER JOIN users u ON pr.user_id = u.id " \
 	  	"LEFT OUTER JOIN companies c ON u.company_id = c.id " \
-	  	"GROUP BY #{group_by_col} ORDER BY calculated_value DESC"
+	  	"GROUP BY #{group_by_col} ORDER BY #{data_index_name} DESC"
 
 
 	# sql_stmt += "WHERE "

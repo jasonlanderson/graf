@@ -1,16 +1,42 @@
-<h1>GitHub Repo Analytics for Graphing</h1>
+<h1>GitHub Repo Analytics for graPHing</h1>
 
 <style type="text/css">
 #user_chart { width: 660px; height: 660px; font-size:18px; position:relative; }
 #company_chart { width: 660px; height: 660px; font-size:18px; position:relative; }
+#user_prs_table_container { width: 660px; height: 660px; font-size:18px; position:relative; }
 </style>
 
-<% @chartHandle = "user_chart" %>
+<script type="text/javascript">
+$(document).ready(function () {
+  $('#user_prs_table').dataTable()
+});
+</script>
+
+<% @chartHandle = "user_prs_chart" %>
 <% @chartData = @prs_by_user_pie_str %>
 <%= render 'pie_chart' %>
-<div id="user_chart"></div>
+<div id="user_prs_chart"></div>
 
-<% @chartHandle = "company_chart" %>
+<% @chartHandle = "company_prs_chart" %>
 <% @chartData = @prs_by_company_pie_str %>
 <%= render 'pie_chart' %>
-<div id="company_chart"></div>
+<div id="company_prs_chart"></div>
+
+<div id="user_prs_table_container">
+<table id="user_prs_table">
+  <thead>
+    <tr>
+      <th>Login</th>
+      <th>Num Pull Requests</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @prs_by_user.each { |rec| %>
+      <tr>
+        <td><%= rec["login"] %></td>
+        <td><%= rec["num_prs"] %></td>
+      </tr>
+    <% } %>
+  </tbody>
+</table>
+</div>
