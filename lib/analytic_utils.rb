@@ -5,7 +5,7 @@ class AnalyticUtils
       "LEFT OUTER JOIN companies c ON u.company_id = c.id " \
       "WHERE 1 = 1 "
 
-    if timeframe
+    if timeframe && timeframe != ''
       case timeframe
       when "q1"
         sql_stmt += "AND strftime('%m', pr.date_created) IN ('01', '02', '03') "
@@ -18,7 +18,7 @@ class AnalyticUtils
       end
     end
 
-    if year
+    if year && year != ''
       sql_stmt += "AND strftime('%Y', pr.date_created) IS '#{year}' "
     #else # We want year to always be valid, else quarterly data from different years will be merged
     #  sql_stmt += "AND strftime('%Y', pr.date_created) IS \"#{Time.now.year}\" "
