@@ -6,13 +6,25 @@ class AnalyticUtils
 	  	"WHERE 1 = 1 "
 	
 	if timeframe
-		# TODO
+		case timeframe
+		when "q1"
+			sql_stmt += "AND strftime('%m', pr.date_created) IN ('01', '02', '03') "
+		when "q2"
+			sql_stmt += "AND strftime('%m', pr.date_created) IN ('04', '05', '06') "
+		when "q3"
+			sql_stmt += "AND strftime('%m', pr.date_created) IN ('07', '08', '09') "
+		else
+			sql_stmt += "AND strftime('%m', pr.date_created) IN ('10', '11', '12') "
+		end	
 		#sql_stmt += "AND strftime('%Y', pr.date_created) IS '' "
 	end
 
 	if year
 		sql_stmt += "AND strftime('%Y', pr.date_created) IS '#{year}' "
+	else # We want year to always be valid, else quarterly data from different years will be merged
+		sql_stmt += "AND strftime('%Y', pr.date_created) IS \"#{Time.now.year}\" "
 	end
+
 	  	
   	sql_stmt += "GROUP BY #{group_by_col} ORDER BY #{data_index_name} DESC"
 

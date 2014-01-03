@@ -19,14 +19,19 @@
   function updatePRsUserChart(timeframe, year){
     // then fetch the data with jQuery
     function onDataReceived(result) {
-        alert('In Callback');
-        alert(result);
+        //alert('In Callback');
+        //alert(result);
         //nil = ""
-
-        $("#user_prs_chart").empty();
-        alert("Graph cleared");
+        //$("#users_prs_table").html(result);
+        $("#usr_tbl_ctr").empty();
+        $("#usr_tbl_ctr").html(result);
+        
+        //$("#user_prs_chart").empty();
+        //alert("Graph cleared");
         //$.plot($("#user_prs_chart"), nil);
-        $.plot($("#user_prs_chart"), result, {
+        
+
+     /*   $.plot($("#user_prs_chart"), result, {
          series: {
             pie: {
                 show: true,
@@ -45,7 +50,7 @@
             labelBoxBorderColor: "none"
          }
     });
-        
+    */
         // extract the first coordinate pair so you can see that
         // data is now an ordinary Javascript object
         //var firstcoordinate = '(' + series.data[0][0] + ', ' + series.data[0][1] + ')';
@@ -128,7 +133,9 @@
 <% @data_header = "Contributions" %>
 <% @label_index_name = "login" %>
 <% @data_index_name = "num_prs" %>
+<div id="usr_tbl_ctr">
 <%= render 'hash_as_table' %>
+</div>
 
 </td><td>
 Contributions by Companies
