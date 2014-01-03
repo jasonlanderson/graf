@@ -10,46 +10,49 @@
 <script type="text/javascript">
   function changeTimeframe(timeframe) {
     year = $("#select_year_dropdown").val()
-    updatePRsUserChart(timeframe, year)
-    //updatePRsUserTable(timeframe, year)
-    //updatePRsCompanyChart(timeframe, year)
-    //updatePRsCompanyTable(timeframe, year)
+    apiAJAX(timeframe, year, 'user_chart', update);
+    apiAJAX(timeframe, year, 'user_table', update);
+    // apiAJAX(timeframe, year, 'company_chart', update);
+    // apiAJAX(timeframe, year, 'company_table', update);
   }
 
-  function updatePRsUserChart(timeframe, year){
-    // then fetch the data with jQuery
-    function onDataReceived(result) {
-        $("#user_prs_chart").empty();
-
-        options = {
-             series: {
-                pie: {
-                    show: true,
-                    radius: 1,
-                    label: {
-                        show: true,
-                        radius: 2/3,
-                        formatter: function(label, series){
-                            return '<div style="font-size:8pt;text-align:center;padding:2px;color:white;">'+label+'<br/>'+Math.round(series.percent)+'%</div>';
-                        },
-                        threshold: 0.04
-                    }       
-                }
-             },
-             legend: {
-                labelBoxBorderColor: "none"
-             }
-        }
-
-        $.plot($("#user_prs_chart"), result.response, options);
-     }
-    
+  function apiAJAX(timeframe, year, data_request, callback){
     $.ajax({
-        url: "api?timeframe=" + timeframe + "&year=" + year,
+        url: "api?timeframe=" + timeframe + "&year=" + year + "&data_request=" + data_request,
         method: 'GET',
         dataType: "json",
-        success: onDataReceived
+        success: callback
     });
+  }
+
+  function updatePRsUserChartCallback(result){
+    $("#user_prs_chart").empty();
+    options = {
+         series: {
+            pie: {
+                show: true,
+                radius: 1,
+                label: {
+                    show: true,
+                    radius: 2/3,
+                    formatter: function(label, series){
+                        return '<div style="font-size:8pt;text-align:center;padding:2px;color:white;">'+label+'<br/>'+Math.round(series.percent)+'%</div>';
+                    },
+                    threshold: 0.04
+                }       
+            }
+         },
+         legend: {
+            labelBoxBorderColor: "none"
+         }
+    }
+
+    $.plot($("#user_prs_chart"), result.response, options);
+  }
+
+  function updatePRsUserTableCallback(result){
+    $("#usr_tbl_ctr").empty();
+    $("#usr_tbl_ctr").html(result);
   }
 
   $(document).ready(function () {
@@ -111,7 +114,9 @@
 <% @data_header = "Contributions" %>
 <% @label_index_name = "login" %>
 <% @data_index_name = "num_prs" %>
+<div id="usr_tbl_ctr">
 <%= render 'hash_as_table' %>
+</div>
 
 </td><td>
 Contributions by Companies
