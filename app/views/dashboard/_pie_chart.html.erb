@@ -1,6 +1,6 @@
 <script type="text/javascript">
 $(document).ready(function () {
-$.plot($("#<%= @chart_handle %>"), <%= raw @chart_data %>, {
+    options = {
          series: {
             pie: {
                 show: true,
@@ -18,7 +18,9 @@ $.plot($("#<%= @chart_handle %>"), <%= raw @chart_data %>, {
          legend: {
             labelBoxBorderColor: "none"
          }
-    });
+    }
+
+    $.plot($("#<%= @chart_handle %>"), $.parseJSON('<%= raw @chart_data %>').response, options);
 });
 </script>
 
