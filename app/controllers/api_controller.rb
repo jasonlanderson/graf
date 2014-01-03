@@ -36,6 +36,13 @@ class ApiController < ApplicationController
       @label_index_name = "name"
       @data_index_name = "num_prs"
       render :partial => "dashboard/hash_as_table"
+    elsif data_request == 'days_elapsed_table'
+      avg_days_elapsed = AnalyticUtils.get_pr_days_elapsed
+      @table_handle = "pr_days_elapsed_table"
+      @table_data = avg_days_elapsed
+      @label_header = "Company"
+      @data_header = "Average Days Elapsed"
+      render :partial => "dashboard/hash_as_table"
     else
       render :text => "Error: Invalid data_request: #{data_request}"
     end

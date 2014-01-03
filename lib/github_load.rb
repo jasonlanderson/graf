@@ -60,6 +60,12 @@ class GithubLoad
          state = pr[:attrs][:state]
       end
 
+      if pr[:attrs][:closed_at].nil?
+         close_date = Time.now
+      else
+         close_date = pr[:attrs][:closed_at]
+      end
+
       PullRequest.create(
         :repo_id => repo.id,
         :user_id => user.id,
@@ -71,7 +77,9 @@ class GithubLoad
         :date_created => pr[:attrs][:created_at],
         :date_closed => pr[:attrs][:closed_at],
         :date_updated => pr[:attrs][:updated_at],
-        :date_merged => pr[:attrs][:merged_at]
+        :date_merged => pr[:attrs][:merged_at],
+        :timestamp => "blah", #Time.new(pr[:attrs][:created_at].year, pr[:attrs][:created_at].month).to_i.to_s, 
+        :days_elapsed => (pr[:attrs][:created_at] - close_date).to_i / (24 * 60 * 60)
         )
     }
   end

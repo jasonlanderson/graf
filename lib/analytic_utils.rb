@@ -29,6 +29,16 @@ class AnalyticUtils
     return ActiveRecord::Base.connection.execute(sql_stmt)
   end
 
+  def self.get_pr_days_elapsed
+    sql_stmt = "SELECT c.name, avg(julianday(IFNULL(pr.date_closed, date('now'))) - " \
+      "julianday(pr.date_created)) avg_days_open FROM pull_requests pr LEFT OUTER JOIN users u " \
+      "ON pr.user_id = u.id LEFT OUTER JOIN companies c ON u.company_id = c.id GROUP BY c.name ORDER " \
+      "BY c.name"
+
+    return ActiveRecord::Base.connection.execute(sql_stmt)
+
+  end
+
   def self.top_x_with_rollup(input_array, label_index_name, data_index_name, top_x_count, rollup_name)
     if top_x_count < 0
       top_x_count = 0

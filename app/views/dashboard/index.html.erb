@@ -23,6 +23,7 @@
     } );
   }
 
+
   function filterUpdate() {
     timeframe = $("#quarter_filter").val()
     year = $("#year_filter").val()
@@ -112,6 +113,7 @@
       filterUpdate()
     });
   });
+
 </script>
 
 <h1>GitHub Repo Analytics for graPHing</h1>
@@ -137,6 +139,24 @@
 <br><br>
 <hr>
 
+
+<% @table_handle = "pr_days_elapsed_table" %>
+<% @table_data = @avg_days_elapsed %>
+<% @label_header = "Company" %>
+<% @data_header = "Average Days Elapsed" %>
+<% @label_index_name = "name" %>
+<% @data_index_name = "avg_days_open" %>  
+
+<%= render 'hash_as_table' %>
+<script type="text/javascript">
+$("#pr_days_elapsed_table").dataTable({
+      "sScrollY": "350px", "sScrollX": "500px",
+      "bPaginate": false,
+      "bSort": false,
+      "bAutoWidth" : true,
+      "bFilter": true
+    } );
+</script>
 <table cellpadding="50px"><tr><td>
   <h2>Contributions by User</h2><br>
   <%# For User Statistics %>
