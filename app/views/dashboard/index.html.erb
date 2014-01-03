@@ -20,7 +20,32 @@
     // then fetch the data with jQuery
     function onDataReceived(result) {
         alert('In Callback');
-        $("#user_prs_chart_timeframe").innerHTML = "Jason";
+        alert(result);
+        //nil = ""
+
+        $("#user_prs_chart").empty();
+        alert("Graph cleared");
+        //$.plot($("#user_prs_chart"), nil);
+        $.plot($("#user_prs_chart"), result, {
+         series: {
+            pie: {
+                show: true,
+                radius: 1,
+                label: {
+                    show: true,
+                    radius: 2/3,
+                    formatter: function(label, series){
+                        return '<div style="font-size:8pt;text-align:center;padding:2px;color:white;">'+label+'<br/>'+Math.round(series.percent)+'%</div>';
+                    },
+                    threshold: 0.04
+                }       
+            }
+         },
+         legend: {
+            labelBoxBorderColor: "none"
+         }
+    });
+        
         // extract the first coordinate pair so you can see that
         // data is now an ordinary Javascript object
         //var firstcoordinate = '(' + series.data[0][0] + ', ' + series.data[0][1] + ')';
@@ -40,7 +65,6 @@
     $.ajax({
         url: "api?timeframe=" + timeframe + "&year=" + year,
         method: 'GET',
-        dataType: 'json',
         success: onDataReceived
     });
   }
