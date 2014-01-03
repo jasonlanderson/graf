@@ -20,8 +20,8 @@ class AnalyticUtils
 
     if year
       sql_stmt += "AND strftime('%Y', pr.date_created) IS '#{year}' "
-    else # We want year to always be valid, else quarterly data from different years will be merged
-      sql_stmt += "AND strftime('%Y', pr.date_created) IS \"#{Time.now.year}\" "
+    #else # We want year to always be valid, else quarterly data from different years will be merged
+    #  sql_stmt += "AND strftime('%Y', pr.date_created) IS \"#{Time.now.year}\" "
     end
 
     sql_stmt += "GROUP BY #{group_by_col} ORDER BY #{data_index_name} DESC"

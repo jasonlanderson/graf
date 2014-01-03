@@ -4,23 +4,41 @@
 <style type="text/css">
 #user_prs_chart { width: 660px; height: 660px; font-size:18px; position:relative; }
 #company_prs_chart { width: 660px; height: 660px; font-size:18px; position:relative; }
-#user_prs_table_container { width: 660px; height: 660px; font-size:18px; position:relative; }
+#user_tbl_ctr { width: 600px; height: 660px; font-size:18px; position:relative; }
+#company_tbl_ctr { width: 600px; height: 660px; font-size:18px; position:relative; }
 </style>
 
 <script type="text/javascript">
-  function changeTimeframe(timeframe) {
-    year = $("#select_year_dropdown").val()
-    apiAJAX(timeframe, year, 'user_chart', update);
-    apiAJAX(timeframe, year, 'user_table', update);
-    // apiAJAX(timeframe, year, 'company_chart', update);
-    // apiAJAX(timeframe, year, 'company_table', update);
+
+  function makeAsDataTableOnLoad(tableHandleIdStr) {
+    $(document).ready( function () {
+      makeAsDataTable(tableHandleIdStr)
+    } );
   }
 
-  function apiAJAX(timeframe, year, data_request, callback){
+  function makeAsDataTable(tableHandleIdStr) {
+    $(tableHandleIdStr).dataTable({
+      "sScrollY": "350px", "sScrollX": "500px",
+      "bPaginate": false,
+      "bSort": false,
+      "bAutoWidth" : true,
+      "bFilter": true
+    } );
+  }
+
+  function changeTimeframe(timeframe) {
+    year = $("#select_year_dropdown").val()
+    apiAJAX(timeframe, year, 'user_chart', 'json', updatePRsUserChartCallback);
+    apiAJAX(timeframe, year, 'user_table', 'text', updatePRsUserTableCallback);
+    apiAJAX(timeframe, year, 'company_chart', 'json', updatePRsCompanyChartCallback);
+    apiAJAX(timeframe, year, 'company_table', 'text', updatePRsCompanyTableCallback);
+  }
+
+  function apiAJAX(timeframe, year, data_request, response_type, callback){
     $.ajax({
         url: "api?timeframe=" + timeframe + "&year=" + year + "&data_request=" + data_request,
         method: 'GET',
-        dataType: "json",
+        dataType: response_type,
         success: callback
     });
   }
@@ -51,39 +69,62 @@
   }
 
   function updatePRsUserTableCallback(result){
-    $("#usr_tbl_ctr").empty();
-    $("#usr_tbl_ctr").html(result);
+    $("#user_tbl_ctr").empty();
+    $("#user_tbl_ctr").html(result);
+    makeAsDataTable("#user_prs_table")
   }
+
+  function updatePRsCompanyChartCallback(result){
+    $("#company_prs_chart").empty();
+    options = {
+         series: {
+            pie: {
+                show: true,
+                radius: 1,
+                label: {
+                    show: true,
+                    radius: 2/3,
+                    formatter: function(label, series){
+                        return '<div style="font-size:8pt;text-align:center;padding:2px;color:white;">'+label+'<br/>'+Math.round(series.percent)+'%</div>';
+                    },
+                    threshold: 0.04
+                }       
+            }
+         },
+         legend: {
+            labelBoxBorderColor: "none"
+         }
+    }
+
+    $.plot($("#company_prs_chart"), result.response, options);
+  }
+
+  function updatePRsCompanyTableCallback(result){
+    $("#company_tbl_ctr").empty();
+    $("#company_tbl_ctr").html(result);
+    makeAsDataTable("#company_prs_table")
+  }
+
 
   $(document).ready(function () {
     $("#prs_button_q1").click(function () {
-      changeTimeframe("q1")
-    //create_pie(indiv_data, comp_data);
-    //plotAccordingToChoices(1356998400, 1364774400);
+      changeTimeframe("q1");
     });
 
     $("#prs_button_q2").click(function () {
-      changeTimeframe("q2")
-    //create_pie(indiv_data, comp_data);
-    //plotAccordingToChoices(1356998400, 1364774400);
+      changeTimeframe("q2");
     });
 
     $("#prs_button_q3").click(function () {
-      changeTimeframe("q3")
-    //create_pie(indiv_data, comp_data);
-    //plotAccordingToChoices(1356998400, 1364774400);
+      changeTimeframe("q3");
     });
 
     $("#prs_button_q4").click(function () {
-      changeTimeframe("q4")
-    //create_pie(indiv_data, comp_data);
-    //plotAccordingToChoices(1356998400, 1364774400);
+      changeTimeframe("q4");
     });
 
     $("#prs_button_year").click(function () {
-      changeTimeframe("year")
-    //create_pie(indiv_data, comp_data);
-    //plotAccordingToChoices(1356998400, 1364774400);
+      changeTimeframe("year");
     });
   });
 </script>
@@ -101,38 +142,42 @@
 </select>
 
 <table cellpadding="50px" border="1px"><tr><td>
-<h2>Contributions by Users <div id="user_prs_chart_timeframe"style="display:inline">2014 Year</div></h2>
-<%# For User Statistics %>
-<% @chart_handle = "user_prs_chart" %>
-<% @chart_data = @prs_by_user_pie_str %>
-<%= render 'pie_chart' %>
-<div id="user_prs_chart"></div>
+  <h2>Contributions by Users <div id="user_prs_chart_timeframe"style="display:inline">2014 Year</div></h2>
+  <%# For User Statistics %>
+  <% @chart_handle = "user_prs_chart" %>
+  <% @chart_data = @prs_by_user_pie_str %>
+  <%= render 'pie_chart' %>
+  <div id="user_prs_chart"></div>
 
-<% @table_handle = "user_prs_table" %>
-<% @table_data = @prs_by_user %>
-<% @label_header = "User" %>
-<% @data_header = "Contributions" %>
-<% @label_index_name = "login" %>
-<% @data_index_name = "num_prs" %>
-<div id="usr_tbl_ctr">
-<%= render 'hash_as_table' %>
-</div>
+  <% @table_handle = "user_prs_table" %>
+  <% @table_data = @prs_by_user %>
+  <% @label_header = "User" %>
+  <% @data_header = "Contributions" %>
+  <% @label_index_name = "login" %>
+  <% @data_index_name = "num_prs" %>
+  <div id="user_tbl_ctr">
+  <%= render 'hash_as_table' %>
+  </div>
+  <script type="text/javascript">makeAsDataTableOnLoad('#<%= @table_handle %>');</script>
 
 </td><td>
-Contributions by Companies
-<%# For Company Statistics %>
-<% @chart_handle = "company_prs_chart" %>
-<% @chart_data = @prs_by_company_pie_str %>
-<%= render 'pie_chart' %>
-<div id="company_prs_chart"></div>
+  <h2>Contributions by Users <div id="user_prs_chart_timeframe"style="display:inline">2014 Year</div></h2>
+  <%# For Company Statistics %>
+  <% @chart_handle = "company_prs_chart" %>
+  <% @chart_data = @prs_by_company_pie_str %>
+  <%= render 'pie_chart' %>
+  <div id="company_prs_chart"></div>
 
-<% @table_handle = "company_prs_table" %>
-<% @table_data = @prs_by_company %>
-<% @label_header = "Company" %>
-<% @data_header = "Contributions" %>
-<% @label_index_name = "name" %>
-<% @data_index_name = "num_prs" %>	
-<%= render 'hash_as_table' %>
+  <% @table_handle = "company_prs_table" %>
+  <% @table_data = @prs_by_company %>
+  <% @label_header = "Company" %>
+  <% @data_header = "Contributions" %>
+  <% @label_index_name = "name" %>
+  <% @data_index_name = "num_prs" %>	
+  <div id="company_tbl_ctr">
+  <%= render 'hash_as_table' %>
+  </div>
+  <script type="text/javascript">makeAsDataTableOnLoad('#<%= @table_handle %>');</script>
 
 
 </td></tr></table>
