@@ -15,6 +15,8 @@ class DashboardController < ApplicationController
 
     @avg_days_elapsed = AnalyticUtils.get_pr_days_elapsed
 
+    @repos = AnalyticUtils.get_repos
+
 
   end
   

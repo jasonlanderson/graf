@@ -1,8 +1,9 @@
 class AnalyticUtils
-  def self.get_pull_request_stats(group_by_col, data_index_name, timeframe = nil, year = nil)
+  def self.get_pull_request_stats(group_by_col, data_index_name, timeframe = nil, year = nil, repo=nil)
     sql_stmt = "SELECT #{group_by_col}, COUNT(*) #{data_index_name} FROM pull_requests pr " \
       "LEFT OUTER JOIN users u ON pr.user_id = u.id " \
       "LEFT OUTER JOIN companies c ON u.company_id = c.id " \
+      "LEFT OUTER JOIN repos r ON pr.repo_id = r.id " \
       "WHERE 1 = 1 "
 
     if timeframe && timeframe != ''
@@ -20,8 +21,12 @@ class AnalyticUtils
 
     if year && year != ''
       sql_stmt += "AND strftime('%Y', pr.date_created) IS '#{year}' "
-    #else # We want year to always be valid, else quarterly data from different years will be merged
-    #  sql_stmt += "AND strftime('%Y', pr.date_created) IS \"#{Time.now.year}\" "
+    else # We want year to always be valid, else quarterly data from different years will be merged
+      sql_stmt += "AND strftime('%Y', pr.date_created) IS '#{Time.now.year}' "
+    end
+
+    if repo && repo != ''
+      sql_stmt += "AND r.name IS '#{repo}' "
     end
 
     sql_stmt += "GROUP BY #{group_by_col} ORDER BY #{data_index_name} DESC"
@@ -30,13 +35,18 @@ class AnalyticUtils
   end
 
   def self.get_pr_days_elapsed
-    sql_stmt = "SELECT c.name, avg(julianday(IFNULL(pr.date_closed, date('now'))) - " \
-      "julianday(pr.date_created)) avg_days_open FROM pull_requests pr LEFT OUTER JOIN users u " \
+    sql_stmt = "SELECT c.name, round(avg(julianday(IFNULL(pr.date_closed, date('now'))) - " \
+      "julianday(pr.date_created)), 1) avg_days_open FROM pull_requests pr LEFT OUTER JOIN users u " \
       "ON pr.user_id = u.id LEFT OUTER JOIN companies c ON u.company_id = c.id GROUP BY c.name ORDER " \
       "BY c.name"
 
     return ActiveRecord::Base.connection.execute(sql_stmt)
 
+  end
+
+  def self.get_repos
+      sql_stmt = "SELECT name FROM repos "
+      return ActiveRecord::Base.connection.execute(sql_stmt)
   end
 
   def self.top_x_with_rollup(input_array, label_index_name, data_index_name, top_x_count, rollup_name)
