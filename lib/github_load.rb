@@ -11,6 +11,25 @@ class GithubLoad
     "Springsource" => "Pivotal",
     "cfibmers" => "IBM"]
 
+  def self.initial_load()
+    load_org_companies
+    load_repos
+    load_all_prs
+    #load_prs_for_repo(Repo.find_by(name: "bosh"))
+    fix_users_without_companies
+  end
+
+  def self.delta_load()
+    # TODO
+    # Do the same data loads but 
+  end
+
+  def self.load_org_companies()
+    ORG_TO_COMPANY.each { |org, company|
+      create_company_if_not_exist(company, "org")
+    }
+  end
+
   def self.load_org_companies()
     ORG_TO_COMPANY.each { |org, company|
       create_company_if_not_exist(company, "org")

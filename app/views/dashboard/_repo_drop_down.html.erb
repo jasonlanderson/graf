@@ -1,5 +1,5 @@
  <select id="repo_filter">
-    <option value="All" selected>All</option>
+    <option value="" selected>All</option>
     <% @repos.each {|repo| %>
     <option value=<%=  repo["name"]  %> > <%= repo["name"] %></option>	
     <% } %>

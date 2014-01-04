@@ -21,8 +21,8 @@ class AnalyticUtils
 
     if year && year != ''
       sql_stmt += "AND strftime('%Y', pr.date_created) IS '#{year}' "
-    else # We want year to always be valid, else quarterly data from different years will be merged
-      sql_stmt += "AND strftime('%Y', pr.date_created) IS '#{Time.now.year}' "
+    #else # We want year to always be valid, else quarterly data from different years will be merged
+      #sql_stmt += "AND strftime('%Y', pr.date_created) IS '#{Time.now.year}' "
     end
 
     if repo && repo != ''
@@ -42,11 +42,6 @@ class AnalyticUtils
 
     return ActiveRecord::Base.connection.execute(sql_stmt)
 
-  end
-
-  def self.get_repos
-      sql_stmt = "SELECT name FROM repos "
-      return ActiveRecord::Base.connection.execute(sql_stmt)
   end
 
   def self.top_x_with_rollup(input_array, label_index_name, data_index_name, top_x_count, rollup_name)

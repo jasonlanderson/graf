@@ -60,6 +60,7 @@ GEM
     minitest (4.7.5)
     multi_json (1.8.2)
     multipart-post (1.2.0)
+    mysql2 (0.3.13)
     octokit (2.6.3)
       sawyer (~> 0.5.1)
     polyglot (0.3.3)
@@ -128,6 +129,7 @@ DEPENDENCIES
   jbuilder (~> 1.2)
   jquery-datatables-rails
   jquery-rails
+  mysql2
   octokit
   rails (= 4.0.2)
   sass-rails (~> 4.0.0)
