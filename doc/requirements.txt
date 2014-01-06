@@ -4,7 +4,7 @@
 
 Merge stats for companies that have identical spellings, i.e Pivotal, PivotalLabs
 
-Sort by repository / quarter / year
+Group by repository / quarter / year
 
 Make default view a "rolling" set of quarters (Current + prior 3)
 

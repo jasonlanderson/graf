@@ -68,8 +68,8 @@ class GithubLoader
     load_repos
 
     current_load.log_msg("***Loading Pull Requests", LogLevel::INFO)
-    #load_all_prs
-    load_prs_for_repo(Repo.find_by(name: "bosh"))
+    load_all_prs
+    #load_prs_for_repo(Repo.find_by(name: "bosh"))
 
     current_load.log_msg("***Fixing Users Without Companies", LogLevel::INFO)
     fix_users_without_companies
@@ -82,12 +82,6 @@ class GithubLoader
 
     # TODO: Do load code
 
-  end
-
-  def self.load_org_companies()
-    ORG_TO_COMPANY.each { |org, company|
-      create_company_if_not_exist(company, "org")
-    }
   end
 
   def self.load_org_companies()
@@ -134,13 +128,6 @@ class GithubLoader
       # Get user and insert if doesn't already exist
       user = create_user_if_not_exist(pr[:attrs][:user])
 
-      # Merged code
-      if client.pull_merged?(repo.full_name, pr[:number])
-         state = "merged"
-      else
-         state = pr[:attrs][:state]
-      end
-
       if pr[:attrs][:closed_at].nil?
          close_date = Time.now
       else
@@ -158,9 +145,7 @@ class GithubLoader
         :date_created => pr[:attrs][:created_at],
         :date_closed => pr[:attrs][:closed_at],
         :date_updated => pr[:attrs][:updated_at],
-        :date_merged => pr[:attrs][:merged_at],
-        #:timestamp => "blah", #Time.new(pr[:attrs][:created_at].year, pr[:attrs][:created_at].month).to_i.to_s, 
-        #:days_elapsed => (pr[:attrs][:created_at] - close_date).to_i / (24 * 60 * 60)
+        :date_merged => pr[:attrs][:merged_at]
         )
     }
   end

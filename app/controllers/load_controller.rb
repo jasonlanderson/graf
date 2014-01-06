@@ -25,6 +25,9 @@ class LoadController < ApplicationController
     # Spawn new thread to do the actual load
     Thread.new do
       GithubLoader.github_load(load)
+
+      # Close thread's DB connection
+      ActiveRecord::Base.connection.close
     end
 
     render :text => "#{load.id}"

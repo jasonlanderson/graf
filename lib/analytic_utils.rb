@@ -21,8 +21,6 @@ class AnalyticUtils
 
     if year && year != ''
       sql_stmt += "AND strftime('%Y', pr.date_created) IS '#{year}' "
-    #else # We want year to always be valid, else quarterly data from different years will be merged
-      #sql_stmt += "AND strftime('%Y', pr.date_created) IS '#{Time.now.year}' "
     end
 
     if repo && repo != ''
