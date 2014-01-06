@@ -1,5 +1,5 @@
 class AnalyticUtils
-  def self.get_pull_request_stats(group_by_col, data_index_name, timeframe = nil, year = nil, repo=nil)
+  def self.get_pull_request_stats(group_by_col, data_index_name, timeframe = nil, year = nil, repo=nil, state=nil)
     sql_stmt = "SELECT #{group_by_col}, COUNT(*) #{data_index_name} FROM pull_requests pr " \
       "LEFT OUTER JOIN users u ON pr.user_id = u.id " \
       "LEFT OUTER JOIN companies c ON u.company_id = c.id " \
@@ -21,14 +21,20 @@ class AnalyticUtils
 
     if year && year != ''
       sql_stmt += "AND strftime('%Y', pr.date_created) IS '#{year}' "
-    else # We want year to always be valid, else quarterly data from different years will be merged
-      sql_stmt += "AND strftime('%Y', pr.date_created) IS '#{Time.now.year}' "
     end
 
-    if repo && repo != ''
+    if repo && repo != '' && repo != 'All'
       sql_stmt += "AND r.name IS '#{repo}' "
     end
 
+    if state && (state == "open")
+      sql_stmt += "AND pr.state IS 'open' "
+    elsif state && (state == "merged")
+      sql_stmt += "AND pr.date_merged NOT NULL "
+    elsif state && (state == "closed") # Not including merged prs
+      sql_stmt += "AND pr.state IS 'closed' AND pr.date_merged ISNULL "
+    end
+      
     sql_stmt += "GROUP BY #{group_by_col} ORDER BY #{data_index_name} DESC"
 
     return ActiveRecord::Base.connection.execute(sql_stmt)
@@ -43,6 +49,39 @@ class AnalyticUtils
     return ActiveRecord::Base.connection.execute(sql_stmt)
 
   end
+
+
+
+  def self.get_timestamps
+    sql_stmt = "SELECT c.name, pr.date_created FROM pull_requests pr LEFT OUTER JOIN users u  ON pr.user_id " \
+      " = u.id LEFT OUTER JOIN companies c ON u.company_id = c.id "
+    result = Hash.new
+    query = ActiveRecord::Base.connection.execute(sql_stmt)  
+    query.each do |x|
+        result[x["name"]] ||= [] if !result.has_key?(x["name"])
+        result[x["name"]] << x["date_created"]
+    end
+
+    datasets = "{"
+
+    top_companies = result.sort_by {|x, y| y.length }.reverse[0..4]
+
+
+    top_companies.each do |x, y|
+      data = Hash.new(0)
+      y.inject(data) { |h,e| h[e] += 1; h }.select { |k,v| v > 1 }.inject({}) { |r, e| r[e.first] = e.last; r }
+      timestamp_contrib = []
+      data.each { |x, y| timestamp_contrib << ( Array [ Time.new(Date.parse(x).year, Date.parse(x).month).to_i.to_s , y]) }
+      datasets += "  \"#{x}\": { label: \"#{x}\", data : #{timestamp_contrib} }, "
+    end
+    #query.inject(data { |h,e| h[e] += 1; h }.select { |k,v| v > 1 }.inject({}) { |r, e| r[e.first] = e.last; r })
+    datasets += "};" 
+    #A.each { |x, y| B << ( Array [ Time.new(Date.parse(x).year, Date.parse(x).month).to_i.to_s , y]) }
+    #result.each 
+    return datasets
+
+  end
+
 
   def self.get_repos
       sql_stmt = "SELECT name FROM repos "

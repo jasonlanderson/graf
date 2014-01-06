@@ -11,11 +11,30 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20131218191625) do
+ActiveRecord::Schema.define(version: 20140106014532) do
 
   create_table "companies", force: true do |t|
     t.string   "name"
     t.string   "source"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "github_load_msgs", force: true do |t|
+    t.integer  "github_load_id"
+    t.string   "msg"
+    t.integer  "log_level"
+    t.datetime "log_date"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "github_load_msgs", ["github_load_id"], name: "index_github_load_msgs_on_github_load_id"
+
+  create_table "github_loads", force: true do |t|
+    t.datetime "load_start_time"
+    t.datetime "load_complete_time"
+    t.boolean  "initial_load"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

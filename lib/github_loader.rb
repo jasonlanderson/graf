@@ -1,6 +1,6 @@
 require 'octokit_utils'
 
-class GithubLoad
+class GithubLoader
 
   ORG_NAME = "cloudfoundry"
   REPO_NAME = ORG_NAME + "/bosh"

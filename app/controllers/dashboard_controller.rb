@@ -17,6 +17,9 @@ class DashboardController < ApplicationController
 
     @repos = AnalyticUtils.get_repos
 
+    @timestamps = AnalyticUtils.get_timestamps
+
+    puts @timestamps
 
   end
   
