@@ -12,4 +12,8 @@ class GithubLoad < ActiveRecord::Base
     GithubLoad.where("load_complete_time IS NOT NULL").order("load_complete_time DESC").first
   end
 
+  def to_s
+    return "GithubLoad=[load_start_time: #{load_start_time}, load_complete_time: #{load_complete_time}, initial_load: #{initial_load}]"
+  end
+
 end

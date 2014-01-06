@@ -4,28 +4,30 @@ require 'log_level'
 class LoadController < ApplicationController
   def load_status
     # Check to see what the status of the load is
-
     load_id = params[:load]
     load = GithubLoad.find(load_id)
     last_msg_id = params[:last_msg]
 
-    # Get final messages
+    # Get messages since we last checked
     messages = GithubLoadMsg.getMsgs(load_id, last_msg_id)
 
     # Populate completed field based on load
-
+    completed = load.load_complete_time ? 'true' : 'false'
     
-    render :json => "{\"completed\": \"#{load.load_complete_time ? 'true' : 'false'}\", \"messages\": #{messages.to_json}}"
+    # Send back the JSON object
+    render :json => "{\"completed\": \"#{completed}\", \"messages\": #{messages.to_json}}"
   end
 
   def start_load
     # Create the load object
-    github_load = GithubLoader.prep_github_load
+    load = GithubLoader.prep_github_load
 
-    # TODO: Spawn new thread to do the actual load
-    #GithubLoader.github_load
-    
-    render :text => "#{github_load.id}"
+    # Spawn new thread to do the actual load
+    Thread.new do
+      GithubLoader.github_load(load)
+    end
+
+    render :text => "#{load.id}"
   end
 
   def index

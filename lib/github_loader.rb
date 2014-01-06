@@ -3,6 +3,8 @@ require 'log_level'
 
 class GithubLoader
 
+  @@current_load = nil
+
   ORG_NAME = "cloudfoundry"
   REPO_NAME = ORG_NAME + "/bosh"
   ORG_TO_COMPANY = Hash["vmware" => "VMware",
@@ -25,8 +27,8 @@ class GithubLoader
       )
 
     current_load.log_msg("Starting Load \##{current_load.id}...", LogLevel::INFO)
-    current_load.log_msg("Message 2 = Error", LogLevel::ERROR)
-    current_load.log_msg("Message 3", LogLevel::INFO)
+    current_load.log_msg("Any errors will be in Red", LogLevel::ERROR)
+    current_load.log_msg("----------", LogLevel::INFO)
 
     return current_load
   end
@@ -41,12 +43,16 @@ class GithubLoader
   end
 
   def self.github_load(load = prep_github_load)
+    @@current_load = load
+
     # Determine load type
     if load.initial_load
       # Initial load
+      load.log_msg("***Doing an initial load", LogLevel::INFO)
       initial_load(load)
     else
       # Delta load
+      load.log_msg("***Doing an delta load", LogLevel::INFO)
       delta_load(load)
     end
 
@@ -69,15 +75,13 @@ class GithubLoader
     fix_users_without_companies
   end
 
-  def self.delta_load(current_load, last_successful_load)
+  def self.delta_load(current_load)
 
     # Get last completed
     last_completed = GithubLoad.last_completed
 
-    # Do load code
+    # TODO: Do load code
 
-    current_load.load_complete_time = Time.now
-    current_load.save
   end
 
   def self.load_org_companies()
@@ -119,6 +123,8 @@ class GithubLoader
     puts "---------"
     puts "--- Loading PRs for #{repo.full_name}"
     puts "---------"
+    @@current_load.log_msg("Loading PRs for #{repo.full_name}", LogLevel::INFO)
+
   	client = OctokitUtils.get_octokit_client
 
     pull_requests = client.pulls(repo.full_name, state = "open")
@@ -153,8 +159,8 @@ class GithubLoader
         :date_closed => pr[:attrs][:closed_at],
         :date_updated => pr[:attrs][:updated_at],
         :date_merged => pr[:attrs][:merged_at],
-        :timestamp => "blah", #Time.new(pr[:attrs][:created_at].year, pr[:attrs][:created_at].month).to_i.to_s, 
-        :days_elapsed => (pr[:attrs][:created_at] - close_date).to_i / (24 * 60 * 60)
+        #:timestamp => "blah", #Time.new(pr[:attrs][:created_at].year, pr[:attrs][:created_at].month).to_i.to_s, 
+        #:days_elapsed => (pr[:attrs][:created_at] - close_date).to_i / (24 * 60 * 60)
         )
     }
   end
@@ -168,6 +174,8 @@ class GithubLoader
       puts "---------"
       puts "--- Creating User: #{pr_user[:attrs][:login]}"
       puts "---------"
+      @@current_load.log_msg("Creating User: #{pr_user[:attrs][:login]}", LogLevel::INFO)
+
       user_details = pr_user[:_rels][:self].get.data
 
       company = nil
@@ -197,6 +205,8 @@ class GithubLoader
       puts "---------"
       puts "--- Creating Company: #{company_name}"
       puts "---------"
+      @@current_load.log_msg("Creating Company: #{company_name}", LogLevel::INFO)
+
       company = Company.create(
         :name => company_name,
         :source => src

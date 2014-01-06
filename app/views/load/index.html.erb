@@ -5,8 +5,10 @@
   //
   var runningLoadId = '<%= @running_load ? @running_load.id : -1 %>';
   var lastMsgId = '<%= @running_msgs ? @running_msgs.last.id : -1 %>';
-  var checkInterval = ' ? raw("") : null %>';
+  var checkInterval = null;
+
   var ERROR_LOG_LEVEL = '<%= @error_log_level %>';
+  var CHECK_INTERVAL_TIME = 1000;
 
   //
   // Initialize Javascript Events
@@ -21,7 +23,7 @@
     });
 
     <% if @running_load %>
-      checkInterval = setInterval(getLoadStatus, 10000);
+      checkInterval = setInterval(getLoadStatus, CHECK_INTERVAL_TIME);
     <% end %>
   });
 
@@ -45,6 +47,9 @@
 
         // Update lastMsgId
         lastMsgId = response.messages[response.messages.length-1].id
+
+        // Scroll down to the page bottom
+        window.scrollTo(0,document.body.scrollHeight);
       }
       
       // End the process if the success criteria is met
@@ -88,7 +93,7 @@
       getLoadStatus()
 
       // Start the getLoadStatus (10 seconds)
-      checkInterval = setInterval(getLoadStatus, 10000);
+      checkInterval = setInterval(getLoadStatus, CHECK_INTERVAL_TIME);
     }
 
     $.ajax({
@@ -135,7 +140,7 @@
     }
 
 
-    logEntry.innerHTML = msg_obj.msg
+    logEntry.innerHTML = msg_obj.log_date + ": " + msg_obj.msg
     $("#loadLogCtr").append(logEntry)
   }
 </script>
@@ -177,7 +182,7 @@
 <div id="loadLogCtr">
   <%  if @running_msgs 
         @running_msgs.each do |msg| %>
-          <div <%= msg.log_level == 1 ? raw("style='color:red'") : "" %>><%= msg.msg %></div>
+          <div <%= msg.log_level == 1 ? raw("style='color:red'") : "" %>><%= "#{msg.log_date}: #{msg.msg}" %></div>
   <%    end
       end %>
 </div>
