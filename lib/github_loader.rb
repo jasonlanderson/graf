@@ -128,12 +128,6 @@ class GithubLoader
       # Get user and insert if doesn't already exist
       user = create_user_if_not_exist(pr[:attrs][:user])
 
-      if pr[:attrs][:closed_at].nil?
-         close_date = Time.now
-      else
-         close_date = pr[:attrs][:closed_at]
-      end
-
       PullRequest.create(
         :repo_id => repo.id,
         :user_id => user.id,
@@ -167,7 +161,16 @@ class GithubLoader
       if user_details[:attrs][:company] != "" && user_details[:attrs][:company] != nil
         company = create_company_if_not_exist(user_details[:attrs][:company], "user")
       end
-
+=begin
+TODO
+      if ((company == nil) || (company.downcase.include? "available") || (company.downcase.include? "independent") || (company.strip == ""))
+          company = "Independent"
+        elsif            (company.downcase.include? "vmware")
+          company = "VMware"
+        elsif            ((company.downcase.include? "pivotal") || (company.downcase.include? "springsource"))
+          company = "Pivotal"
+      end
+=end
       user = User.create(
         :company => company,
         :git_id => user_details[:attrs][:id].to_i,

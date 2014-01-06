@@ -28,15 +28,16 @@
     timeframe = $("#quarter_filter").val()
     year = $("#year_filter").val()
     repo = $("#repo_filter").val()
-    apiAJAX(timeframe, year, repo, 'user_chart', 'json', updatePRsUserChartCallback);
-    apiAJAX(timeframe, year, repo, 'user_table', 'text', updatePRsUserTableCallback);
-    apiAJAX(timeframe, year, repo, 'company_chart', 'json', updatePRsCompanyChartCallback);
-    apiAJAX(timeframe, year, repo, 'company_table', 'text', updatePRsCompanyTableCallback);
+    state = $("#state_filter").val()
+    apiAJAX(timeframe, year, repo, state, 'user_chart', 'json', updatePRsUserChartCallback);
+    apiAJAX(timeframe, year, repo, state, 'user_table', 'text', updatePRsUserTableCallback);
+    apiAJAX(timeframe, year, repo, state, 'company_chart', 'json', updatePRsCompanyChartCallback);
+    apiAJAX(timeframe, year, repo, state, 'company_table', 'text', updatePRsCompanyTableCallback);
   }
 
-  function apiAJAX(timeframe, year, repo, data_request, response_type, callback){
+  function apiAJAX(timeframe, year, repo, state, data_request, response_type, callback){
     $.ajax({
-        url: "api?timeframe=" + timeframe + "&year=" + year + "&repo=" + repo + "&data_request=" + data_request,
+        url: "api?timeframe=" + timeframe + "&year=" + year + "&repo=" + repo + "&state=" + state + "&data_request=" + data_request,
         method: 'GET',
         dataType: response_type,
         success: callback
@@ -117,6 +118,12 @@
     $("#repo_filter").change(function () {
       filterUpdate()
     });
+
+    $("#state_filter").change(function () {
+      filterUpdate()
+    });
+
+
   
   });
 
@@ -145,6 +152,14 @@
   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
   Repository:
   <%= render 'repo_drop_down' %>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  State:
+  <select id="state_filter">
+    <option value="" selected>All</option>
+    <option value="open">Open</option>
+    <option value="merged">Merged</option>
+    <option value="closed">Closed (Not Merged)</option>
+  </select>
 <br><br>
 <hr>
 

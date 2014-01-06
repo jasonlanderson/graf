@@ -15,6 +15,10 @@ class DashboardController < ApplicationController
     @avg_days_elapsed = AnalyticUtils.get_pr_days_elapsed
 
     @repos = Repo.order(:name)
+
+    @timestamps = AnalyticUtils.get_timestamps
+
+    puts @timestamps
   end
   
 end
