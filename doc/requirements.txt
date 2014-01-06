@@ -1,0 +1,28 @@
+###
+# Requirements
+###
+
+Merge stats for companies that have identical spellings, i.e Pivotal, PivotalLabs
+
+Sort by repository / quarter / year
+
+Make default view a "rolling" set of quarters (Current + prior 3)
+
+List percentage of closed PRs versus merged PRs (Omit those that are open) 
+
+
+###
+# Statistics
+###
+
+Charts
+- PRs by User
+- PRs by Company
+
+Tables
+- PRs by User
+- PRs by Company
+
+Single Statistics
+- Avg days to merge a PR
+- Avg concurrent PR

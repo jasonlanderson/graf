@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  load_start_time: 2014-01-03 21:16:51
+  load_complete_time: 2014-01-03 21:16:51
+  initial_load: false
+
+two:
+  load_start_time: 2014-01-03 21:16:51
+  load_complete_time: 2014-01-03 21:16:51
+  initial_load: false

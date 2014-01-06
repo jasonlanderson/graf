@@ -1,0 +1,29 @@
+<%= form_for(@github_load) do |f| %>
+  <% if @github_load.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@github_load.errors.count, "error") %> prohibited this github_load from being saved:</h2>
+
+      <ul>
+      <% @github_load.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :load_start_time %><br>
+    <%= f.datetime_select :load_start_time %>
+  </div>
+  <div class="field">
+    <%= f.label :load_complete_time %><br>
+    <%= f.datetime_select :load_complete_time %>
+  </div>
+  <div class="field">
+    <%= f.label :initial_load %><br>
+    <%= f.check_box :initial_load %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

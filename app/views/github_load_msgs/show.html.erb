@@ -1,0 +1,24 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Github load:</strong>
+  <%= @github_load_msg.github_load %>
+</p>
+
+<p>
+  <strong>Msg:</strong>
+  <%= @github_load_msg.msg %>
+</p>
+
+<p>
+  <strong>Log level:</strong>
+  <%= @github_load_msg.log_level %>
+</p>
+
+<p>
+  <strong>Log date:</strong>
+  <%= @github_load_msg.log_date %>
+</p>
+
+<%= link_to 'Edit', edit_github_load_msg_path(@github_load_msg) %> |
+<%= link_to 'Back', github_load_msgs_path %>

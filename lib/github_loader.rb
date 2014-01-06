@@ -1,6 +1,9 @@
 require 'octokit_utils'
+require 'log_level'
 
 class GithubLoader
+
+  @@current_load = nil
 
   ORG_NAME = "cloudfoundry"
   REPO_NAME = ORG_NAME + "/bosh"
@@ -10,6 +13,82 @@ class GithubLoader
     "pivotallabs" => "Pivotal",
     "Springsource" => "Pivotal",
     "cfibmers" => "IBM"]
+
+  def self.prep_github_load()
+    if GithubLoad.all.length == 0
+      initial_load = true
+    else
+      initial_load = false
+    end
+
+    current_load = GithubLoad.create(:load_start_time => Time.now,
+      :load_complete_time => nil,
+      :initial_load => initial_load
+      )
+
+    current_load.log_msg("Starting Load \##{current_load.id}...", LogLevel::INFO)
+    current_load.log_msg("Any errors will be in Red", LogLevel::ERROR)
+    current_load.log_msg("----------", LogLevel::INFO)
+
+    return current_load
+  end
+
+  def self.finish_github_load(finished_load)
+    # Log finished
+    final_log_msg = finished_load.log_msg("Finished Load \##{finished_load.id}...", LogLevel::INFO)
+
+    # Update database with completion time
+    finished_load.load_complete_time = final_log_msg.log_date
+    finished_load.save
+  end
+
+  def self.github_load(load = prep_github_load)
+    @@current_load = load
+
+    # Determine load type
+    if load.initial_load
+      # Initial load
+      load.log_msg("***Doing an initial load", LogLevel::INFO)
+      initial_load(load)
+    else
+      # Delta load
+      load.log_msg("***Doing an delta load", LogLevel::INFO)
+      delta_load(load)
+    end
+
+    finish_github_load(load)
+  end
+
+  def self.initial_load(current_load)
+    # Do initial load
+    current_load.log_msg("***Loading Companies", LogLevel::INFO)
+    load_org_companies
+
+    current_load.log_msg("***Loading Repos", LogLevel::INFO)
+    load_repos
+
+    current_load.log_msg("***Loading Pull Requests", LogLevel::INFO)
+    #load_all_prs
+    load_prs_for_repo(Repo.find_by(name: "bosh"))
+
+    current_load.log_msg("***Fixing Users Without Companies", LogLevel::INFO)
+    fix_users_without_companies
+  end
+
+  def self.delta_load(current_load)
+
+    # Get last completed
+    last_completed = GithubLoad.last_completed
+
+    # TODO: Do load code
+
+  end
+
+  def self.load_org_companies()
+    ORG_TO_COMPANY.each { |org, company|
+      create_company_if_not_exist(company, "org")
+    }
+  end
 
   def self.load_org_companies()
     ORG_TO_COMPANY.each { |org, company|
@@ -44,6 +123,8 @@ class GithubLoader
     puts "---------"
     puts "--- Loading PRs for #{repo.full_name}"
     puts "---------"
+    @@current_load.log_msg("Loading PRs for #{repo.full_name}", LogLevel::INFO)
+
   	client = OctokitUtils.get_octokit_client
 
     pull_requests = client.pulls(repo.full_name, state = "open")
@@ -85,13 +166,16 @@ class GithubLoader
       puts "---------"
       puts "--- Creating User: #{pr_user[:attrs][:login]}"
       puts "---------"
+      @@current_load.log_msg("Creating User: #{pr_user[:attrs][:login]}", LogLevel::INFO)
+
       user_details = pr_user[:_rels][:self].get.data
 
       company = nil
       if user_details[:attrs][:company] != "" && user_details[:attrs][:company] != nil
         company = create_company_if_not_exist(user_details[:attrs][:company], "user")
       end
-
+=begin
+TODO
       if ((company == nil) || (company.downcase.include? "available") || (company.downcase.include? "independent") || (company.strip == ""))
           company = "Independent"
         elsif            (company.downcase.include? "vmware")
@@ -99,7 +183,7 @@ class GithubLoader
         elsif            ((company.downcase.include? "pivotal") || (company.downcase.include? "springsource"))
           company = "Pivotal"
       end
-
+=end
       user = User.create(
         :company => company,
         :git_id => user_details[:attrs][:id].to_i,
@@ -122,6 +206,8 @@ class GithubLoader
       puts "---------"
       puts "--- Creating Company: #{company_name}"
       puts "---------"
+      @@current_load.log_msg("Creating Company: #{company_name}", LogLevel::INFO)
+
       company = Company.create(
         :name => company_name,
         :source => src

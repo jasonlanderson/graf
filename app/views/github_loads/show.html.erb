@@ -1,0 +1,19 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Load start time:</strong>
+  <%= @github_load.load_start_time %>
+</p>
+
+<p>
+  <strong>Load complete time:</strong>
+  <%= @github_load.load_complete_time %>
+</p>
+
+<p>
+  <strong>Initial load:</strong>
+  <%= @github_load.initial_load %>
+</p>
+
+<%= link_to 'Edit', edit_github_load_path(@github_load) %> |
+<%= link_to 'Back', github_loads_path %>

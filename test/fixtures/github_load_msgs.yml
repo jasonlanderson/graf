@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  github_load_id: 
+  msg: MyString
+  log_level: 1
+  log_date: 2014-01-05 17:45:32
+
+two:
+  github_load_id: 
+  msg: MyString
+  log_level: 1
+  log_date: 2014-01-05 17:45:32

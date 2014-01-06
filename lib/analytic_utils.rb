@@ -83,11 +83,6 @@ class AnalyticUtils
   end
 
 
-  def self.get_repos
-      sql_stmt = "SELECT name FROM repos "
-      return ActiveRecord::Base.connection.execute(sql_stmt)
-  end
-
   def self.top_x_with_rollup(input_array, label_index_name, data_index_name, top_x_count, rollup_name)
     if top_x_count < 0
       top_x_count = 0
