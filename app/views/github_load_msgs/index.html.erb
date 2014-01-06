@@ -1,0 +1,33 @@
+<h1>Listing github_load_msgs</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Github load</th>
+      <th>Msg</th>
+      <th>Log level</th>
+      <th>Log date</th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @github_load_msgs.each do |github_load_msg| %>
+      <tr>
+        <td><%= github_load_msg.github_load %></td>
+        <td><%= github_load_msg.msg %></td>
+        <td><%= github_load_msg.log_level %></td>
+        <td><%= github_load_msg.log_date %></td>
+        <td><%= link_to 'Show', github_load_msg %></td>
+        <td><%= link_to 'Edit', edit_github_load_msg_path(github_load_msg) %></td>
+        <td><%= link_to 'Destroy', github_load_msg, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Github load msg', new_github_load_msg_path %>

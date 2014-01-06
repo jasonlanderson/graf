@@ -1,0 +1,33 @@
+<%= form_for(@github_load_msg) do |f| %>
+  <% if @github_load_msg.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@github_load_msg.errors.count, "error") %> prohibited this github_load_msg from being saved:</h2>
+
+      <ul>
+      <% @github_load_msg.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :github_load_id %><br>
+    <%= f.text_field :github_load_id %>
+  </div>
+  <div class="field">
+    <%= f.label :msg %><br>
+    <%= f.text_field :msg %>
+  </div>
+  <div class="field">
+    <%= f.label :log_level %><br>
+    <%= f.number_field :log_level %>
+  </div>
+  <div class="field">
+    <%= f.label :log_date %><br>
+    <%= f.datetime_select :log_date %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

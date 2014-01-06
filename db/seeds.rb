@@ -1,4 +1,4 @@
-require 'github_load'
+require 'github_loader'
 
 
 # This file should contain all the record creation needed to seed the database with its default values.
@@ -10,5 +10,4 @@ require 'github_load'
 #   Mayor.create(name: 'Emanuel', city: cities.first)
 
 # Initial Load of Repos
-GithubLoad.initial_load
-#GithubLoad.delta_load
+GithubLoader.github_load

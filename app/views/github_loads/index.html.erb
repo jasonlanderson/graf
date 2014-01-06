@@ -1,0 +1,31 @@
+<h1>Listing github_loads</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Load start time</th>
+      <th>Load complete time</th>
+      <th>Initial load</th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @github_loads.each do |github_load| %>
+      <tr>
+        <td><%= github_load.load_start_time %></td>
+        <td><%= github_load.load_complete_time %></td>
+        <td><%= github_load.initial_load %></td>
+        <td><%= link_to 'Show', github_load %></td>
+        <td><%= link_to 'Edit', edit_github_load_path(github_load) %></td>
+        <td><%= link_to 'Destroy', github_load, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Github load', new_github_load_path %>
