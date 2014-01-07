@@ -220,7 +220,27 @@ Group By:
 
 <hr>
 
+<h2>Contributions by User</h2><br>
+  <%# For User Statistics %>
+  <% @chart_handle = "user_prs_chart" %>
+  <% @chart_data = @prs_by_user_pie_str %>
+  <%= render 'pie_chart' %>
+  <div id="user_prs_chart"></div>
+<br><br>
+  <% @table_handle = "user_prs_table" %>
+  <% @table_data = @prs_by_user %>
+  <% @label_header = "User" %>
+  <% @data_header = "Contributions" %>
+  <% @label_index_name = "login" %>
+  <% @data_index_name = "num_prs" %>
+  <div id="user_tbl_ctr">
+  <%= render 'hash_as_table' %>
+  </div>
+  <script type="text/javascript">makeAsDataTableOnLoad('#<%= @table_handle %>');</script>
 
+
+<%
+=begin %>
 <table cellpadding="50px"><tr><td>
   <h2>Contributions by User</h2><br>
   <%# For User Statistics %>
@@ -261,6 +281,8 @@ Group By:
 
 
 </td></tr></table>
+
+
 
 <script type="text/javascript">
 $(function() {
@@ -306,6 +328,7 @@ $(function() {
 <br><br><br><br><br><br>
 
 
+
 <% @table_handle = "pr_days_elapsed_table" %>
 <% @table_data = @avg_days_elapsed %>
 <% @label_header = "Company" %>
@@ -329,6 +352,9 @@ $("#pr_days_elapsed_table").dataTable({
       "bFilter": true
     } );
 </script>
+
+<%
+=end %>
 
 
 
