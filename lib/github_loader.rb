@@ -67,8 +67,8 @@ class GithubLoader
     load_repos
 
     current_load.log_msg("***Loading Pull Requests", LogLevel::INFO)
-    #load_all_prs
-    load_prs_for_repo(Repo.find_by(name: "bosh"))
+    load_all_prs
+    #load_prs_for_repo(Repo.find_by(name: "bosh"))
 
     current_load.log_msg("***Fixing Users Without Companies", LogLevel::INFO)
     fix_users_without_companies
@@ -79,7 +79,7 @@ class GithubLoader
     # Get last completed
     last_completed = GithubLoad.last_completed
 
-    # TODO: Do load code
+    # TODO: Create delta load code
 
   end
 
@@ -161,7 +161,7 @@ class GithubLoader
         company = create_company_if_not_exist(user_details[:attrs][:company], "user")
       end
 =begin
-TODO
+      #TODO: Implement company rename perhaps as a Database View
       if ((company == nil) || (company.downcase.include? "available") || (company.downcase.include? "independent") || (company.strip == ""))
           company = "Independent"
         elsif            (company.downcase.include? "vmware")

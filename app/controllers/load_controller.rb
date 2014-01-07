@@ -47,17 +47,24 @@ class LoadController < ApplicationController
     @error_log_level = LogLevel::ERROR
   end
 
-  # TODO Take this out
+  # TODO Take this out after development
   def delete_load_history
-    # Delete everything from the github_load table
-    ActiveRecord::Base.connection.execute("DELETE FROM github_loads")
-
-    # Delete everything from the github_load_msg table
-    ActiveRecord::Base.connection.execute("DELETE FROM github_load_msgs")
+    GithubLoad.delete_all
+    GithubLoadMsg.delete_all
 
     render :text => "Load History Deleted"
   end
 
+  # TODO Take this out after development
+  def delete_all_data
+    Company.delete_all
+    GithubLoadMsg.delete_all
+    GithubLoad.delete_all
+    PullRequest.delete_all
+    Repo.delete_all
+    User.delete_all
 
+    render :text => "All Data Deleted"
+  end
   
 end
