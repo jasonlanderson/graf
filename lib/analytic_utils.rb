@@ -116,7 +116,7 @@ class AnalyticUtils
         data[timestamp] += 1
       end
       timestamp_contrib = []
-      data.each { |timestamp, contribs| timestamp_contrib << ( Array [ timestamp.to_i.to_s , contribs]) }
+      data.each { |timestamp, contribs| timestamp_contrib << ( Array [ (timestamp.to_i * 1000).to_s , contribs]) }
       timestamp_contrib =  timestamp_contrib.sort_by {|x, y| x}
 
       if json_dataset = "["
