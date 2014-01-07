@@ -40,7 +40,20 @@ class AnalyticUtils
       
     sql_stmt += "GROUP BY #{group_by_col} ORDER BY #{data_index_name} DESC"
 
-    return ActiveRecord::Base.connection.exec_query(sql_stmt)
+    result =  ActiveRecord::Base.connection.exec_query(sql_stmt)
+    result.each do |x ,y|
+      if ((x["name"] == '') || (x["name"].nil?))
+        x["name"] = "Independent"
+      elsif (x["name"].downcase.include?("pivotal"))
+        x["name"] = "Pivotal"
+      elsif (x["name"].downcase.include?("vmware"))
+        x["name"] = "VMware"
+        
+      end
+    end
+    return result
+  
+
   end
 
   # TODO: Change to use parameterized queries
@@ -51,7 +64,14 @@ class AnalyticUtils
       "ON pr.user_id = u.id LEFT OUTER JOIN companies c ON u.company_id = c.id GROUP BY c.name ORDER " \
       "BY c.name"
 
-    return ActiveRecord::Base.connection.exec_query(sql_stmt)
+    result =  ActiveRecord::Base.connection.exec_query(sql_stmt)
+    
+    result.each do |x ,y|
+      if ((x["name"] == '') || (x["name"].nil?))
+        x["name"] = "Independent"
+      end
+    end
+    return result
   end
 
   # TODO: Change to use parameterized queries

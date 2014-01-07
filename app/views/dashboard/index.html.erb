@@ -1,8 +1,8 @@
 <style type="text/css">
-#user_prs_chart { width: 30em; height: 30em; font-size:18px; position:relative; }
-#company_prs_chart { width: 30em; height: 30em; font-size:18px; position:relative; }
-#user_tbl_ctr { width: 30em; height: 30em; font-size:18px; position:relative; }
-#company_tbl_ctr { width: 30em; height: 30em; font-size:18px; position:relative; }
+#user_prs_chart { width: 450px; height: 450px; font-size:18px; position:relative; }
+#company_prs_chart { width: 450px; height: 450px; font-size:18px; position:relative; }
+#user_tbl_ctr { width: 450px; height: 450px; font-size:18px; position:relative; }
+#company_tbl_ctr { width: 450px; height: 450px; font-size:18px; position:relative; }
 </style>
 
 <script type="text/javascript">
@@ -132,7 +132,7 @@
         minTickSize: 5
       },
       };
-      $.plot($("#placeholder"), result.response, options);
+      $.plot($("#company_line_graph"), result.response, options);
   }
 
   $(document).ready(function () {
@@ -291,7 +291,7 @@ $(function() {
         minTickSize: 5
       },
       };
-    $.plot($("#placeholder"), data, options);
+    $.plot($("#company_line_graph"), data, options);
 
   });
 
@@ -300,7 +300,7 @@ $(function() {
   <%# TODO: Refactor to not use demo or placeholder names %>
   <div id="content">
   <div class="line-graph-container">
-      <div id="placeholder" class="line-graph-placeholder"></div>
+      <div id="company_line_graph" class="line-graph-placeholder"></div>
     </div>
   </div>
 <br><br><br><br><br><br>

@@ -35,7 +35,10 @@ Search Criteria
 # Data Customizations
 ###
 
-VMware <- VMWARE, vmware
+VMware <-   VMWARE, vmware
+If company name contains "Avaliable for" or "Independent" is nil or '', Overwrite company name to become Independent
+If company name contains vmware (case insensitive), Overwrite company name to become VMware
+If company name contains pivotal (case insensitive), Overwrite company name to become Pivotal
 
 --------------------
 --------------------
