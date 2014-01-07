@@ -23,7 +23,7 @@ class DBUtils
     if get_current_db_type == RDMS::SQLITE
       return "strftime('%m', #{column})"
     elsif get_current_db_type == RDMS::MYSQL
-      return ""
+      return "EXTRACT(MONTH FROM #{column})"
     else
       puts "ERROR: Unknown DB '#{get_current_db_type}'"
     end
@@ -33,7 +33,7 @@ class DBUtils
     if get_current_db_type == RDMS::SQLITE
       return "strftime('%Y', #{column})"
     elsif get_current_db_type == RDMS::MYSQL
-      return ""
+      return "EXTRACT(YEAR FROM #{column})"
     else
       puts "ERROR: Unknown DB '#{get_current_db_type}'"
     end

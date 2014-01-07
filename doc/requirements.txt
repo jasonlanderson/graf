@@ -1,14 +1,66 @@
 ###
-# Requirements
+# Filters / Search Criteria
 ###
 
-Merge stats for companies that have identical spellings, i.e Pivotal, PivotalLabs
+Metrics
+ - # Pull Request
+ - # Days Elapsed
+ - Distinct User Count?
 
-Group by repository / quarter / year
 
-Make default view a "rolling" set of quarters (Current + prior 3)
+Group Bys
+ - User
+ - Company
+ - Repo
+ - State
+ - Month
+ - Quarter
+ - Year
 
-List percentage of closed PRs versus merged PRs (Omit those that are open) 
+Search Criteria
+ - User
+ - Company
+ - Repo
+ - State
+ - Month
+ - Quarter
+ - Year
+
+
+--------------------
+--------------------
+--------------------
+
+###
+# Data Customizations
+###
+
+VMware <- VMWARE, vmware
+
+--------------------
+--------------------
+--------------------
+
+###
+# Beta Requirements
+###
+ - PRs by company, and individual with # and % merged tracked by YTD, Quarter and (TODO)Month with a ranking.
+ - Show past 12 months mapped by month so that growth can be seen
+ - High Level Statistics
+  - Total Number of PRs
+  - Number of companies making PRs
+  - PR Avg Days Open (Total and IBM's)
+  - List percentage of closed PRs versus merged PRs (Omit those that are open)
+
+###
+# Forward Looking Requirments
+###
+ - Make default view a "rolling" set of quarters (Current + prior 3)
+ - Look into mining the mailing list for metrics
+ - Look into mining the twitter for metrics
+ - Vince about getting some metrics from the cloudfoundry.org site
+
+
 
 
 ###
