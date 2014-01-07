@@ -10,6 +10,7 @@ Graf::Application.routes.draw do  resources :github_loads
   get '/start_load', to: 'load#start_load'
   get '/load_status', to: 'load#load_status'
   get '/delete_load_history', to: 'load#delete_load_history'
+  get '/info', to: 'info#info'
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

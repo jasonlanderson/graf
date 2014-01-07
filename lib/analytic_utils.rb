@@ -10,7 +10,7 @@ class AnalyticUtils
     if timeframe && timeframe != ''
       case timeframe
       when "q1"
-        sql_stmt += "AND strftime('%m', pr.date_created) IN ('01', '02', '03') "
+        #TODO sql_stmt += SQLUtils.getMonth("pr,date_created")"AND strftime('%m', pr.date_created) IN ('01', '02', '03') "
       when "q2"
         sql_stmt += "AND strftime('%m', pr.date_created) IN ('04', '05', '06') "
       when "q3"
@@ -21,37 +21,37 @@ class AnalyticUtils
     end
 
     if year && year != ''
-      sql_stmt += "AND strftime('%Y', pr.date_created) IS '#{year}' "
+      sql_stmt += "AND strftime('%Y', pr.date_created) = '#{year}' "
     end
 
     if repo && repo != '' && repo != 'All'
-      sql_stmt += "AND r.name IS '#{repo}' "
+      sql_stmt += "AND r.name = '#{repo}' "
     end
 
     if state && (state == "open")
-      sql_stmt += "AND pr.state IS 'open' "
+      sql_stmt += "AND pr.state = 'open' "
     elsif state && (state == "merged")
       sql_stmt += "AND pr.date_merged NOT NULL "
     elsif state && (state == "closed") # Not including merged prs
-      sql_stmt += "AND pr.state IS 'closed' AND pr.date_merged ISNULL "
+      sql_stmt += "AND pr.state = 'closed' AND pr.date_merged ISNULL "
     end
       
     sql_stmt += "GROUP BY #{group_by_col} ORDER BY #{data_index_name} DESC"
 
-    return ActiveRecord::Base.connection.execute(sql_stmt)
+    return ActiveRecord::Base.connection.exec_query(sql_stmt)
   end
 
   def self.get_pr_days_elapsed
     sql_stmt = "SELECT c.name, "
 
-    sql_stmt += " round(avg(TIMEDIFF(IFNULL(pr.date_closed, date('now')), pr.date_created)), 1) avg_days_open "
+    sql_stmt += " round(avg(TIMEDIFF(IFNULL(pr.date_closed, date('now')), pr.date_created)) / (60*60*24), 1)  avg_days_open "
     #sql_stmt += " round(avg(julianday(IFNULL(pr.date_closed, date('now'))) - julianday(pr.date_created)), 1) avg_days_open "
 
     sql_stmt += "FROM pull_requests pr LEFT OUTER JOIN users u " \
       "ON pr.user_id = u.id LEFT OUTER JOIN companies c ON u.company_id = c.id GROUP BY c.name ORDER " \
       "BY c.name"
 
-    return ActiveRecord::Base.connection.execute(sql_stmt)
+    return ActiveRecord::Base.connection.exec_query(sql_stmt)
 
   end
 
@@ -74,55 +74,60 @@ class AnalyticUtils
     end
 
     if year && year != ''
-      sql_stmt += "AND strftime('%Y', pr.date_created) IS '#{year}' "
+      sql_stmt += "AND strftime('%Y', pr.date_created) = '#{year}' "
     end
 
     if repo && repo != '' && repo != 'All'
-      sql_stmt += "AND r.name IS '#{repo}' "
+      sql_stmt += "AND r.name = '#{repo}' "
     end
 
     if state && (state == "open")
-      sql_stmt += "AND pr.state IS 'open' "
+      sql_stmt += "AND pr.state = 'open' "
     elsif state && (state == "merged")
       sql_stmt += "AND pr.date_merged NOT NULL "
     elsif state && (state == "closed") # Not including merged prs
-      sql_stmt += "AND pr.state IS 'closed' AND pr.date_merged ISNULL "
+      sql_stmt += "AND pr.state = 'closed' AND pr.date_merged ISNULL "
     end
 
-    query = ActiveRecord::Base.connection.execute(sql_stmt)  
-    result = Hash.new
+    query = ActiveRecord::Base.connection.exec_query(sql_stmt)  
+    pr_dates_by_company = Hash.new
 
-    query.each do |x|
-      key = x[0].to_s
-      if !result.has_key?(key)
-        result[key] ||= []
+    # Loop through each record to create a hash of companies mapping to array of PR create dates
+    query.each do |record|
+      key = record['name'].to_s
+      if !pr_dates_by_company.has_key?(key)
+        pr_dates_by_company[key] ||= []
       end
-      result[key] << x[1]
+      pr_dates_by_company[key] << record['date_created']
     end
 
-    datasets = "["
+    # Get the top companies
+    top_companies = Hash[pr_dates_by_company.sort_by {|x, y| y.length }.reverse[0..4]]
 
-    top_companies = Hash[result.sort_by {|x, y| y.length }.reverse[0..4]]
+    puts top_companies  
 
-
+    json_dataset = "["
     top_companies.each do |name, pr_date_created_arr|
       data = Hash.new(0)
       #y.inject(data) { |h,e| h[e] += 1; h }.select { |k,v| v > 1 }.inject({}) { |r, e| r[e.first] = e.last; r }
-      pr_date_created_arr.each do |v|
-        v =  Time.new(Date.parse(v).year, Date.parse(v).month)  # Converts 2013-13-09 to 1357027200
-        data[v] += 1
+      pr_date_created_arr.each do |formatted_date|
+        date_obj = Date.parse(formatted_date.to_s)
+        timestamp =  Time.new(date_obj.year, date_obj.month)  # Converts 2013-13-09 to 1357027200
+        data[timestamp] += 1
       end
       timestamp_contrib = []
       data.each { |timestamp, contribs| timestamp_contrib << ( Array [ timestamp.to_i.to_s , contribs]) }
       timestamp_contrib =  timestamp_contrib.sort_by {|x, y| x}
-      datasets += "  { \"label\": \"#{name}\", \"data\" : #{timestamp_contrib} },"
+
+      if json_dataset = "["
+        json_dataset += ","
+      end
+      json_dataset += "  { \"label\": \"#{name}\", \"data\" : #{timestamp_contrib} }"
     end
-    datasets = datasets.chop
-    #query.inject(data { |h,e| h[e] += 1; h }.select { |k,v| v > 1 }.inject({}) { |r, e| r[e.first] = e.last; r })
-    datasets += "]" 
-    #A.each { |x, y| B << ( Array [ Time.new(Date.parse(x).year, Date.parse(x).month).to_i.to_s , y]) }
-    #result.each 
-    return datasets
+
+    json_dataset += "]" 
+
+    return json_dataset
 
   end
 
@@ -132,7 +137,7 @@ class AnalyticUtils
       top_x_count = 0
     end
 
-    if top_x_count >= input_array.size
+    if top_x_count >= input_array.count
       return input_array
     else
       input_array.each {|x|
@@ -140,17 +145,17 @@ class AnalyticUtils
       }
 
       # Sort the array
-      sorted_array = input_array.sort_by {|x| x[1] }.reverse
+      sorted_array = input_array.sort_by {|x| x[data_index_name] }.reverse
 
       # Calculate sum of remaining
       rollup_val = 0
-      sorted_array[top_x_count..sorted_array.size].each {|x| rollup_val += x[1] }
+      sorted_array[top_x_count..sorted_array.count].each {|x| rollup_val += x[data_index_name] }
 
       # Remove non-top
       result = sorted_array[0...top_x_count]
 
       # Add rollup record
-
+      # Add the numbers for mysql
       result << {label_index_name => rollup_name, data_index_name => rollup_val}
 
       return result

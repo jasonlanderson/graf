@@ -16,4 +16,10 @@ class OctokitUtils
 	user.create_authorization
 	return @@_client
   end
+
+  def self.get_rate_limit()
+    get_octokit_client().rate_limit_remaining
+  end
+
+  
 end
