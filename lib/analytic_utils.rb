@@ -35,7 +35,7 @@ class AnalyticUtils
     elsif state && (state == "merged")
       sql_stmt += "AND pr.date_merged NOT NULL "
     elsif state && (state == "closed") # Not including merged prs
-      sql_stmt += "AND pr.state = 'closed' AND pr.date_merged ISNULL "
+      sql_stmt += "AND pr.state = 'closed' AND pr.date_merged IS NULL "
     end
       
     sql_stmt += "GROUP BY #{group_by_col} ORDER BY #{data_index_name} DESC"
@@ -84,7 +84,7 @@ class AnalyticUtils
     elsif state && (state == "merged")
       sql_stmt += "AND pr.date_merged NOT NULL "
     elsif state && (state == "closed") # Not including merged prs
-      sql_stmt += "AND pr.state = 'closed' AND pr.date_merged ISNULL "
+      sql_stmt += "AND pr.state = 'closed' AND pr.date_merged IS NULL "
     end
 
     query = ActiveRecord::Base.connection.exec_query(sql_stmt)  
