@@ -43,6 +43,7 @@ class AnalyticUtils
     return ActiveRecord::Base.connection.exec_query(sql_stmt)
   end
 
+  # TODO: Change to use parameterized queries
   def self.get_pr_days_elapsed
     sql_stmt = "SELECT c.name, " \
       "round(avg(#{DBUtils.get_date_difference('pr.date_closed','pr.date_created')}), 1)  avg_days_open " \
@@ -53,6 +54,7 @@ class AnalyticUtils
     return ActiveRecord::Base.connection.exec_query(sql_stmt)
   end
 
+  # TODO: Change to use parameterized queries
   def self.get_timestamps(timeframe = nil, year = nil, repo=nil, state=nil)
     sql_stmt = "SELECT c.name, pr.date_created FROM pull_requests pr LEFT OUTER JOIN users u  ON pr.user_id " \
       " = u.id LEFT OUTER JOIN companies c ON u.company_id = c.id LEFT OUTER JOIN repos r ON pr.repo_id = r.id WHERE 1 = 1 " 

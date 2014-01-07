@@ -89,6 +89,8 @@
       // Set the runningLoadId
       runningLoadId = response
 
+      // TODO: Add the load entry to the top table
+
       // Do an initial getLoadStatus
       getLoadStatus()
 
@@ -139,7 +141,6 @@
       logEntry.style.color= "red";
     }
 
-
     logEntry.innerHTML = msg_obj.log_date + ": " + msg_obj.msg
     $("#loadLogCtr").append(logEntry)
   }
@@ -178,6 +179,7 @@
 
 <br><br>
 
+<%# TODO: Turn this into a fixed size, scrollable text box %>
 <div style="font-weight:bold;">Load Log</div>
 <div id="loadLogCtr">
   <%  if @running_msgs 
