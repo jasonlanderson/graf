@@ -51,20 +51,47 @@ class AnalyticUtils
       "ON pr.user_id = u.id LEFT OUTER JOIN companies c ON u.company_id = c.id GROUP BY c.name ORDER " \
       "BY c.name"
 
-      puts sql_stmt
-
     return ActiveRecord::Base.connection.execute(sql_stmt)
 
   end
 
 
 
-  def self.get_timestamps
+  def self.get_timestamps(timeframe = nil, year = nil, repo=nil, state=nil)
     sql_stmt = "SELECT c.name, pr.date_created FROM pull_requests pr LEFT OUTER JOIN users u  ON pr.user_id " \
-      " = u.id LEFT OUTER JOIN companies c ON u.company_id = c.id "
-      
-    result = Hash.new
+      " = u.id LEFT OUTER JOIN companies c ON u.company_id = c.id LEFT OUTER JOIN repos r ON pr.repo_id = r.id WHERE 1 = 1 " 
+    if timeframe && timeframe != ''
+      case timeframe
+      when "q1"
+        sql_stmt += "AND strftime('%m', pr.date_created) IN ('01', '02', '03') "
+      when "q2"
+        sql_stmt += "AND strftime('%m', pr.date_created) IN ('04', '05', '06') "
+      when "q3"
+        sql_stmt += "AND strftime('%m', pr.date_created) IN ('07', '08', '09') "
+      when "q4"
+        sql_stmt += "AND strftime('%m', pr.date_created) IN ('10', '11', '12') "
+      end
+    end
+
+    if year && year != ''
+      sql_stmt += "AND strftime('%Y', pr.date_created) IS '#{year}' "
+    end
+
+    if repo && repo != '' && repo != 'All'
+      sql_stmt += "AND r.name IS '#{repo}' "
+    end
+
+    if state && (state == "open")
+      sql_stmt += "AND pr.state IS 'open' "
+    elsif state && (state == "merged")
+      sql_stmt += "AND pr.date_merged NOT NULL "
+    elsif state && (state == "closed") # Not including merged prs
+      sql_stmt += "AND pr.state IS 'closed' AND pr.date_merged ISNULL "
+    end
+
     query = ActiveRecord::Base.connection.execute(sql_stmt)  
+    result = Hash.new
+
     query.each do |x|
       key = x[0].to_s
       if !result.has_key?(key)
@@ -73,20 +100,26 @@ class AnalyticUtils
       result[key] << x[1]
     end
 
-    datasets = "{"
+    datasets = "["
 
-    top_companies = result.sort_by {|x, y| y.length }.reverse[0..4]
+    top_companies = Hash[result.sort_by {|x, y| y.length }.reverse[0..4]]
 
 
-    top_companies.each do |x, y|
+    top_companies.each do |name, pr_date_created_arr|
       data = Hash.new(0)
-      y.inject(data) { |h,e| h[e] += 1; h }.select { |k,v| v > 1 }.inject({}) { |r, e| r[e.first] = e.last; r }
+      #y.inject(data) { |h,e| h[e] += 1; h }.select { |k,v| v > 1 }.inject({}) { |r, e| r[e.first] = e.last; r }
+      pr_date_created_arr.each do |v|
+        v =  Time.new(Date.parse(v).year, Date.parse(v).month)  # Converts 2013-13-09 to 1357027200
+        data[v] += 1
+      end
       timestamp_contrib = []
-      data.each { |x, y| timestamp_contrib << ( Array [ Time.new(Date.parse(x).year, Date.parse(x).month).to_i.to_s , y]) }
-      datasets += "  \"#{x}\": { label: \"#{x}\", data : #{timestamp_contrib} }, "
+      data.each { |timestamp, contribs| timestamp_contrib << ( Array [ timestamp.to_i.to_s , contribs]) }
+      timestamp_contrib =  timestamp_contrib.sort_by {|x, y| x}
+      datasets += "  { \"label\": \"#{name}\", \"data\" : #{timestamp_contrib} },"
     end
+    datasets = datasets.chop
     #query.inject(data { |h,e| h[e] += 1; h }.select { |k,v| v > 1 }.inject({}) { |r, e| r[e.first] = e.last; r })
-    datasets += "};" 
+    datasets += "]" 
     #A.each { |x, y| B << ( Array [ Time.new(Date.parse(x).year, Date.parse(x).month).to_i.to_s , y]) }
     #result.each 
     return datasets

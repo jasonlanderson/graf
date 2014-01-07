@@ -14,9 +14,11 @@
 //= require jquery_ujs
 //= require jquery.flot
 //= require jquery.flot.pie
+//= require jquery.flot.time
 //= require jquery.flot.navigate
 //= require jquery.flot.resize
 //= require jquery.flot.stack
+//= require jquery.flot.selection.js
 //= require dataTables/jquery.dataTables
 //= require turbolinks
 //= require_tree .

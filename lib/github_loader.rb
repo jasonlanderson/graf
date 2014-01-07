@@ -6,7 +6,6 @@ class GithubLoader
   @@current_load = nil
 
   ORG_NAME = "cloudfoundry"
-  REPO_NAME = ORG_NAME + "/bosh"
   ORG_TO_COMPANY = Hash["vmware" => "VMware",
     "pivotal" => "Pivotal",
     "cloudfoundry" => "Pivotal",
