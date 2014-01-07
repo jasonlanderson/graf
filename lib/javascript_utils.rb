@@ -1,6 +1,6 @@
 class JavascriptUtils
   def self.get_pull_request_stats(dataset, label_index, val_index)
-  	result = '{ "response":['
+  	result = '{ "data":['
     dataset.each{ |rec|
       if result != '{ "response":['
         result += ','
