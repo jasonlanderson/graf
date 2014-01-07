@@ -68,8 +68,8 @@ class GithubLoader
     load_repos
 
     current_load.log_msg("***Loading Pull Requests", LogLevel::INFO)
-    load_all_prs
-    #load_prs_for_repo(Repo.find_by(name: "bosh"))
+    #load_all_prs
+    load_prs_for_repo(Repo.find_by(name: "bosh"))
 
     current_load.log_msg("***Fixing Users Without Companies", LogLevel::INFO)
     fix_users_without_companies

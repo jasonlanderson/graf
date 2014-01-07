@@ -9,7 +9,7 @@ git remote add gerrit ssh://jason.anderson@gerrit.w3.bluemix.net:29418/graf
 git push gerrit master:refs/heads/master
 
 rails g scaffold Repo git_id:integer name:string full_name:string fork:boolean date_created:date date_updated:date date_pushed:date
-rails g scaffold PullRequest repo:references user:references git_id:integer pr_number:integer body:string title:string state:string date_created:date date_closed:date date_updated:date date_merged:date
+rails g scaffold PullRequest repo:references user:references git_id:integer pr_number:integer body:text title:string state:string date_created:date date_closed:date date_updated:date date_merged:date
 rails g scaffold User company:references git_id:integer login:string name:string location:string email:string date_created:date date_updated:date
 rails g scaffold Company name:string source:string
 rails g scaffold GithubLoad  load_start_time:datetime load_complete_time:datetime initial_load:boolean
@@ -22,3 +22,13 @@ rails g scaffold GithubLoadMsg github_load:references msg:string log_level:integ
 Get delta github data: https://coderwall.com/p/hu2n4g
 
 How to delete all database data: rake db:schema:load
+
+
+###
+# MYSQL
+###
+Get all users in the DB:
+SELECT User, Host, Password FROM mysql.user;
+
+CREATE DATABASE graf_db CHARACTER SET utf8 COLLATE utf8_general_ci;
+GRANT ALL PRIVILEGES ON graf_db.* TO 'graf_user'@'localhost' IDENTIFIED BY 'time4fun';

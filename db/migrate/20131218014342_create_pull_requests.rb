@@ -5,7 +5,7 @@ class CreatePullRequests < ActiveRecord::Migration
       t.references :user, index: true
       t.integer :git_id
       t.integer :pr_number
-      t.string :body
+      t.text :body
       t.string :title
       t.string :state
       t.date :date_created

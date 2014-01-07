@@ -42,10 +42,16 @@ class AnalyticUtils
   end
 
   def self.get_pr_days_elapsed
-    sql_stmt = "SELECT c.name, round(avg(julianday(IFNULL(pr.date_closed, date('now'))) - " \
-      "julianday(pr.date_created)), 1) avg_days_open FROM pull_requests pr LEFT OUTER JOIN users u " \
+    sql_stmt = "SELECT c.name, "
+
+    sql_stmt += " round(avg(TIMEDIFF(IFNULL(pr.date_closed, date('now')), pr.date_created)), 1) avg_days_open "
+    #sql_stmt += " round(avg(julianday(IFNULL(pr.date_closed, date('now'))) - julianday(pr.date_created)), 1) avg_days_open "
+
+    sql_stmt += "FROM pull_requests pr LEFT OUTER JOIN users u " \
       "ON pr.user_id = u.id LEFT OUTER JOIN companies c ON u.company_id = c.id GROUP BY c.name ORDER " \
       "BY c.name"
+
+      puts sql_stmt
 
     return ActiveRecord::Base.connection.execute(sql_stmt)
 
@@ -56,11 +62,15 @@ class AnalyticUtils
   def self.get_timestamps
     sql_stmt = "SELECT c.name, pr.date_created FROM pull_requests pr LEFT OUTER JOIN users u  ON pr.user_id " \
       " = u.id LEFT OUTER JOIN companies c ON u.company_id = c.id "
+      
     result = Hash.new
     query = ActiveRecord::Base.connection.execute(sql_stmt)  
     query.each do |x|
-        result[x["name"]] ||= [] if !result.has_key?(x["name"])
-        result[x["name"]] << x["date_created"]
+      key = x[0].to_s
+      if !result.has_key?(key)
+        result[key] ||= []
+      end
+      result[key] << x[1]
     end
 
     datasets = "{"
@@ -83,21 +93,25 @@ class AnalyticUtils
 
   end
 
-
+  # Input array must be [{label_index_name => label, data_index_name => data}]
   def self.top_x_with_rollup(input_array, label_index_name, data_index_name, top_x_count, rollup_name)
     if top_x_count < 0
       top_x_count = 0
     end
 
-    if top_x_count >= input_array.length
+    if top_x_count >= input_array.size
       return input_array
     else
+      input_array.each {|x|
+        puts x
+      }
+
       # Sort the array
-      sorted_array = input_array.sort_by {|x| x[data_index_name] }.reverse
+      sorted_array = input_array.sort_by {|x| x[1] }.reverse
 
       # Calculate sum of remaining
       rollup_val = 0
-      sorted_array[top_x_count..sorted_array.length].each {|x| rollup_val += x[data_index_name] }
+      sorted_array[top_x_count..sorted_array.size].each {|x| rollup_val += x[1] }
 
       # Remove non-top
       result = sorted_array[0...top_x_count]
