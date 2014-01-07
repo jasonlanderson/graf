@@ -32,3 +32,33 @@ SELECT User, Host, Password FROM mysql.user;
 
 CREATE DATABASE graf_db CHARACTER SET utf8 COLLATE utf8_general_ci;
 GRANT ALL PRIVILEGES ON graf_db.* TO 'graf_user'@'localhost' IDENTIFIED BY 'time4fun';
+
+
+
+
+
+###
+# Deploying to BlueMix
+###
+cf push --command 'bundle exec rake db:create db:migrate' graf
+cf push --command 'bundle exec rails s'
+
+{
+   "mysql-5.5": [
+      {
+         "name": "graf-db",
+         "credentials": {
+            "name": "d6e8e1188b2124bc7b67fdefa63b8c980",
+            "hostname": "10.0.116.62",
+            "host": "10.0.116.62",
+            "port": 3307,
+            "user": "uJ4LJCgf7xsGT",
+            "username": "uJ4LJCgf7xsGT",
+            "password": "pZDbbwCIZUacr",
+            "uri": "mysql://uJ4LJCgf7xsGT:pZDbbwCIZUacr@10.0.116.62:3307/d6e8e1188b2124bc7b67fdefa63b8c980"
+         }
+      }
+   ]
+}
+
+

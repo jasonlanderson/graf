@@ -17,8 +17,6 @@ class DashboardController < ApplicationController
     @repos = Repo.order(:name)
 
     @timestamps = AnalyticUtils.get_timestamps
-
-    puts @timestamps
   end
   
 end

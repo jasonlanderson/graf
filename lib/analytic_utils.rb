@@ -1,3 +1,5 @@
+require "db_utils"
+
 class AnalyticUtils
   # TODO: Change to use parameterized queries
   def self.get_pull_request_stats(group_by_col, data_index_name, timeframe = nil, year = nil, repo=nil, state=nil)
@@ -10,18 +12,18 @@ class AnalyticUtils
     if timeframe && timeframe != ''
       case timeframe
       when "q1"
-        #TODO sql_stmt += SQLUtils.getMonth("pr,date_created")"AND strftime('%m', pr.date_created) IN ('01', '02', '03') "
+        sql_stmt += "AND #{DBUtils.get_month(pr.date_created)} IN ('01', '02', '03') "
       when "q2"
-        sql_stmt += "AND strftime('%m', pr.date_created) IN ('04', '05', '06') "
+        sql_stmt += "AND #{DBUtils.get_month(pr.date_created)} IN ('04', '05', '06') "
       when "q3"
-        sql_stmt += "AND strftime('%m', pr.date_created) IN ('07', '08', '09') "
+        sql_stmt += "AND #{DBUtils.get_month(pr.date_created)} IN ('07', '08', '09') "
       when "q4"
-        sql_stmt += "AND strftime('%m', pr.date_created) IN ('10', '11', '12') "
+        sql_stmt += "AND #{DBUtils.get_month(pr.date_created)} IN ('10', '11', '12') "
       end
     end
 
     if year && year != ''
-      sql_stmt += "AND strftime('%Y', pr.date_created) = '#{year}' "
+      sql_stmt += "AND #{DBUtils.get_year(pr.date_created)} = '#{year}' "
     end
 
     if repo && repo != '' && repo != 'All'
@@ -42,20 +44,14 @@ class AnalyticUtils
   end
 
   def self.get_pr_days_elapsed
-    sql_stmt = "SELECT c.name, "
-
-    sql_stmt += " round(avg(TIMEDIFF(IFNULL(pr.date_closed, date('now')), pr.date_created)) / (60*60*24), 1)  avg_days_open "
-    #sql_stmt += " round(avg(julianday(IFNULL(pr.date_closed, date('now'))) - julianday(pr.date_created)), 1) avg_days_open "
-
-    sql_stmt += "FROM pull_requests pr LEFT OUTER JOIN users u " \
+    sql_stmt = "SELECT c.name, " \
+      "round(avg(#{DBUtils.get_date_difference('pr.date_closed','pr.date_created')}), 1)  avg_days_open " \
+      "FROM pull_requests pr LEFT OUTER JOIN users u " \
       "ON pr.user_id = u.id LEFT OUTER JOIN companies c ON u.company_id = c.id GROUP BY c.name ORDER " \
       "BY c.name"
 
     return ActiveRecord::Base.connection.exec_query(sql_stmt)
-
   end
-
-
 
   def self.get_timestamps(timeframe = nil, year = nil, repo=nil, state=nil)
     sql_stmt = "SELECT c.name, pr.date_created FROM pull_requests pr LEFT OUTER JOIN users u  ON pr.user_id " \
@@ -63,18 +59,18 @@ class AnalyticUtils
     if timeframe && timeframe != ''
       case timeframe
       when "q1"
-        sql_stmt += "AND strftime('%m', pr.date_created) IN ('01', '02', '03') "
+        sql_stmt += "AND #{DBUtils.get_month(pr.date_created)} IN ('01', '02', '03') "
       when "q2"
-        sql_stmt += "AND strftime('%m', pr.date_created) IN ('04', '05', '06') "
+        sql_stmt += "AND #{DBUtils.get_month(pr.date_created)} IN ('04', '05', '06') "
       when "q3"
-        sql_stmt += "AND strftime('%m', pr.date_created) IN ('07', '08', '09') "
+        sql_stmt += "AND #{DBUtils.get_month(pr.date_created)} IN ('07', '08', '09') "
       when "q4"
-        sql_stmt += "AND strftime('%m', pr.date_created) IN ('10', '11', '12') "
+        sql_stmt += "AND #{DBUtils.get_month(pr.date_created)} IN ('10', '11', '12') "
       end
     end
 
     if year && year != ''
-      sql_stmt += "AND strftime('%Y', pr.date_created) = '#{year}' "
+      sql_stmt += "AND #{DBUtils.get_year(pr.date_created)} = '#{year}' "
     end
 
     if repo && repo != '' && repo != 'All'
@@ -104,8 +100,6 @@ class AnalyticUtils
     # Get the top companies
     top_companies = Hash[pr_dates_by_company.sort_by {|x, y| y.length }.reverse[0..4]]
 
-    puts top_companies  
-
     json_dataset = "["
     top_companies.each do |name, pr_date_created_arr|
       data = Hash.new(0)
@@ -119,7 +113,7 @@ class AnalyticUtils
       data.each { |timestamp, contribs| timestamp_contrib << ( Array [ (timestamp.to_i * 1000).to_s , contribs]) }
       timestamp_contrib =  timestamp_contrib.sort_by {|x, y| x}
 
-      if json_dataset = "["
+      if json_dataset == "["
         json_dataset += ","
       end
       json_dataset += "  { \"label\": \"#{name}\", \"data\" : #{timestamp_contrib} }"
@@ -140,10 +134,6 @@ class AnalyticUtils
     if top_x_count >= input_array.count
       return input_array
     else
-      input_array.each {|x|
-        puts x
-      }
-
       # Sort the array
       sorted_array = input_array.sort_by {|x| x[data_index_name] }.reverse
 
