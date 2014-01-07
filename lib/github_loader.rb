@@ -89,12 +89,6 @@ class GithubLoader
     }
   end
 
-  def self.load_org_companies()
-    ORG_TO_COMPANY.each { |org, company|
-      create_company_if_not_exist(company, "org")
-    }
-  end
-
   def self.load_repos()
   	client = OctokitUtils.get_octokit_client
 
@@ -132,13 +126,6 @@ class GithubLoader
 
       # Get user and insert if doesn't already exist
       user = create_user_if_not_exist(pr[:attrs][:user])
-
-      # Merged code
-      #if client.pull_merged?(repo.full_name, pr[:number])
-      #   state = "merged"
-      #else
-      #   state = pr[:attrs][:state]
-      #end
 
       PullRequest.create(
         :repo_id => repo.id,

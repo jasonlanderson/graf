@@ -1,4 +1,5 @@
 class AnalyticUtils
+  # TODO: Change to use parameterized queries
   def self.get_pull_request_stats(group_by_col, data_index_name, timeframe = nil, year = nil, repo=nil, state=nil)
     sql_stmt = "SELECT #{group_by_col}, COUNT(*) #{data_index_name} FROM pull_requests pr " \
       "LEFT OUTER JOIN users u ON pr.user_id = u.id " \
