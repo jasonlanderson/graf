@@ -33,6 +33,7 @@
     apiAJAX(timeframe, year, repo, state, 'user_table', 'text', updatePRsUserTableCallback);
     apiAJAX(timeframe, year, repo, state, 'company_chart', 'json', updatePRsCompanyChartCallback);
     apiAJAX(timeframe, year, repo, state, 'company_table', 'text', updatePRsCompanyTableCallback);
+    apiAJAX(timeframe, year, repo, state, 'monthly_line_graph', 'json', updateMonthlyLineGraphCallback);
   }
 
   function apiAJAX(timeframe, year, repo, state, data_request, response_type, callback){
@@ -104,6 +105,28 @@
     $("#company_tbl_ctr").empty();
     $("#company_tbl_ctr").html(result);
     makeAsDataTable("#company_prs_table")
+  }
+
+  function updateMonthlyLineGraphCallback(result){
+      var options = {
+      series: {
+        lines: {
+          show: true
+        },
+        points: {
+          show: true
+        }
+      },
+      xaxis: {
+        //tickDecimals: 0, 
+        minTickSize: [1, "month"],
+        mode: "time"
+      },
+      yaxis: {
+        min: 0
+      },
+      };
+      $.plot($("#placeholder"), result.response, options);
   }
 
   $(document).ready(function () {
@@ -221,3 +244,51 @@ $("#pr_days_elapsed_table").dataTable({
 
 
 </td></tr></table>
+
+<script type="text/javascript">
+$(function() {
+
+   var data =  [  { "label": "Pivotal", "data" : [["1301641200", 1], ["1304233200", 1], ["1309503600", 2], ["1314860400", 1], ["1322726400", 2], ["1333263600", 1], ["1357027200", 19], ["1359705600", 57], ["1362124800", 39], ["1364799600", 53], ["1367391600", 79], ["1370070000", 95], ["1372662000", 64], ["1375340400", 99], ["1378018800", 85], ["1380610800", 52], ["1383289200", 32], ["1385884800", 63], ["1388563200", 16]] },   { "label": "", "data" : [["1301641200", 15], ["1304233200", 18], ["1306911600", 8], ["1309503600", 1], ["1312182000", 3], ["1314860400", 6], ["1317452400", 2], ["1320130800", 2], ["1322726400", 8], ["1325404800", 5], ["1328083200", 6], ["1330588800", 3], ["1333263600", 1], ["1335855600", 2], ["1338534000", 1], ["1341126000", 3], ["1343804400", 2], ["1349074800", 1], ["1354348800", 1], ["1357027200", 15], ["1359705600", 55], ["1362124800", 60], ["1364799600", 29], ["1367391600", 30], ["1370070000", 25], ["1372662000", 25], ["1375340400", 40], ["1378018800", 13], ["1380610800", 30], ["1383289200", 26], ["1385884800", 41]] },   { "label": "VMware", "data" : [["1330588800", 2], ["1357027200", 1], ["1359705600", 15], ["1362124800", 20], ["1364799600", 3], ["1367391600", 7], ["1370070000", 16], ["1372662000", 9], ["1375340400", 8], ["1378018800", 4], ["1380610800", 4], ["1383289200", 3], ["1385884800", 12], ["1388563200", 2]] },   { "label": "IBM", "data" : [["1375340400", 3], ["1378018800", 7], ["1380610800", 22], ["1383289200", 18], ["1385884800", 22], ["1388563200", 3]] },   { "label": "Innovation Factory", "data" : [["1362124800", 1], ["1367391600", 1], ["1370070000", 1], ["1372662000", 6], ["1375340400", 10], ["1378018800", 5], ["1380610800", 3], ["1383289200", 1], ["1385884800", 5]] } ];
+
+var options = {
+      series: {
+        lines: {
+          show: true
+        },
+        points: {
+          show: true
+        }
+      },
+      legend: {
+        noColumns: 2
+      },
+      xaxis: {
+        tickDecimals: 0
+      },
+      yaxis: {
+        min: 0
+      },
+      selection: {
+        mode: "x"
+      }
+    };
+    $.plot($("#placeholder"), data, options);
+
+  });
+
+  </script>
+
+
+  <div id="content">
+  <div class="demo-container">
+      <div id="placeholder" class="demo-placeholder"></div>
+    </div>
+  </div>
+
+
+
+
+
+
+
+
