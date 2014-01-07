@@ -35,8 +35,6 @@ GRANT ALL PRIVILEGES ON graf_db.* TO 'graf_user'@'localhost' IDENTIFIED BY 'time
 
 
 
-
-
 ###
 # Deploying to BlueMix
 ###
@@ -60,5 +58,8 @@ cf push --command 'bundle exec rails s'
       }
    ]
 }
+
+
+mysql -h 10.0.116.62 -u uJ4LJCgf7xsGT -P 3307 -p
 
 
