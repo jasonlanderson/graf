@@ -160,16 +160,13 @@ class GithubLoader
       if user_details[:attrs][:company] != "" && user_details[:attrs][:company] != nil
         company = create_company_if_not_exist(user_details[:attrs][:company], "user")
       end
-=begin
-      #TODO: Implement company rename perhaps as a Database View
-      if ((company == nil) || (company.downcase.include? "available") || (company.downcase.include? "independent") || (company.strip == ""))
-          company = "Independent"
-        elsif            (company.downcase.include? "vmware")
-          company = "VMware"
-        elsif            ((company.downcase.include? "pivotal") || (company.downcase.include? "springsource"))
-          company = "Pivotal"
+      if ((company[:name] == nil) || (company[:name].downcase.include? "available") || (company[:name].downcase.include? "independent") || (company[:name].strip == ""))
+          company[:name] = "Independent"
+        elsif (company[:name].downcase.include? "vmware")
+          company[:name] = "VMware"
+        elsif ((company[:name].downcase.include? "pivotal") || (company[:name].downcase.include? "springsource"))
+          company[:name] = "Pivotal"
       end
-=end
       user = User.create(
         :company => company,
         :git_id => user_details[:attrs][:id].to_i,
