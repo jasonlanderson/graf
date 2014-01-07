@@ -106,7 +106,7 @@ class AnalyticUtils
         data[v] += 1
       end
       timestamp_contrib = []
-      data.each { |timestamp, contribs| timestamp_contrib << ( Array [ timestamp.to_i.to_s , contribs]) }
+      data.each { |timestamp, contribs| timestamp_contrib << ( Array [ (timestamp.to_i * 1000).to_s , contribs]) }
       timestamp_contrib =  timestamp_contrib.sort_by {|x, y| x}
       datasets += "  { \"label\": \"#{name}\", \"data\" : #{timestamp_contrib} },"
     end
