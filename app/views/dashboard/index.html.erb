@@ -1,8 +1,8 @@
 <style type="text/css">
-#user_prs_chart { width: 660px; height: 660px; font-size:18px; position:relative; }
-#company_prs_chart { width: 660px; height: 660px; font-size:18px; position:relative; }
-#user_tbl_ctr { width: 600px; height: 660px; font-size:18px; position:relative; }
-#company_tbl_ctr { width: 600px; height: 660px; font-size:18px; position:relative; }
+#user_prs_chart { width: 30em; height: 30em; font-size:18px; position:relative; }
+#company_prs_chart { width: 30em; height: 30em; font-size:18px; position:relative; }
+#user_tbl_ctr { width: 30em; height: 30em; font-size:18px; position:relative; }
+#company_tbl_ctr { width: 30em; height: 30em; font-size:18px; position:relative; }
 </style>
 
 <script type="text/javascript">
@@ -158,11 +158,25 @@
 
 </script>
 
-<h1>GitHub Repo Analytics for graPHing</h1>
+<h1>GitHub Repository Analytics with Filtering </h1>
 <hr>
 
-<%# TODO: Expand filter section into metric, group_by and search criteria %>
+
 <h2>Filters</h2>
+Metric:
+ <select id="metrics_filter">
+    <option value="Pulls" selected>Pull Requests</option>
+  </select>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Group By: 
+ <select id="group_by_filter">
+    <option value="" selected>Company</option>
+  </select>
+
+<br><br>
+
+<%# TODO: Expand filter section into metric, group_by and search criteria %>
+<h2>Search Criteria</h2>
   Quarter: 
   <select id="quarter_filter">
     <option value="" selected>All</option>
@@ -190,27 +204,23 @@
     <option value="merged">Merged</option>
     <option value="closed">Closed (Not Merged)</option>
   </select>
-<br><br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  Company:
+  <select id="company_filter">
+    <option value="" selected>All</option>
+  </select>
+
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  User:
+  <select id="user_filter">
+    <option value="" selected>All</option>
+  </select>
+  
+
+
 <hr>
 
 
-<% @table_handle = "pr_days_elapsed_table" %>
-<% @table_data = @avg_days_elapsed %>
-<% @label_header = "Company" %>
-<% @data_header = "Average Days Elapsed" %>
-<% @label_index_name = "name" %>
-<% @data_index_name = "avg_days_open" %>  
-
-<%= render 'hash_as_table' %>
-<script type="text/javascript">
-$("#pr_days_elapsed_table").dataTable({
-      "sScrollY": "350px", "sScrollX": "500px",
-      "bPaginate": false,
-      "bSort": false,
-      "bAutoWidth" : true,
-      "bFilter": true
-    } );
-</script>
 <table cellpadding="50px"><tr><td>
   <h2>Contributions by User</h2><br>
   <%# For User Statistics %>
@@ -289,10 +299,36 @@ $(function() {
 
   <%# TODO: Refactor to not use demo or placeholder names %>
   <div id="content">
-  <div class="demo-container">
-      <div id="placeholder" class="demo-placeholder"></div>
+  <div class="line-graph-container">
+      <div id="placeholder" class="line-graph-placeholder"></div>
     </div>
   </div>
+<br><br><br><br><br><br>
+
+
+<% @table_handle = "pr_days_elapsed_table" %>
+<% @table_data = @avg_days_elapsed %>
+<% @label_header = "Company" %>
+<% @data_header = "Average Days Elapsed" %>
+<% @label_index_name = "name" %>
+<% @data_index_name = "avg_days_open" %>  
+<center>
+<table>
+<td>
+<%= render 'hash_as_table' %>
+</td>
+</table>
+</center>
+
+<script type="text/javascript">
+$("#pr_days_elapsed_table").dataTable({
+      "sScrollY": "350px", "sScrollX": "650px",
+      "bPaginate": false,
+      "bSort": false,
+      "bAutoWidth" : true,
+      "bFilter": true
+    } );
+</script>
 
 
 

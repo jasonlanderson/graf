@@ -12,18 +12,18 @@ class AnalyticUtils
     if timeframe && timeframe != ''
       case timeframe
       when "q1"
-        sql_stmt += "AND #{DBUtils.get_month(pr.date_created)} IN ('01', '02', '03') "
+        sql_stmt += "AND #{DBUtils.get_month('pr.date_created')} IN ('01', '02', '03') "
       when "q2"
-        sql_stmt += "AND #{DBUtils.get_month(pr.date_created)} IN ('04', '05', '06') "
+        sql_stmt += "AND #{DBUtils.get_month('pr.date_created')} IN ('04', '05', '06') "
       when "q3"
-        sql_stmt += "AND #{DBUtils.get_month(pr.date_created)} IN ('07', '08', '09') "
+        sql_stmt += "AND #{DBUtils.get_month('pr.date_created')} IN ('07', '08', '09') "
       when "q4"
-        sql_stmt += "AND #{DBUtils.get_month(pr.date_created)} IN ('10', '11', '12') "
+        sql_stmt += "AND #{DBUtils.get_month('pr.date_created')} IN ('10', '11', '12') "
       end
     end
 
     if year && year != ''
-      sql_stmt += "AND #{DBUtils.get_year(pr.date_created)} = '#{year}' "
+      sql_stmt += "AND #{DBUtils.get_year('pr.date_created')} = '#{year}' "
     end
 
     if repo && repo != '' && repo != 'All'
@@ -61,18 +61,18 @@ class AnalyticUtils
     if timeframe && timeframe != ''
       case timeframe
       when "q1"
-        sql_stmt += "AND #{DBUtils.get_month(pr.date_created)} IN ('01', '02', '03') "
+        sql_stmt += "AND #{DBUtils.get_month('pr.date_created')} IN ('01', '02', '03') "
       when "q2"
-        sql_stmt += "AND #{DBUtils.get_month(pr.date_created)} IN ('04', '05', '06') "
+        sql_stmt += "AND #{DBUtils.get_month('pr.date_created')} IN ('04', '05', '06') "
       when "q3"
-        sql_stmt += "AND #{DBUtils.get_month(pr.date_created)} IN ('07', '08', '09') "
+        sql_stmt += "AND #{DBUtils.get_month('pr.date_created')} IN ('07', '08', '09') "
       when "q4"
-        sql_stmt += "AND #{DBUtils.get_month(pr.date_created)} IN ('10', '11', '12') "
+        sql_stmt += "AND #{DBUtils.get_month('pr.date_created')} IN ('10', '11', '12') "
       end
     end
 
     if year && year != ''
-      sql_stmt += "AND #{DBUtils.get_year(pr.date_created)} = '#{year}' "
+      sql_stmt += "AND #{DBUtils.get_year('pr.date_created')} = '#{year}' "
     end
 
     if repo && repo != '' && repo != 'All'
@@ -115,7 +115,7 @@ class AnalyticUtils
       data.each { |timestamp, contribs| timestamp_contrib << ( Array [ (timestamp.to_i * 1000).to_s , contribs]) }
       timestamp_contrib =  timestamp_contrib.sort_by {|x, y| x}
 
-      if json_dataset == "["
+      if json_dataset != "["
         json_dataset += ","
       end
       json_dataset += "  { \"label\": \"#{name}\", \"data\" : #{timestamp_contrib} }"
