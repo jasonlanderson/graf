@@ -2,15 +2,19 @@ require "db_utils"
 
 class AnalyticUtils
   # TODO: Change to use parameterized queries
-  def self.get_pull_request_stats(group_by_col, data_index_name, timeframe = nil, year = nil, repo=nil, state=nil)
+  def self.get_pull_request_stats(group_by_col, data_index_name, month = nil, quarter = nil, year = nil, repo=nil, state=nil, company=nil, user=nil)
     sql_stmt = "SELECT #{group_by_col}, COUNT(*) #{data_index_name} FROM pull_requests pr " \
       "LEFT OUTER JOIN users u ON pr.user_id = u.id " \
       "LEFT OUTER JOIN companies c ON u.company_id = c.id " \
       "LEFT OUTER JOIN repos r ON pr.repo_id = r.id " \
       "WHERE 1 = 1 "
 
-    if timeframe && timeframe != ''
-      case timeframe
+    if month && month != ''
+      sql_stmt += "AND #{DBUtils.get_month('pr.date_created')} = #{month} "
+    end
+
+    if quarter && quarter != ''
+      case quarter
       when "q1"
         sql_stmt += "AND #{DBUtils.get_month('pr.date_created')} IN ('01', '02', '03') "
       when "q2"
@@ -26,7 +30,7 @@ class AnalyticUtils
       sql_stmt += "AND #{DBUtils.get_year('pr.date_created')} = '#{year}' "
     end
 
-    if repo && repo != '' && repo != 'All'
+    if repo && repo != ''
       sql_stmt += "AND r.name = '#{repo}' "
     end
 
@@ -37,6 +41,14 @@ class AnalyticUtils
     elsif state && (state == "closed") # Not including merged prs
       sql_stmt += "AND pr.state = 'closed' AND pr.date_merged IS NULL "
     end
+
+    if company && company != ''
+      sql_stmt += "AND c.name = '#{company}' "
+    end
+
+    if user && user != ''
+      sql_stmt += "AND u.login = '#{user}' "
+    end
       
     sql_stmt += "GROUP BY #{group_by_col} ORDER BY #{data_index_name} DESC"
 
@@ -44,7 +56,7 @@ class AnalyticUtils
   end
 
   # TODO: Change to use parameterized queries
-  def self.get_pr_days_elapsed
+  def self.get_prs_days_elapsed
     sql_stmt = "SELECT c.name, " \
       "round(avg(#{DBUtils.get_date_difference('pr.date_closed','pr.date_created')}), 1)  avg_days_open " \
       "FROM pull_requests pr LEFT OUTER JOIN users u " \
@@ -55,11 +67,11 @@ class AnalyticUtils
   end
 
   # TODO: Change to use parameterized queries
-  def self.get_timestamps(timeframe = nil, year = nil, repo=nil, state=nil)
+  def self.get_timestamps(quarter = nil, year = nil, repo=nil, state=nil)
     sql_stmt = "SELECT c.name, pr.date_created FROM pull_requests pr LEFT OUTER JOIN users u  ON pr.user_id " \
       " = u.id LEFT OUTER JOIN companies c ON u.company_id = c.id LEFT OUTER JOIN repos r ON pr.repo_id = r.id WHERE 1 = 1 " 
-    if timeframe && timeframe != ''
-      case timeframe
+    if quarter && quarter != ''
+      case quarter
       when "q1"
         sql_stmt += "AND #{DBUtils.get_month('pr.date_created')} IN ('01', '02', '03') "
       when "q2"
