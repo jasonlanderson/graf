@@ -75,7 +75,13 @@
         
        }
     options.colors = colors;
-    $.plot($("#user_prs_chart"), result.response, options);
+    if (result.response.length == 0) {
+      data = [{ label: "No Pull Requests", data: 1, color:'#E0E0E0' }];
+    }
+    else {
+      data = result.response;
+    }
+    $.plot($("#user_prs_chart"), data, options);
   }
 
   function updatePRsUserTableCallback(result){
@@ -106,8 +112,13 @@
          }
     }
     options.colors = colors;
-
-    $.plot($("#company_prs_chart"), result.response, options);
+    if (result.response.length == 0) {
+      data = [{ label: "No Pull Requests", data: 1, color:'#E0E0E0' }];
+    }
+    else {
+      data = result.response;
+    }
+    $.plot($("#company_prs_chart"), data, options);
   }
 
   function updatePRsCompanyTableCallback(result){

@@ -134,7 +134,7 @@ class GithubLoader
         :pr_number => pr[:attrs][:number],
         :body => pr[:attrs][:body],
         :title => pr[:attrs][:title],
-        :state => state,
+        :state => pr[:attrs][:state],
         :date_created => pr[:attrs][:created_at],
         :date_closed => pr[:attrs][:closed_at],
         :date_updated => pr[:attrs][:updated_at],
@@ -162,7 +162,7 @@ class GithubLoader
           company_name = "Independent"
       elsif (company_name.downcase.include? "vmware")
           company_name = "VMware"
-      elsif ((company_name.downcase.include? "pivotal") || (company_name.downcase.include? "springsource"))
+      elsif ((company_name.downcase.include? "pivotal") || (company_name.downcase.include? "springsource")) 
           company_name = "Pivotal"
       end
 
