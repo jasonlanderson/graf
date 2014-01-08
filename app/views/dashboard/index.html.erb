@@ -101,11 +101,11 @@
                         "state_filter", 
                         "company_filter", 
                         "user_filter"];
-
     for ( id in whereDropDownIds ) {
-      $("#" + id + "option:eq(0)").attr('selected','selected');
-
+      $("#" + whereDropDownIds[id]).val("");
     }
+    filterUpdate();
+
   }
 
   function updateMonthlyLineGraphCallback(result){
@@ -176,7 +176,8 @@
     });
 
     $("#clear_search_criteria_button").click(function () {
-      clearSearchCriteria()
+      clearSearchCriteria();
+      
     });
 
     
@@ -192,7 +193,7 @@
 Metric:
  <select id="metric_filter">
     <option value="prs">Pull Requests</option>
-    <option value="days_ellapsed">Days Elapsed</option>
+    <option value="days_elapsed">Days Elapsed</option>
   </select>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 Group By: 
