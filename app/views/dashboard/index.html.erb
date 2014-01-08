@@ -1,8 +1,6 @@
 <style type="text/css">
-#user_prs_chart { width: 450px; height: 450px; font-size:18px; position:relative; }
-#company_prs_chart { width: 450px; height: 450px; font-size:18px; position:relative; }
-#user_tbl_ctr { width: 450px; height: 450px; font-size:18px; position:relative; }
-#company_tbl_ctr { width: 450px; height: 450px; font-size:18px; position:relative; }
+#prs_chart { width: 450px; height: 450px; font-size:18px; position:relative; }
+#prs_tbl_ctr { width: 450px; height: 450px; font-size:18px; position:relative; }
 </style>
 
 <script type="text/javascript">
@@ -25,28 +23,33 @@
 
 
   function filterUpdate() {
-    timeframe = $("#quarter_filter").val()
+    metric = $("#metric_filter").val()
+    groupBy = $("#group_by_filter").val()
+    month = $("#month_filter").val()
+    quarter = $("#quarter_filter").val()
     year = $("#year_filter").val()
     repo = $("#repo_filter").val()
     state = $("#state_filter").val()
-    apiAJAX(timeframe, year, repo, state, 'user_chart', 'json', updatePRsUserChartCallback);
-    apiAJAX(timeframe, year, repo, state, 'user_table', 'text', updatePRsUserTableCallback);
-    apiAJAX(timeframe, year, repo, state, 'company_chart', 'json', updatePRsCompanyChartCallback);
-    apiAJAX(timeframe, year, repo, state, 'company_table', 'text', updatePRsCompanyTableCallback);
-    apiAJAX(timeframe, year, repo, state, 'monthly_line_graph', 'json', updateMonthlyLineGraphCallback);
+    company = $("#company_filter").val()
+    user = $("#user_filter").val()
+    apiAJAX(metric, groupBy, month, quarter, year, repo, state, company, user, 'prs_chart', 'json', updatePRsChartCallback);
+    apiAJAX(metric, groupBy, month, quarter, year, repo, state, company, user, 'prs_table', 'text', updatePRsTableCallback);
+    //apiAJAX(month, quarter, year, repo, state, 'company_chart', 'json', updatePRsCompanyChartCallback);
+    //apiAJAX(month, quarter, year, repo, state, 'company_table', 'text', updatePRsCompanyTableCallback);
+    //apiAJAX(month, quarter, year, repo, state, 'monthly_line_graph', 'json', updateMonthlyLineGraphCallback);
   }
 
-  function apiAJAX(timeframe, year, repo, state, data_request, response_type, callback){
+  function apiAJAX(metric, groupBy, month, quarter, year, repo, state, company, user, data_request, response_type, callback){
     $.ajax({
-        url: "api?timeframe=" + timeframe + "&year=" + year + "&repo=" + repo + "&state=" + state + "&data_request=" + data_request,
+        url: "api?groupBy=" + metric + "&group_by=" + groupBy + "&month=" + month + "&quarter=" + quarter + "&year=" + year + "&repo=" + repo + "&state=" + state + "&company=" + company + "&user=" + user + "&data_request=" + data_request,
         method: 'GET',
         dataType: response_type,
         success: callback
     });
   }
 
-  function updatePRsUserChartCallback(result){
-    $("#user_prs_chart").empty();
+  function updatePRsChartCallback(result){
+    $("#prs_chart").empty();
     options = {
          series: {
             pie: {
@@ -67,44 +70,13 @@
          }
     }
 
-    $.plot($("#user_prs_chart"), result.response, options);
+    $.plot($("#prs_chart"), result.response, options);
   }
 
-  function updatePRsUserTableCallback(result){
-    $("#user_tbl_ctr").empty();
-    $("#user_tbl_ctr").html(result);
-    makeAsDataTable("#user_prs_table")
-  }
-
-  function updatePRsCompanyChartCallback(result){
-    $("#company_prs_chart").empty();
-    options = {
-         series: {
-            pie: {
-                show: true,
-                radius: 1,
-                label: {
-                    show: true,
-                    radius: 2/3,
-                    formatter: function(label, series){
-                        return '<div style="font-size:8pt;text-align:center;padding:2px;color:white;">'+label+'<br/>'+Math.round(series.percent)+'%</div>';
-                    },
-                    threshold: 0.04
-                }       
-            }
-         },
-         legend: {
-            labelBoxBorderColor: "none"
-         }
-    }
-
-    $.plot($("#company_prs_chart"), result.response, options);
-  }
-
-  function updatePRsCompanyTableCallback(result){
-    $("#company_tbl_ctr").empty();
-    $("#company_tbl_ctr").html(result);
-    makeAsDataTable("#company_prs_table")
+  function updatePRsTableCallback(result){
+    $("#prs_tbl_ctr").empty();
+    $("#prs_tbl_ctr").html(result);
+    makeAsDataTable("#prs_table")
   }
 
   function updateMonthlyLineGraphCallback(result){
@@ -136,6 +108,18 @@
   }
 
   $(document).ready(function () {
+    $("#metric_filter").change(function () {
+      filterUpdate()
+    });
+
+    $("#group_by_filter").change(function () {
+      filterUpdate()
+    });
+
+    $("#month_filter").change(function () {
+      filterUpdate()
+    });
+
     $("#quarter_filter").change(function () {
       filterUpdate()
     });
@@ -152,6 +136,13 @@
       filterUpdate()
     });
 
+    $("#company_filter").change(function () {
+      filterUpdate()
+    });
+
+    $("#user_filter").change(function () {
+      filterUpdate()
+    });
 
   
   });
@@ -164,19 +155,42 @@
 
 <h2>Filters</h2>
 Metric:
- <select id="metrics_filter">
-    <option value="Pulls" selected>Pull Requests</option>
+ <select id="metric_filter">
+    <option value="prs">Pull Requests</option>
+    <option value="days_ellapsed">Days Elapsed</option>
   </select>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 Group By: 
  <select id="group_by_filter">
-    <option value="" selected>Company</option>
+    <option value="month">Month</option>
+    <option value="quarter">Quarter</option>
+    <option value="year">Year</option>
+    <option value="repository">Repository</option>
+    <option value="state">State</option>
+    <option value="company" selected>Company</option>
+    <option value="user">User</option>
   </select>
 
 <br><br>
 
-<%# TODO: Expand filter section into metric, group_by and search criteria %>
 <h2>Search Criteria</h2>
+  Month: 
+  <select id="month_filter">
+    <option value="" selected>All</option>
+    <option value="1">January</option>
+    <option value="2">February</option>
+    <option value="3">March</option>
+    <option value="4">April</option>
+    <option value="5">May</option>
+    <option value="6">June</option>
+    <option value="7">July</option>
+    <option value="8">August</option>
+    <option value="9">September</option>
+    <option value="10">October</option>
+    <option value="11">November</option>
+    <option value="12">December</option>
+  </select>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
   Quarter: 
   <select id="quarter_filter">
     <option value="" selected>All</option>
@@ -195,7 +209,12 @@ Group By:
   </select>
   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
   Repository:
-  <%= render 'repo_drop_down' %>
+  <% @drop_down_id = "repo_filter" %>
+  <% @drop_down_data = @repos %>
+  <% @drop_down_data_index = "name" %>
+  <% @drop_down_empty_label = "All" %>
+  <% @drop_down_selected = nil %>
+  <%= render 'drop_down' %>
   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
   State:
   <select id="state_filter">
@@ -206,35 +225,38 @@ Group By:
   </select>
   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
   Company:
-  <select id="company_filter">
-    <option value="" selected>All</option>
-  </select>
-
+  <% @drop_down_id = "company_filter" %>
+  <% @drop_down_data = @companies %>
+  <% @drop_down_data_index = "name" %>
+  <% @drop_down_empty_label = "All" %>
+  <% @drop_down_selected = nil %>
+  <%= render 'drop_down' %>
   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
   User:
-  <select id="user_filter">
-    <option value="" selected>All</option>
-  </select>
-  
-
+  <% @drop_down_id = "user_filter" %>
+  <% @drop_down_data = @users %>
+  <% @drop_down_data_index = "login" %>
+  <% @drop_down_empty_label = "All" %>
+  <% @drop_down_selected = nil %>
+  <%= render 'drop_down' %>
 
 <hr>
-
-<h2>Contributions by User</h2><br>
-  <%# For User Statistics %>
-  <% @chart_handle = "user_prs_chart" %>
-  <% @chart_data = @prs_by_user_pie_str %>
+<%# Pull Requests Section %>
+<h2><% @chart_title %></h2><br>
+  <% @chart_handle = "prs_chart" %>
+  <% @chart_data = @prs_chart_str %>
   <%= render 'pie_chart' %>
-  <div id="user_prs_chart"></div>
+  <div id="prs_chart"></div>
 <br><br>
-  <% @table_handle = "user_prs_table" %>
-  <% @table_data = @prs_by_user %>
-  <% @label_header = "User" %>
-  <% @data_header = "Contributions" %>
-  <% @label_index_name = "login" %>
-  <% @data_index_name = "num_prs" %>
-  <div id="user_tbl_ctr">
-  <%= render 'hash_as_table' %>
+  <% @table_handle = "prs_table" %>
+  <% @table_data = @prs_data %>
+  <% @label_header = @prs_table_label_header %>
+  <% @data_header = @prs_table_data_header %>
+  <% @label_index_name = @prs_label_index_name %>
+  <% @data_index_name = @prs_data_index_name %>
+
+  <div id="prs_tbl_ctr">
+    <%= render 'hash_as_table' %>
   </div>
   <script type="text/javascript">makeAsDataTableOnLoad('#<%= @table_handle %>');</script>
 
@@ -329,7 +351,7 @@ $(function() {
 
 
 
-<% @table_handle = "pr_days_elapsed_table" %>
+<% @table_handle = "prs_days_elapsed_table" %>
 <% @table_data = @avg_days_elapsed %>
 <% @label_header = "Company" %>
 <% @data_header = "Average Days Elapsed" %>
@@ -344,7 +366,7 @@ $(function() {
 </center>
 
 <script type="text/javascript">
-$("#pr_days_elapsed_table").dataTable({
+$("#prs_days_elapsed_table").dataTable({
       "sScrollY": "350px", "sScrollX": "650px",
       "bPaginate": false,
       "bSort": false,
