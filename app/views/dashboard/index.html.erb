@@ -3,7 +3,14 @@
 #prs_tbl_ctr { width: 450px; height: 450px; font-size:18px; position:relative; }
 </style>
 
+
+
 <script type="text/javascript">
+  $(function() {
+    $( document ).tooltip();
+  });
+
+  colors = ['#B82E2E', '#2EB82E', '#C75000', '#6629A3', '#2966A3', '#649ED8'];
 
   function makeAsDataTableOnLoad(tableHandleIdStr) {
     $(document).ready( function () {
@@ -104,6 +111,8 @@
         minTickSize: 5
       },
       };
+      options.colors = colors;
+
       $.plot($("#company_line_graph"), result.response, options);
   }
 
@@ -264,7 +273,9 @@ Group By:
 <%
 =begin %>
 <table cellpadding="50px"><tr><td>
-  <h2>Contributions by User</h2><br>
+  <h2>Contributions by User  <a href="#" title="This pie chart represents all submitted pull requests, sorted by company (Will expand)">?</a>
+</h2>
+  <br>
   <%# For User Statistics %>
   <% @chart_handle = "user_prs_chart" %>
   <% @chart_data = @prs_by_user_pie_str %>
@@ -335,6 +346,8 @@ $(function() {
         minTickSize: 5
       },
       };
+          options.colors = colors;
+
     $.plot($("#company_line_graph"), data, options);
 
   });
