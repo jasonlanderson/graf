@@ -4,10 +4,10 @@ require "db_utils"
 
 GROUP_BY_MAPPING = {
   "month"      => {sql_select: "#{DBUtils.get_month_by_name('pr.date_created')} month", sql_group_by: 'month', hash_name: 'month'},
-  "quarter"    => {sql_select: '', sql_group_by: '', hash_name: ''},  
-  "year"       => {sql_select: '', sql_group_by: '', hash_name: ''},
+  "quarter"    => {sql_select: "#{DBUtils.get_quarter_by_name('pr.date_created')} quarter", sql_group_by: 'quarter', hash_name: 'quarter'},  
+  "year"       => {sql_select: "#{DBUtils.get_year('pr.date_created')} year", sql_group_by: 'year', hash_name: 'year'},
   "repository" => {sql_select: 'r.name', sql_group_by: 'r.name', hash_name: 'name'},
-  "state"      => {sql_select: '', sql_group_by: '', hash_name: ''},
+  "state"      => {sql_select: "#{DBUtils.get_state_select('pr.state', 'pr.date_merged')} state", sql_group_by: 'state', hash_name: 'state'},
   "company"    => {sql_select: 'c.name', sql_group_by: 'c.name', hash_name: 'name'},
   "user"       => {sql_select: 'u.login', sql_group_by: 'u.login', hash_name: 'login'}
 }
