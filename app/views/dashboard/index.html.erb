@@ -76,8 +76,15 @@
             labelBoxBorderColor: "none"
          }
     }
+    options.colors = colors;
+    if (result.response.length == 0) {
+      data = [{ label: "No Pull Requests", data: 1, color:'#E0E0E0' }];
+    }
+    else {
+      data = result.response;
+    }
+    $.plot($("#prs_chart"), data, options);
 
-    $.plot($("#prs_chart"), result.response, options);
   }
 
   function updatePRsTableCallback(result){
