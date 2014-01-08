@@ -47,6 +47,7 @@ class AnalyticUtils
 
     # Get the top companies
     top_group_bys = Hash[pr_dates_by_group.sort_by {|x, y| y.length }.reverse[0..4]]
+    puts top_group_bys
 
     json_dataset = "["
     top_group_bys.each do |group_by_val, pr_date_created_arr|
@@ -101,7 +102,7 @@ class AnalyticUtils
   end
 
   def self.where_clause_stmt(month = nil, quarter = nil, year = nil, repo=nil, state=nil, company=nil, user=nil)
-    where_stmt = "WHERE 1=1"
+    where_stmt = " WHERE 1=1 "
 
     if month && month != ''
       where_stmt += "AND #{DBUtils.get_month('pr.date_created')} = #{month} "

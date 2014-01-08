@@ -39,7 +39,7 @@ class ApiController < ApplicationController
       @table_handle = "prs_table"
       @table_data = prs_by_user
       @label_header = GROUP_BY_MAPPING[group_by][:hash_name].titleize
-      @data_header = "\# of Pull Requests"
+      @data_header = "Contributions"
       @label_index_name = GROUP_BY_MAPPING[group_by][:hash_name]
       @data_index_name = "num_prs"
       render :partial => "dashboard/hash_as_table"
@@ -50,8 +50,8 @@ class ApiController < ApplicationController
     #   @label_header = "Company"
     #   @data_header = "Average Days Elapsed"
     #   render :partial => "dashboard/hash_as_table"
-    elsif data_request == 'monthly_line_graph'
-       line_graph = AnalyticUtils.get_timestamps(GROUP_BY_MAPPING[group_by][:sql_select], GROUP_BY_MAPPING[group_by][:sql_group_by], month, quarter, year, repo, state, company, user)
+    elsif data_request == 'prs_line_graph'
+       line_graph = AnalyticUtils.get_timestamps(GROUP_BY_MAPPING[group_by][:sql_select], GROUP_BY_MAPPING[group_by][:hash_name], month, quarter, year, repo, state, company, user)
        render :json => "{\"response\": #{line_graph}}"
     else
       render :text => "Error: Invalid data_request: #{data_request}"
