@@ -26,15 +26,15 @@ class ApiController < ApplicationController
     company = params[:company]
     user = params[:user]
 
-    if data_request == 'prs_chart'
-      #group_by = params[:group_by]
-      #u.login vs c.name
 
+    if data_request == 'prs_chart'
+      # Get data for the pull request pie chart
       prs_by_user = AnalyticUtils.get_pull_request_stats(GROUP_BY_MAPPING[group_by][:sql_select], GROUP_BY_MAPPING[group_by][:sql_group_by], 'num_prs', month, quarter, year, repo, state, company, user)
       prs_by_user_top_x = AnalyticUtils.top_x_with_rollup(prs_by_user, GROUP_BY_MAPPING[group_by][:hash_name], 'num_prs', 5, 'others')
       prs_by_user_pie_str = JavascriptUtils.get_pull_request_stats(prs_by_user_top_x, GROUP_BY_MAPPING[group_by][:hash_name], 'num_prs')
       render :json => prs_by_user_pie_str
     elsif data_request == 'prs_table'
+      # Get data for the pull request table
       prs_by_user = AnalyticUtils.get_pull_request_stats(GROUP_BY_MAPPING[group_by][:sql_select], GROUP_BY_MAPPING[group_by][:sql_group_by], 'num_prs', month, quarter, year, repo, state, company, user)
       @table_handle = "prs_table"
       @table_data = prs_by_user
@@ -50,9 +50,9 @@ class ApiController < ApplicationController
     #   @label_header = "Company"
     #   @data_header = "Average Days Elapsed"
     #   render :partial => "dashboard/hash_as_table"
-    # elsif data_request == 'monthly_line_graph'
-    #   line_graph = AnalyticUtils.get_timestamps(quarter, year, repo, state)
-    #   render :json => "{\"response\": #{line_graph}}"
+    elsif data_request == 'monthly_line_graph'
+       line_graph = AnalyticUtils.get_timestamps(GROUP_BY_MAPPING[group_by][:sql_select], GROUP_BY_MAPPING[group_by][:sql_group_by], month, quarter, year, repo, state, company, user)
+       render :json => "{\"response\": #{line_graph}}"
     else
       render :text => "Error: Invalid data_request: #{data_request}"
     end

@@ -1,4 +1,4 @@
-.line-graph-container {
+.prs-line-graph-container {
 	box-sizing: border-box;
 	width: 850px;
 	height: 450px;
@@ -18,7 +18,7 @@
 	-webkit-box-shadow: 0 3px 10px rgba(0,0,0,0.1);
 }
 
-.line-graph-placeholder {
+.prs-line-graph {
 	width: 100%;
 	height: 100%;
 	font-size: 14px;
@@ -27,7 +27,6 @@
 
 #prs_days_elapsed_container {
 	width: 40%;
-
 }
 
 /* 

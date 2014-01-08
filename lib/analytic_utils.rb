@@ -6,49 +6,9 @@ class AnalyticUtils
     sql_stmt = "SELECT #{select_col}, COUNT(*) #{data_index_name} FROM pull_requests pr " \
       "LEFT OUTER JOIN users u ON pr.user_id = u.id " \
       "LEFT OUTER JOIN companies c ON u.company_id = c.id " \
-      "LEFT OUTER JOIN repos r ON pr.repo_id = r.id " \
-      "WHERE 1 = 1 "
+      "LEFT OUTER JOIN repos r ON pr.repo_id = r.id "
 
-    if month && month != ''
-      sql_stmt += "AND #{DBUtils.get_month('pr.date_created')} = #{month} "
-    end
-
-    if quarter && quarter != ''
-      case quarter
-      when "q1"
-        sql_stmt += "AND #{DBUtils.get_month('pr.date_created')} IN ('01', '02', '03') "
-      when "q2"
-        sql_stmt += "AND #{DBUtils.get_month('pr.date_created')} IN ('04', '05', '06') "
-      when "q3"
-        sql_stmt += "AND #{DBUtils.get_month('pr.date_created')} IN ('07', '08', '09') "
-      when "q4"
-        sql_stmt += "AND #{DBUtils.get_month('pr.date_created')} IN ('10', '11', '12') "
-      end
-    end
-
-    if year && year != ''
-      sql_stmt += "AND #{DBUtils.get_year('pr.date_created')} = '#{year}' "
-    end
-
-    if repo && repo != ''
-      sql_stmt += "AND r.name = '#{repo}' "
-    end
-
-    if state && (state == "open")
-      sql_stmt += "AND pr.state = 'open' "
-    elsif state && (state == "merged")
-      sql_stmt += "AND pr.date_merged NOT NULL "
-    elsif state && (state == "closed") # Not including merged prs
-      sql_stmt += "AND pr.state = 'closed' AND pr.date_merged IS NULL "
-    end
-
-    if company && company != ''
-      sql_stmt += "AND c.name = '#{company}' "
-    end
-
-    if user && user != ''
-      sql_stmt += "AND u.login = '#{user}' "
-    end
+    sql_stmt += where_clause_stmt(month, quarter, year, repo, state, company, user)
       
     sql_stmt += "GROUP BY #{group_by_col} ORDER BY #{data_index_name} DESC"
 
@@ -67,55 +27,29 @@ class AnalyticUtils
   end
 
   # TODO: Change to use parameterized queries
-  def self.get_timestamps(quarter = nil, year = nil, repo=nil, state=nil)
-    sql_stmt = "SELECT c.name, pr.date_created FROM pull_requests pr LEFT OUTER JOIN users u  ON pr.user_id " \
-      " = u.id LEFT OUTER JOIN companies c ON u.company_id = c.id LEFT OUTER JOIN repos r ON pr.repo_id = r.id WHERE 1 = 1 " 
-    if quarter && quarter != ''
-      case quarter
-      when "q1"
-        sql_stmt += "AND #{DBUtils.get_month('pr.date_created')} IN ('01', '02', '03') "
-      when "q2"
-        sql_stmt += "AND #{DBUtils.get_month('pr.date_created')} IN ('04', '05', '06') "
-      when "q3"
-        sql_stmt += "AND #{DBUtils.get_month('pr.date_created')} IN ('07', '08', '09') "
-      when "q4"
-        sql_stmt += "AND #{DBUtils.get_month('pr.date_created')} IN ('10', '11', '12') "
-      end
-    end
-
-    if year && year != ''
-      sql_stmt += "AND #{DBUtils.get_year('pr.date_created')} = '#{year}' "
-    end
-
-    if repo && repo != '' && repo != 'All'
-      sql_stmt += "AND r.name = '#{repo}' "
-    end
-
-    if state && (state == "open")
-      sql_stmt += "AND pr.state = 'open' "
-    elsif state && (state == "merged")
-      sql_stmt += "AND pr.date_merged NOT NULL "
-    elsif state && (state == "closed") # Not including merged prs
-      sql_stmt += "AND pr.state = 'closed' AND pr.date_merged IS NULL "
-    end
+  def self.get_timestamps(select_col, group_by_col, month = nil, quarter = nil, year = nil, repo=nil, state=nil, company=nil, user=nil)
+    sql_stmt = "SELECT #{select_col}, pr.date_created FROM pull_requests pr LEFT OUTER JOIN users u  ON pr.user_id " \
+      " = u.id LEFT OUTER JOIN companies c ON u.company_id = c.id LEFT OUTER JOIN repos r ON pr.repo_id = r.id " 
+    
+    sql_stmt += where_clause_stmt(month, quarter, year, repo, state, company, user)
 
     query = ActiveRecord::Base.connection.exec_query(sql_stmt)  
-    pr_dates_by_company = Hash.new
+    pr_dates_by_group = Hash.new
 
     # Loop through each record to create a hash of companies mapping to array of PR create dates
     query.each do |record|
-      key = record['name'].to_s
-      if !pr_dates_by_company.has_key?(key)
-        pr_dates_by_company[key] ||= []
+      key = record[group_by_col].to_s
+      if !pr_dates_by_group.has_key?(key)
+        pr_dates_by_group[key] ||= []
       end
-      pr_dates_by_company[key] << record['date_created']
+      pr_dates_by_group[key] << record['date_created']
     end
 
     # Get the top companies
-    top_companies = Hash[pr_dates_by_company.sort_by {|x, y| y.length }.reverse[0..4]]
+    top_group_bys = Hash[pr_dates_by_group.sort_by {|x, y| y.length }.reverse[0..4]]
 
     json_dataset = "["
-    top_companies.each do |name, pr_date_created_arr|
+    top_group_bys.each do |group_by_val, pr_date_created_arr|
       data = Hash.new(0)
       #y.inject(data) { |h,e| h[e] += 1; h }.select { |k,v| v > 1 }.inject({}) { |r, e| r[e.first] = e.last; r }
       pr_date_created_arr.each do |formatted_date|
@@ -130,7 +64,7 @@ class AnalyticUtils
       if json_dataset != "["
         json_dataset += ","
       end
-      json_dataset += "  { \"label\": \"#{name}\", \"data\" : #{timestamp_contrib} }"
+      json_dataset += "  { \"label\": \"#{group_by_val}\", \"data\" : #{timestamp_contrib} }"
     end
 
     json_dataset += "]" 
@@ -164,5 +98,52 @@ class AnalyticUtils
 
       return result
     end
+  end
+
+  def self.where_clause_stmt(month = nil, quarter = nil, year = nil, repo=nil, state=nil, company=nil, user=nil)
+    where_stmt = "WHERE 1=1"
+
+    if month && month != ''
+      where_stmt += "AND #{DBUtils.get_month('pr.date_created')} = #{month} "
+    end
+
+    if quarter && quarter != ''
+      case quarter
+      when "q1"
+        where_stmt += "AND #{DBUtils.get_month('pr.date_created')} IN ('01', '02', '03') "
+      when "q2"
+        where_stmt += "AND #{DBUtils.get_month('pr.date_created')} IN ('04', '05', '06') "
+      when "q3"
+        where_stmt += "AND #{DBUtils.get_month('pr.date_created')} IN ('07', '08', '09') "
+      when "q4"
+        where_stmt += "AND #{DBUtils.get_month('pr.date_created')} IN ('10', '11', '12') "
+      end
+    end
+
+    if year && year != ''
+      where_stmt += "AND #{DBUtils.get_year('pr.date_created')} = '#{year}' "
+    end
+
+    if repo && repo != ''
+      where_stmt += "AND r.name = '#{repo}' "
+    end
+
+    if state && (state == "open")
+      where_stmt += "AND pr.state = 'open' "
+    elsif state && (state == "merged")
+      where_stmt += "AND pr.date_merged NOT NULL "
+    elsif state && (state == "closed") # Not including merged prs
+      where_stmt += "AND pr.state = 'closed' AND pr.date_merged IS NULL "
+    end
+
+    if company && company != ''
+      where_stmt += "AND c.name = '#{company}' "
+    end
+
+    if user && user != ''
+      where_stmt += "AND u.login = '#{user}' "
+    end
+
+    return where_stmt
   end
 end
