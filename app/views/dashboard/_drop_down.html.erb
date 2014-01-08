@@ -1,8 +1,11 @@
-<select id="<%= @drop_down_id %>">
-    <% if @drop_down_empty_label %>
-      <option value=""><%= @drop_down_empty_label %></option>
-    <% end %>
-    <% @drop_down_data.each {|entry| %>
-    <option value="<%= entry[@drop_down_data_index] %>" <%= @drop_down_selected == entry[@drop_down_data_index] ? "selected" : ""  %>> <%= entry[@drop_down_data_index] %></option>	
-    <% } %>
+<select id="<%= @drop_down_id %>"
+  <%= @drop_down_width ? raw("style='width: #{@drop_down_width};'") : ""  %>
+>
+
+  <% if @drop_down_empty_label %>
+    <option value=""><%= @drop_down_empty_label %></option>
+  <% end %>
+  <% @drop_down_data.each {|entry| %>
+  <option value="<%= entry[@drop_down_data_index] %>" <%= @drop_down_selected == entry[@drop_down_data_index] ? "selected" : ""  %>> <%= entry[@drop_down_data_index] %></option>	
+  <% } %>
 </select>

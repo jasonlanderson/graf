@@ -49,4 +49,24 @@ class DBUtils
     end
   end
 
+  def self.get_month_by_name(date)
+    if get_current_db_type == RDMS::SQLITE
+      return "case strftime('%m', #{date}) when '01' then 'January' when '02' then 'Febuary' when '03' then 'March' when '04' then 'April' when '05' then 'May' when '06' then 'June' when '07' then 'July' when '08' then 'August' when '09' then 'September' when '10' then 'October' when '11' then 'November' when '12' then 'December' else '' end"
+    elsif get_current_db_type == RDMS::MYSQL
+      return "DATE_FORMAT(#{date},'%M')"
+    else
+      puts "ERROR: Unknown DB '#{get_current_db_type}'"
+    end
+  end
+
+  def self.get_quarter_by_name(date)
+    if get_current_db_type == RDMS::SQLITE
+      return "case strftime('%m', #{date}) when '01' then 'January' when '02' then 'Febuary' when '03' then 'March' when '04' then 'April' when '05' then 'May' when '06' then 'June' when '07' then 'July' when '08' then 'August' when '09' then 'September' when '10' then 'October' when '11' then 'November' when '12' then 'December' else '' end"
+    elsif get_current_db_type == RDMS::MYSQL
+      return "DATE_FORMAT(#{date},'%M')"
+    else
+      puts "ERROR: Unknown DB '#{get_current_db_type}'"
+    end
+  end
+
 end

@@ -2,8 +2,8 @@ require "db_utils"
 
 class AnalyticUtils
   # TODO: Change to use parameterized queries
-  def self.get_pull_request_stats(group_by_col, data_index_name, month = nil, quarter = nil, year = nil, repo=nil, state=nil, company=nil, user=nil)
-    sql_stmt = "SELECT #{group_by_col}, COUNT(*) #{data_index_name} FROM pull_requests pr " \
+  def self.get_pull_request_stats(select_col, group_by_col, data_index_name, month = nil, quarter = nil, year = nil, repo=nil, state=nil, company=nil, user=nil)
+    sql_stmt = "SELECT #{select_col}, COUNT(*) #{data_index_name} FROM pull_requests pr " \
       "LEFT OUTER JOIN users u ON pr.user_id = u.id " \
       "LEFT OUTER JOIN companies c ON u.company_id = c.id " \
       "LEFT OUTER JOIN repos r ON pr.repo_id = r.id " \

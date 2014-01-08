@@ -1,14 +1,15 @@
 require "analytic_utils"
 require "javascript_utils"
+require "db_utils"
 
 GROUP_BY_MAPPING = {
-  "month"      => {sql_name: '', hash_name: ''},
-  "quarter"    => {sql_name: '', hash_name: ''},  
-  "year"       => {sql_name: '', hash_name: ''},
-  "repository" => {sql_name: 'r.name', hash_name: 'name'},
-  "state"      => {sql_name: '', hash_name: ''},
-  "company"    => {sql_name: 'c.name', hash_name: 'name'},
-  "user"       => {sql_name: 'u.login', hash_name: 'login'}
+  "month"      => {sql_select: "#{DBUtils.get_month_by_name('pr.date_created')} month", sql_group_by: 'month', hash_name: 'month'},
+  "quarter"    => {sql_select: '', sql_group_by: '', hash_name: ''},  
+  "year"       => {sql_select: '', sql_group_by: '', hash_name: ''},
+  "repository" => {sql_select: 'r.name', sql_group_by: 'r.name', hash_name: 'name'},
+  "state"      => {sql_select: '', sql_group_by: '', hash_name: ''},
+  "company"    => {sql_select: 'c.name', sql_group_by: 'c.name', hash_name: 'name'},
+  "user"       => {sql_select: 'u.login', sql_group_by: 'u.login', hash_name: 'login'}
 }
 
 class ApiController < ApplicationController
@@ -29,12 +30,12 @@ class ApiController < ApplicationController
       #group_by = params[:group_by]
       #u.login vs c.name
 
-      prs_by_user = AnalyticUtils.get_pull_request_stats(GROUP_BY_MAPPING[group_by][:sql_name], 'num_prs', month, quarter, year, repo, state, company, user)
+      prs_by_user = AnalyticUtils.get_pull_request_stats(GROUP_BY_MAPPING[group_by][:sql_select], GROUP_BY_MAPPING[group_by][:sql_group_by], 'num_prs', month, quarter, year, repo, state, company, user)
       prs_by_user_top_x = AnalyticUtils.top_x_with_rollup(prs_by_user, GROUP_BY_MAPPING[group_by][:hash_name], 'num_prs', 5, 'others')
       prs_by_user_pie_str = JavascriptUtils.get_pull_request_stats(prs_by_user_top_x, GROUP_BY_MAPPING[group_by][:hash_name], 'num_prs')
       render :json => prs_by_user_pie_str
     elsif data_request == 'prs_table'
-      prs_by_user = AnalyticUtils.get_pull_request_stats(GROUP_BY_MAPPING[group_by][:sql_name], 'num_prs', month, quarter, year, repo, state, company, user)
+      prs_by_user = AnalyticUtils.get_pull_request_stats(GROUP_BY_MAPPING[group_by][:sql_select], GROUP_BY_MAPPING[group_by][:sql_group_by], 'num_prs', month, quarter, year, repo, state, company, user)
       @table_handle = "prs_table"
       @table_data = prs_by_user
       @label_header = GROUP_BY_MAPPING[group_by][:hash_name].titleize
