@@ -156,16 +156,21 @@ class GithubLoader
 
       user_details = pr_user[:_rels][:self].get.data
 
+      company_name = user_details[:attrs][:company]
+
+      if ((company_name.nil?) or (company_name.downcase.include? "available") or (company_name.downcase.include? "independent") or (company_name.strip == ""))
+          company_name = "Independent"
+      elsif (company_name.downcase.include? "vmware")
+          company_name = "VMware"
+      elsif ((company_name.downcase.include? "pivotal") || (company_name.downcase.include? "springsource"))
+          company_name = "Pivotal"
+      end
+
       company = nil
       if user_details[:attrs][:company] != "" && user_details[:attrs][:company] != nil
-        company = create_company_if_not_exist(user_details[:attrs][:company], "user")
-      end
-      if ((company[:name] == nil) || (company[:name].downcase.include? "available") || (company[:name].downcase.include? "independent") || (company[:name].strip == ""))
-          company[:name] = "Independent"
-        elsif (company[:name].downcase.include? "vmware")
-          company[:name] = "VMware"
-        elsif ((company[:name].downcase.include? "pivotal") || (company[:name].downcase.include? "springsource"))
-          company[:name] = "Pivotal"
+        company = create_company_if_not_exist(company_name, "user")
+      else
+        company = create_company_if_not_exist("Independent", "user")
       end
       user = User.create(
         :company => company,
@@ -190,6 +195,7 @@ class GithubLoader
       puts "--- Creating Company: #{company_name}"
       puts "---------"
       @@current_load.log_msg("Creating Company: #{company_name}", LogLevel::INFO)
+
 
       company = Company.create(
         :name => company_name,
