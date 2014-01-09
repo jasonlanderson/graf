@@ -1,8 +1,9 @@
 require "analytic_utils"
 require "javascript_utils"
 require "db_utils"
+require "rollup_methods"
 
-GROUP_BY_MAPPING = {
+LABEL_MAPPING = {
   "month"      => {sql_select: "#{DBUtils.get_month_by_name('pr.date_created')} month", sql_group_by: 'month', hash_name: 'month'},
   "quarter"    => {sql_select: "#{DBUtils.get_quarter_by_name('pr.date_created')} quarter", sql_group_by: 'quarter', hash_name: 'quarter'},  
   "year"       => {sql_select: "#{DBUtils.get_year('pr.date_created')} year", sql_group_by: 'year', hash_name: 'year'},
@@ -10,6 +11,12 @@ GROUP_BY_MAPPING = {
   "state"      => {sql_select: "#{DBUtils.get_state_select('pr.state', 'pr.date_merged')} state", sql_group_by: 'state', hash_name: 'state'},
   "company"    => {sql_select: 'c.name', sql_group_by: 'c.name', hash_name: 'name'},
   "user"       => {sql_select: 'u.login', sql_group_by: 'u.login', hash_name: 'login'}
+}
+
+DATA_MAPPING = {
+  "prs"            => {sql_select: "COUNT(*) num_prs", hash_name: 'num_prs'},
+  "avg_days_open"  => {sql_select: "ROUND(AVG(#{DBUtils.get_date_difference('pr.date_closed','pr.date_created')}), 1)  avg_days_open", hash_name: 'avg_days_open'},
+  "percent_merged" => {sql_select: "SUM( CASE WHEN pr.date_merged IS NOT NULL THEN 1 ELSE 0 END) /  (COUNT(*) * 1.0) percent_merged", hash_name: 'percent_merged'}
 }
 
 class ApiController < ApplicationController
@@ -26,32 +33,60 @@ class ApiController < ApplicationController
     company = params[:company]
     user = params[:user]
 
-
     if data_request == 'prs_chart'
       # Get data for the pull request pie chart
-      prs_by_user = AnalyticUtils.get_pull_request_stats(GROUP_BY_MAPPING[group_by][:sql_select], GROUP_BY_MAPPING[group_by][:sql_group_by], 'num_prs', month, quarter, year, repo, state, company, user)
-      prs_by_user_top_x = AnalyticUtils.top_x_with_rollup(prs_by_user, GROUP_BY_MAPPING[group_by][:hash_name], 'num_prs', 5, 'others')
-      prs_by_user_pie_str = JavascriptUtils.get_pull_request_stats(prs_by_user_top_x, GROUP_BY_MAPPING[group_by][:hash_name], 'num_prs')
-      render :json => prs_by_user_pie_str
+      prs_data = AnalyticUtils.get_pull_request_stats(LABEL_MAPPING[group_by][:sql_select],
+        DATA_MAPPING[metric][:sql_select],
+        LABEL_MAPPING[group_by][:sql_group_by],
+        DATA_MAPPING[metric][:hash_name],
+        month,
+        quarter,
+        year,
+        repo,
+        state,
+        company,
+        user
+      )
+
+      # When this is an avg, we need to roll up with avg
+      rollup_method = ROLLUP_METHOD::SUM
+      if metric == "avg_days_open" || metric == "percent_merged"
+        rollup_method = ROLLUP_METHOD::AVG
+      end
+
+      prs_data_top_x = AnalyticUtils.top_x_with_rollup(prs_data,
+        LABEL_MAPPING[group_by][:hash_name],
+        DATA_MAPPING[metric][:hash_name],
+        5,
+        'others',
+        rollup_method
+      )
+
+      prs_data_pie_str = JavascriptUtils.get_pull_request_stats(prs_data_top_x, LABEL_MAPPING[group_by][:hash_name], DATA_MAPPING[metric][:hash_name])
+      render :json => prs_data_pie_str
     elsif data_request == 'prs_table'
       # Get data for the pull request table
-      prs_by_user = AnalyticUtils.get_pull_request_stats(GROUP_BY_MAPPING[group_by][:sql_select], GROUP_BY_MAPPING[group_by][:sql_group_by], 'num_prs', month, quarter, year, repo, state, company, user)
+      prs_data = AnalyticUtils.get_pull_request_stats(LABEL_MAPPING[group_by][:sql_select],
+              DATA_MAPPING[metric][:sql_select],
+              LABEL_MAPPING[group_by][:sql_group_by],
+              DATA_MAPPING[metric][:hash_name],
+              month,
+              quarter,
+              year,
+              repo,
+              state,
+              company,
+              user
+            )
       @table_handle = "prs_table"
-      @table_data = prs_by_user
-      @label_header = GROUP_BY_MAPPING[group_by][:hash_name].titleize
+      @table_data = prs_data
+      @label_header = LABEL_MAPPING[group_by][:hash_name].titleize
       @data_header = "Contributions"
-      @label_index_name = GROUP_BY_MAPPING[group_by][:hash_name]
-      @data_index_name = "num_prs"
+      @label_index_name = LABEL_MAPPING[group_by][:hash_name]
+      @data_index_name = DATA_MAPPING[metric][:hash_name]
       render :partial => "dashboard/hash_as_table"
-    # elsif data_request == 'days_elapsed_table'
-    #   avg_days_elapsed = AnalyticUtils.get_prs_days_elapsed
-    #   @table_handle = "prs_days_elapsed_table"
-    #   @table_data = avg_days_elapsed
-    #   @label_header = "Company"
-    #   @data_header = "Average Days Elapsed"
-    #   render :partial => "dashboard/hash_as_table"
     elsif data_request == 'prs_line_graph'
-       line_graph = AnalyticUtils.get_timestamps(GROUP_BY_MAPPING[group_by][:sql_select], GROUP_BY_MAPPING[group_by][:hash_name], month, quarter, year, repo, state, company, user)
+       line_graph = AnalyticUtils.get_timestamps(LABEL_MAPPING[group_by][:sql_select], LABEL_MAPPING[group_by][:hash_name], month, quarter, year, repo, state, company, user)
        render :json => "{\"response\": #{line_graph}}"
     else
       render :text => "Error: Invalid data_request: #{data_request}"
