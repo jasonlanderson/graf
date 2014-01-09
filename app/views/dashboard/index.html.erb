@@ -185,6 +185,8 @@
 
 </script>
 
+
+
 <h1>GitHub Repository Analytics with Filtering </h1>
 <hr>
 
@@ -314,9 +316,18 @@ Group By:
     </td>
   </tr>
 </table>
+
 <hr>
 <%# Pull Requests Section %>
-<h2>Pull Request Contributions by User  <a href="#" title="This pie chart represents all submitted pull requests, sorted by company (Will expand)" style="font-weight:normal;">?</a></h2>
+
+<h2 style="margin-bottom: 0; padding-bottom: 0; font-weight:normal;" >Pull Request Contributions by User  
+<a href="#" class="tooltip"> <img src="http://www.iparts.pro/catalog/view/theme/default/image/tooltip_icon.gif" /> <span style="font-size: 15px;">  
+This pie chart represents all pull requests submitted to the Cloud Foundry Github repositories during the specifed time period. <br> Each slice represents a separate company, and the size of each slice is proportional to the company's quantity of contributions. 
+<br>
+Each of the top 5 contributers have their own slice of the pie chart. The remaining contributers are then merged together into the "Others" slice.
+</span> </a>
+</h2>
+
 <table cellspacing="30px">
   <tr>
     <td>
@@ -326,6 +337,9 @@ Group By:
       <div id="prs_chart"></div>
     </td>
     <td>
+      <a href="#" class="tooltip"> <img src="http://www.iparts.pro/catalog/view/theme/default/image/tooltip_icon.gif" /> <span style="font-size: 15px;">  
+      This table displays the amount of pull requests submitted by each contributer.
+      </span></a>
       <% @table_handle = "prs_table" %>
       <% @table_data = @prs_data %>
       <% @label_header = @prs_table_label_header %>
@@ -377,6 +391,10 @@ Group By:
         });
       </script>
       <div class="prs-line-graph-container">
+            <a href="#" class="tooltip"> <img  src="http://www.iparts.pro/catalog/view/theme/default/image/tooltip_icon.gif" /> <span style="font-size: 15px;">
+            In this line graph, we compare the activity of the top five contributors to the #{repo_name} repository over the specified time period. Here, the y axis represents the quantity of contributions, and the x axis represents which month the contribution was submitted  
+            </span></a>
+
         <div id="prs_line_graph" class="prs-line-graph"></div>
       </div>
     </td>
