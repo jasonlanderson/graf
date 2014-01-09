@@ -1,27 +1,17 @@
 require "db_utils"
+require "rollup_methods"
 
 class AnalyticUtils
   # TODO: Change to use parameterized queries
-  def self.get_pull_request_stats(select_col, group_by_col, data_index_name, month = nil, quarter = nil, year = nil, repo=nil, state=nil, company=nil, user=nil)
-    sql_stmt = "SELECT #{select_col}, COUNT(*) #{data_index_name} FROM pull_requests pr " \
+  def self.get_pull_request_stats(select_label_col, select_data_col, group_by_label_col, order_by_data_col, month = nil, quarter = nil, year = nil, repo=nil, state=nil, company=nil, user=nil)
+    sql_stmt = "SELECT #{select_label_col}, #{select_data_col} FROM pull_requests pr " \
       "LEFT OUTER JOIN users u ON pr.user_id = u.id " \
       "LEFT OUTER JOIN companies c ON u.company_id = c.id " \
       "LEFT OUTER JOIN repos r ON pr.repo_id = r.id "
 
     sql_stmt += where_clause_stmt(month, quarter, year, repo, state, company, user)
       
-    sql_stmt += "GROUP BY #{group_by_col} ORDER BY #{data_index_name} DESC"
-
-    return ActiveRecord::Base.connection.exec_query(sql_stmt)
-  end
-
-  # TODO: Change to use parameterized queries
-  def self.get_prs_days_elapsed
-    sql_stmt = "SELECT c.name, " \
-      "round(avg(#{DBUtils.get_date_difference('pr.date_closed','pr.date_created')}), 1)  avg_days_open " \
-      "FROM pull_requests pr LEFT OUTER JOIN users u " \
-      "ON pr.user_id = u.id LEFT OUTER JOIN companies c ON u.company_id = c.id GROUP BY c.name ORDER " \
-      "BY c.name"
+    sql_stmt += "GROUP BY #{group_by_label_col} ORDER BY #{order_by_data_col} DESC"
 
     return ActiveRecord::Base.connection.exec_query(sql_stmt)
   end
@@ -75,30 +65,37 @@ class AnalyticUtils
   end
 
   # Input array must be [{label_index_name => label, data_index_name => data}]
-  def self.top_x_with_rollup(input_array, label_index_name, data_index_name, top_x_count, rollup_name)
+  def self.top_x_with_rollup(input_array, label_index_name, data_index_name, top_x_count, rollup_name, rollup_method)
     if top_x_count < 0
       top_x_count = 0
     end
 
     if top_x_count >= input_array.count
       return input_array
-    else
-      # Sort the array
-      sorted_array = input_array.sort_by {|x| x[data_index_name] }.reverse
-
-      # Calculate sum of remaining
-      rollup_val = 0
-      sorted_array[top_x_count..sorted_array.count].each {|x| rollup_val += x[data_index_name] }
-
-      # Remove non-top
-      result = sorted_array[0...top_x_count]
-
-      # Add rollup record
-      # Add the numbers for mysql
-      result << {label_index_name => rollup_name, data_index_name => rollup_val}
-
-      return result
     end
+
+    # Sort the array
+    sorted_array = input_array.sort_by {|x| x[data_index_name] }.reverse
+
+    # Calculate the remaining
+    rollup_val = 0
+    if rollup_method == ROLLUP_METHOD::SUM
+      sorted_array[top_x_count..sorted_array.count].each {|x| rollup_val += x[data_index_name] }
+    elsif rollup_method == ROLLUP_METHOD::AVG
+      sorted_array[top_x_count..sorted_array.count].each {|x| rollup_val += x[data_index_name] }
+      rollup_val = rollup_val / (sorted_array.count - top_x_count)
+    else
+      puts "ERROR: Unknown Rollup Method '#{rollup_method}'"
+    end
+    
+    # Remove non-top
+    result = sorted_array[0...top_x_count]
+
+    # Add rollup record
+    # Add the numbers for mysql
+    result << {label_index_name => rollup_name, data_index_name => rollup_val}
+
+    return result
   end
 
   def self.where_clause_stmt(month = nil, quarter = nil, year = nil, repo=nil, state=nil, company=nil, user=nil)

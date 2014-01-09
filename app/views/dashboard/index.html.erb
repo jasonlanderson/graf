@@ -1,6 +1,8 @@
 <style type="text/css">
 #prs_chart { width: 450px; height: 450px; font-size:18px; position:relative; }
 #prs_tbl_ctr { width: 500px; height: 450px; font-size:18px; position:relative; }
+
+
 </style>
 
 
@@ -48,7 +50,7 @@
 
   function apiAJAX(metric, groupBy, month, quarter, year, repo, state, company, user, data_request, response_type, callback){
     $.ajax({
-        url: "api?groupBy=" + metric + "&group_by=" + groupBy + "&month=" + month + "&quarter=" + quarter + "&year=" + year + "&repo=" + repo + "&state=" + state + "&company=" + company + "&user=" + user + "&data_request=" + data_request,
+        url: "api?metric=" + metric + "&group_by=" + groupBy + "&month=" + month + "&quarter=" + quarter + "&year=" + year + "&repo=" + repo + "&state=" + state + "&company=" + company + "&user=" + user + "&data_request=" + data_request,
         method: 'GET',
         dataType: response_type,
         success: callback
@@ -195,7 +197,8 @@
 Metric:
  <select id="metric_filter">
     <option value="prs">Pull Requests</option>
-    <option value="days_elapsed">Days Elapsed</option>
+    <option value="avg_days_open">Average Days Opened</option>
+    <option value="percent_merged">Percent Merged</option>
   </select>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 Group By: 
@@ -400,7 +403,7 @@ Each of the top 5 contributers have their own slice of the pie chart. The remain
     </td>
   </tr>
 
-
+<div id="placeholder"></div>
 
 
 <%
