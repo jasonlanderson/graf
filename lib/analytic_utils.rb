@@ -42,7 +42,6 @@ class AnalyticUtils
 
     # Get the top companies
     top_group_bys = Hash[pr_dates_by_group.sort_by {|x, y| y.length }.reverse[0..4]]
-    puts top_group_bys
 
     json_dataset = "["
     top_group_bys.each do |group_by_val, pr_date_created_arr|
@@ -130,11 +129,11 @@ class AnalyticUtils
     end
 
     if start_date && start_date != ''
-      where_stmt += "AND pr.date_created >=  "
+      where_stmt += "AND pr.date_created >= '#{start_date}' "
     end
 
     if end_date && end_date != ''
-      where_stmt += "AND pr.date_created <=  "
+      where_stmt += "AND pr.date_created <= '#{end_date}'  "
     end
 
     if repo && repo != ''

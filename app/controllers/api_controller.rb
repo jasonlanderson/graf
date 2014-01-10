@@ -1,6 +1,7 @@
 require "analytic_utils"
 require "javascript_utils"
 require "db_utils"
+require "date_utils"
 require "rollup_methods"
 
 LABEL_MAPPING = {
@@ -28,8 +29,8 @@ class ApiController < ApplicationController
     month = params[:month]
     quarter = params[:quarter]
     year = params[:year]
-    start_date = params[:start_date]
-    end_date = params[:end_date]
+    start_date = DateUtils.human_slash_date_format_to_db_format(params[:start_date])
+    end_date = DateUtils.human_slash_date_format_to_db_format(params[:end_date])
     repo = params[:repo]
     state = params[:state]
     company = params[:company]
