@@ -21,7 +21,6 @@ $(document).ready(function () {
          }
     }
     options.colors = colors;
-
     $.plot($("#<%= @chart_handle %>"), $.parseJSON('<%= raw @chart_data %>').response, options);
 });
 </script>
