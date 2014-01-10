@@ -108,7 +108,7 @@ class AnalyticUtils
     where_stmt = " WHERE 1=1 "
 
     if month && month != ''
-      where_stmt += "AND #{DBUtils.get_month('pr.date_created')} = #{month} "
+      where_stmt += "AND #{DBUtils.get_month('pr.date_created')} = '#{month}' "
     end
 
     if quarter && quarter != ''
