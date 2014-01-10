@@ -28,6 +28,8 @@ class ApiController < ApplicationController
     month = params[:month]
     quarter = params[:quarter]
     year = params[:year]
+    start_date = params[:start_date]
+    end_date = params[:end_date]
     repo = params[:repo]
     state = params[:state]
     company = params[:company]
@@ -42,6 +44,8 @@ class ApiController < ApplicationController
         month,
         quarter,
         year,
+        start_date,
+        end_date,
         repo,
         state,
         company,
@@ -73,6 +77,8 @@ class ApiController < ApplicationController
               month,
               quarter,
               year,
+              start_date,
+              end_date,
               repo,
               state,
               company,
