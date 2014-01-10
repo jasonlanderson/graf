@@ -25,6 +25,52 @@
   });
 
   colors = ['#B82E2E', '#2EB82E', '#C75000', '#6629A3', '#2966A3', '#649ED8'];
+  pie_options = {
+         series: {
+            pie: {
+                show: true,
+                radius: 1,
+                label: {
+                    show: true,
+                    radius: 2/3,
+                    formatter: function(label, series){
+                        return '<div style="font-size:8pt;text-align:center;padding:2px;color:white;">'+label+'<br/>'+Math.round(series.percent)+'%</div>';
+                    },
+                    threshold: 0.04
+                }       
+            }
+         },
+         legend: {
+            labelBoxBorderColor: "none",
+            backgroundOpacity: 0.5
+         }
+      };
+  
+  
+  function parse_pie_to_bar(data) {
+      points = [];
+      ticks = [];
+      for (i = 0 ; i < data.length ; i++) {
+         points.push(Array(i, data[i].data));
+         ticks.push(Array(i, data[i].label));
+      }
+      data = [{ data: points,
+                  minTickSize: 1,
+                  bars: { 
+                          show: true,
+                          align: 'center'
+                         }         
+      }];
+      options = {
+          xaxis: {
+                      tickDecimals: 0,
+                      labelAngle: 90,
+                      ticks: ticks
+                  }
+      };
+      result = Array(data, options);
+      return result;
+  }
 
   function makeAsDataTableOnLoad(tableHandleIdStr) {
     $(document).ready( function () {
@@ -41,6 +87,8 @@
       "bFilter": true
     } );
   }
+
+
 
   function filterUpdate() {
     metric = $("#metric_filter").val()
@@ -69,38 +117,53 @@
         success: callback
     });
   }
+/*
+  function chartUpdate(){
+    <% @chart_handle = "prs_chart" %>
+    <% @chart_data = @prs_chart_str %>
+    data = $.parseJSON('<%= raw @chart_data %>').response;
+    if ($("#view_type").val() == "pie") {
+          
+    }
+    else {
+          
+      
+
+      
+
+    }
+    options.colors = colors;
+    $.plot($("#<%= @chart_handle %>"), data, options);
+
+  }
+*/
 
   function updatePRsChartCallback(result){
     $("#prs_chart").empty();
-    options = {
-         series: {
-            pie: {
-                show: true,
-                radius: 1,
-                label: {
-                    show: true,
-                    radius: 2/3,
-                    formatter: function(label, series){
-                        return '<div style="font-size:8pt;text-align:center;padding:2px;color:white;">'+label+'<br/>'+Math.round(series.percent)+'%</div>';
-                    },
-                    threshold: 0.04
-                }       
-            }
-         },
-         legend: {
-            labelBoxBorderColor: "none"
-         }
-    }
-    options.colors = colors;
     if (result.response.length == 0) {
       data = [{ label: "No Pull Requests", data: 1, color:'#E0E0E0' }];
     }
     else {
       data = result.response;
     }
+
+    if ($("#view_type").val() == "bar") {
+      //options = bar_options;
+      result = parse_pie_to_bar(data);
+      var data = result[0];
+      var options = result[1];
+    }
+    else {
+      options = pie_options;
+
+    }
+    options.colors = colors;    
     $.plot($("#prs_chart"), data, options);
 
   }
+
+  
+
 
   function updatePRsTableCallback(result){
     $("#prs_tbl_ctr").empty();
@@ -195,6 +258,10 @@
     });
 
     $("#end_date_filter").change(function () {
+      filterUpdate()
+    });
+
+    $("#view_type").change(function () {
       filterUpdate()
     });
 
@@ -379,7 +446,6 @@ Each of the top 5 contributers have their own slice of the pie chart. The remain
 <select id="view_type">
     <option value="pie">Pie Chart</option>
     <option value="bar">Bar Chart</option>
-    <option value="percent_merged">Percent Merged</option>
 </select>
 <table cellspacing="30px">
   <tr>

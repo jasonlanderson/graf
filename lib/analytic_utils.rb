@@ -130,11 +130,11 @@ class AnalyticUtils
     end
 
     if start_date && start_date != ''
-      where_stmt += "AND pr.date_created >=  "
+      #where_stmt += "AND pr.date_created >=  "
     end
 
     if end_date && end_date != ''
-      where_stmt += "AND pr.date_created <=  "
+      #where_stmt += "AND pr.date_created <=  "
     end
 
     if repo && repo != ''
