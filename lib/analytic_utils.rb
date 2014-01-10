@@ -3,13 +3,16 @@ require "rollup_methods"
 
 class AnalyticUtils
   # TODO: Change to use parameterized queries
-  def self.get_pull_request_stats(select_label_col, select_data_col, group_by_label_col, order_by_data_col, month = nil, quarter = nil, year = nil, repo=nil, state=nil, company=nil, user=nil)
+  def self.get_pull_request_stats(select_label_col, select_data_col, group_by_label_col,
+    order_by_data_col, month = nil, quarter = nil, year = nil, start_date = nil, end_date = nil,
+    repo=nil, state=nil, company=nil, user=nil)
+
     sql_stmt = "SELECT #{select_label_col}, #{select_data_col} FROM pull_requests pr " \
       "LEFT OUTER JOIN users u ON pr.user_id = u.id " \
       "LEFT OUTER JOIN companies c ON u.company_id = c.id " \
       "LEFT OUTER JOIN repos r ON pr.repo_id = r.id "
 
-    sql_stmt += where_clause_stmt(month, quarter, year, repo, state, company, user)
+    sql_stmt += where_clause_stmt(month, quarter, year, start_date, end_date, repo, state, company, user)
       
     sql_stmt += "GROUP BY #{group_by_label_col} ORDER BY #{order_by_data_col} DESC"
 
@@ -17,11 +20,13 @@ class AnalyticUtils
   end
 
   # TODO: Change to use parameterized queries
-  def self.get_timestamps(select_col, group_by_col, month = nil, quarter = nil, year = nil, repo=nil, state=nil, company=nil, user=nil)
+  def self.get_timestamps(select_col, group_by_col, month = nil, quarter = nil, year = nil,
+    start_date = nil, end_date = nil, repo=nil, state=nil, company=nil, user=nil)
+
     sql_stmt = "SELECT #{select_col}, pr.date_created FROM pull_requests pr LEFT OUTER JOIN users u  ON pr.user_id " \
       " = u.id LEFT OUTER JOIN companies c ON u.company_id = c.id LEFT OUTER JOIN repos r ON pr.repo_id = r.id " 
     
-    sql_stmt += where_clause_stmt(month, quarter, year, repo, state, company, user)
+    sql_stmt += where_clause_stmt(month, quarter, year, start_date, end_date, repo, state, company, user)
 
     query = ActiveRecord::Base.connection.exec_query(sql_stmt)  
     pr_dates_by_group = Hash.new
@@ -98,7 +103,9 @@ class AnalyticUtils
     return result
   end
 
-  def self.where_clause_stmt(month = nil, quarter = nil, year = nil, repo=nil, state=nil, company=nil, user=nil)
+  def self.where_clause_stmt(month = nil, quarter = nil, year = nil, start_date = nil,
+    end_date = nil, repo=nil, state=nil, company=nil, user=nil)
+
     where_stmt = " WHERE 1=1 "
 
     if month && month != ''
@@ -120,6 +127,14 @@ class AnalyticUtils
 
     if year && year != ''
       where_stmt += "AND #{DBUtils.get_year('pr.date_created')} = '#{year}' "
+    end
+
+    if start_date && start_date != ''
+      where_stmt += "AND pr.date_created >=  "
+    end
+
+    if end_date && end_date != ''
+      where_stmt += "AND pr.date_created <=  "
     end
 
     if repo && repo != ''

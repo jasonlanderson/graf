@@ -11,6 +11,7 @@ gem 'mysql2'
 gem 'octokit'
 gem "flot-rails", "~> 0.0.4"
 gem "jquery-datatables-rails"
+gem "jquery-ui-rails"
 
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 4.0.0'

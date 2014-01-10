@@ -42,27 +42,28 @@
     } );
   }
 
-
   function filterUpdate() {
     metric = $("#metric_filter").val()
     groupBy = $("#group_by_filter").val()
     month = $("#month_filter").val()
     quarter = $("#quarter_filter").val()
     year = $("#year_filter").val()
+    startDate = $("#start_date_filter").val()
+    endDate = $("#end_date_filter").val()
     repo = $("#repo_filter").val()
     state = $("#state_filter").val()
     company = $("#company_filter").val()
     user = $("#user_filter").val()
-    apiAJAX(metric, groupBy, month, quarter, year, repo, state, company, user, 'prs_chart', 'json', updatePRsChartCallback);
-    apiAJAX(metric, groupBy, month, quarter, year, repo, state, company, user, 'prs_table', 'text', updatePRsTableCallback);
-    apiAJAX(metric, groupBy, month, quarter, year, repo, state, company, user, 'prs_line_graph', 'json', updatePRsLineGraphCallback);
+    apiAJAX(metric, groupBy, month, quarter, year, startDate, endDate, repo, state, company, user, 'prs_chart', 'json', updatePRsChartCallback);
+    apiAJAX(metric, groupBy, month, quarter, year, startDate, endDate, repo, state, company, user, 'prs_table', 'text', updatePRsTableCallback);
+    apiAJAX(metric, groupBy, month, quarter, year, startDate, endDate, repo, state, company, user, 'prs_line_graph', 'json', updatePRsLineGraphCallback);
     //apiAJAX(month, quarter, year, repo, state, 'company_table', 'text', updatePRsCompanyTableCallback);
     //apiAJAX(month, quarter, year, repo, state, 'monthly_line_graph', 'json', updateMonthlyLineGraphCallback);
   }
 
-  function apiAJAX(metric, groupBy, month, quarter, year, repo, state, company, user, data_request, response_type, callback){
+  function apiAJAX(metric, groupBy, month, quarter, year, start_date, end_date, repo, state, company, user, data_request, response_type, callback){
     $.ajax({
-        url: "api?metric=" + metric + "&group_by=" + groupBy + "&month=" + month + "&quarter=" + quarter + "&year=" + year + "&repo=" + repo + "&state=" + state + "&company=" + company + "&user=" + user + "&data_request=" + data_request,
+        url: "api?metric=" + metric + "&group_by=" + groupBy + "&month=" + month + "&quarter=" + quarter + "&year=" + year + "&start_date=" + start_date + "&end_date=" + end_date + "&repo=" + repo + "&state=" + state + "&company=" + company + "&user=" + user + "&data_request=" + data_request,
         method: 'GET',
         dataType: response_type,
         success: callback
@@ -118,8 +119,8 @@
     for ( id in whereDropDownIds ) {
       $("#" + whereDropDownIds[id]).val("");
     }
-    filterUpdate();
 
+    filterUpdate();
   }
 
   function updatePRsLineGraphCallback(result){
@@ -189,12 +190,34 @@
       filterUpdate()
     });
 
-    $("#clear_search_criteria_button").click(function () {
-      clearSearchCriteria();
-      
+    $("#start_date_filter").change(function () {
+      filterUpdate()
     });
 
-    
+    $("#end_date_filter").change(function () {
+      filterUpdate()
+    });
+
+    $("#clear_search_criteria_button").click(function () {
+      clearSearchCriteria();
+    });
+
+    $(function() {
+      $( "#start_date_filter" ).datepicker({
+        showOn: "button",
+        buttonImage: "<%= image_path "calendar.png" %>",
+        buttonImageOnly: true
+      });
+    });
+
+    $(function() {
+      $( "#end_date_filter" ).datepicker({
+        showOn: "button",
+        buttonImage: "<%= image_path "calendar.png" %>",
+        buttonImageOnly: true
+      });
+    });
+
   });
 
 </script>
@@ -227,6 +250,7 @@ Group By:
 <br><br>
 
 <h2>Search Criteria:</h2>
+
 <table>
   <tr>
     <td>
@@ -250,6 +274,17 @@ Group By:
       </select>
     </td>
     <td>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;State:
+    </td>
+    <td>
+      <select id="state_filter">
+        <option value="" selected>All</option>
+        <option value="open">Open</option>
+        <option value="merged">Merged</option>
+        <option value="closed">Closed (Not Merged)</option>
+      </select>
+    </td>
+    <td>
       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Repository:
     </td>
     <td>
@@ -261,16 +296,8 @@ Group By:
       <% @drop_down_width = "500px" %>
       <%= render 'drop_down' %>
     </td>
-    <td>
-      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;State:
-    </td>
-    <td>
-      <select id="state_filter">
-        <option value="" selected>All</option>
-        <option value="open">Open</option>
-        <option value="merged">Merged</option>
-        <option value="closed">Closed (Not Merged)</option>
-      </select>
+    <td rowspan="3">
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button id="clear_search_criteria_button">Clear Search Criteria</button>
     </td>
   </tr>
   <tr>
@@ -287,6 +314,12 @@ Group By:
       </select>
     </td>
     <td>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Start Date:
+    </td>
+    <td>
+      <input type="text" id="start_date_filter" size="20">
+    </td>
+    <td>
       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Company:
     </td>
     <td>
@@ -298,8 +331,6 @@ Group By:
       <% @drop_down_width = "500px" %>
       <%= render 'drop_down' %>
     </td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
   </tr>
   <tr>
     <td>
@@ -315,6 +346,12 @@ Group By:
       </select>
     </td>
     <td>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;End Date:
+    </td>
+    <td>
+      <input type="text" id="end_date_filter" size="20">
+    </td>
+    <td>
       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;User:
     </td>
     <td>
@@ -325,12 +362,9 @@ Group By:
       <% @drop_down_selected = nil %>
       <%= render 'drop_down' %>
     </td>
-    <td>&nbsp;</td>
-    <td>
-      <button id="clear_search_criteria_button">Clear Search Criteria</button>
-    </td>
   </tr>
 </table>
+
 
 <hr>
 <%# Pull Requests Section %>

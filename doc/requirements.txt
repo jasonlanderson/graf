@@ -55,6 +55,10 @@ If company name contains pivotal (case insensitive), Overwrite company name to b
   - PR Avg Days Open (Total and IBM's)
   - List percentage of closed PRs versus merged PRs (Omit those that are open)
 
+Table with average time 
+PR Days Open average by month and quarter (measure time between (re)open and close)
+
+
 ###
 # Forward Looking Requirments
 ###

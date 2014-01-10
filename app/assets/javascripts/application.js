@@ -12,6 +12,7 @@
 //
 //= require jquery
 //= require jquery_ujs
+//= require jquery.ui.all
 //= require jquery.flot
 //= require jquery.flot.pie
 //= require jquery.flot.time
@@ -22,3 +23,4 @@
 //= require dataTables/jquery.dataTables
 //= require turbolinks
 //= require_tree .
+
