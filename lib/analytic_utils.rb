@@ -108,7 +108,7 @@ class AnalyticUtils
     where_stmt = " WHERE 1=1 "
 
     if month && month != ''
-      where_stmt += "AND CAST(#{DBUtils.get_month('pr.date_created')} AS INTEGER) = '#{month}' "
+      where_stmt += "AND #{DBUtils.get_month('pr.date_created')} = '#{month}' "
     end
 
     if quarter && quarter != ''
@@ -143,7 +143,7 @@ class AnalyticUtils
     if state && (state == "open")
       where_stmt += "AND pr.state = 'open' "
     elsif state && (state == "merged")
-      where_stmt += "AND pr.date_merged NOT NULL "
+      where_stmt += "AND pr.date_merged IS NOT NULL "
     elsif state && (state == "closed") # Not including merged prs
       where_stmt += "AND pr.state = 'closed' AND pr.date_merged IS NULL "
     end

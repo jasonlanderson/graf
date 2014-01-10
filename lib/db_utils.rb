@@ -21,7 +21,7 @@ class DBUtils
 
   def self.get_month(column)
     if get_current_db_type == RDMS::SQLITE
-      return "strftime('%m', #{column})"
+      return "CAST(strftime('%m', #{column})AS INTEGER)"
     elsif get_current_db_type == RDMS::MYSQL
       return "EXTRACT(MONTH FROM #{column})"
     else
