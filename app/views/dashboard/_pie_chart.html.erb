@@ -20,7 +20,7 @@ $(document).ready(function () {
             backgroundOpacity: 0.5
          }
     }
-    options.colors = colors;
+    options.colors = COLORS;
     $.plot($("#<%= @chart_handle %>"), $.parseJSON('<%= raw @chart_data %>').response, options);
 });
 </script>

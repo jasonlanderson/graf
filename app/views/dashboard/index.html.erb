@@ -23,54 +23,6 @@
     $( document ).tooltip();
   });
 
-  colors = ['#B82E2E', '#2EB82E', '#C75000', '#6629A3', '#2966A3', '#649ED8'];
-  pie_options = {
-         series: {
-            pie: {
-                show: true,
-                radius: 1,
-                label: {
-                    show: true,
-                    radius: 2/3,
-                    formatter: function(label, series){
-                        return '<div style="font-size:8pt;text-align:center;padding:2px;color:white;">'+label+'<br/>'+Math.round(series.percent)+'%</div>';
-                    },
-                    threshold: 0.04
-                }       
-            }
-         },
-         legend: {
-            labelBoxBorderColor: "none",
-            backgroundOpacity: 0.5
-         }
-      };
-  
-  
-  function parse_pie_to_bar(data) {
-      points = [];
-      ticks = [];
-      for (i = 0 ; i < data.length ; i++) {
-         points.push(Array(i, data[i].data));
-         ticks.push(Array(i, data[i].label));
-      }
-      data = [{ data: points,
-                  minTickSize: 1,
-                  bars: { 
-                          show: true,
-                          align: 'center'
-                         }         
-      }];
-      options = {
-          xaxis: {
-                      tickDecimals: 0,
-                      labelAngle: 90,
-                      ticks: ticks
-                  }
-      };
-      result = Array(data, options);
-      return result;
-  }
-
   function makeAsDataTableOnLoad(tableHandleIdStr) {
     $(document).ready( function () {
       makeAsDataTable(tableHandleIdStr)
@@ -88,7 +40,6 @@
   }
 
 
-
   function filterUpdate() {
     metric = $("#metric_filter").val()
     groupBy = $("#group_by_filter").val()
@@ -101,20 +52,13 @@
     state = $("#state_filter").val()
     company = $("#company_filter").val()
     user = $("#user_filter").val()
+
+    // Make API calls to update the data
     apiAJAX(metric, groupBy, month, quarter, year, startDate, endDate, repo, state, company, user, 'prs_chart', 'json', updatePRsChartCallback);
     apiAJAX(metric, groupBy, month, quarter, year, startDate, endDate, repo, state, company, user, 'prs_table', 'text', updatePRsTableCallback);
     apiAJAX(metric, groupBy, month, quarter, year, startDate, endDate, repo, state, company, user, 'prs_line_graph', 'json', updatePRsLineGraphCallback);
     //apiAJAX(month, quarter, year, repo, state, 'company_table', 'text', updatePRsCompanyTableCallback);
     //apiAJAX(month, quarter, year, repo, state, 'monthly_line_graph', 'json', updateMonthlyLineGraphCallback);
-  }
-
-  function apiAJAX(metric, groupBy, month, quarter, year, start_date, end_date, repo, state, company, user, data_request, response_type, callback){
-    $.ajax({
-        url: "api?metric=" + metric + "&group_by=" + groupBy + "&month=" + month + "&quarter=" + quarter + "&year=" + year + "&start_date=" + start_date + "&end_date=" + end_date + "&repo=" + repo + "&state=" + state + "&company=" + company + "&user=" + user + "&data_request=" + data_request,
-        method: 'GET',
-        dataType: response_type,
-        success: callback
-    });
   }
 
   function updatePRsChartCallback(result){
@@ -127,23 +71,18 @@
     }
 
     if ($("#view_type").val() == "bar") {
-      //options = bar_options;
-      result = parse_pie_to_bar(data);
-      var data = result[0];
-      var options = result[1];
+      result = parsePieToBar(data);
+      var data = result.data;
+      var options = result.options;
     }
     else {
-      options = pie_options;
-
+      options = PIE_OPTIONS;
     }
-    options.colors = colors;    
-    $.plot($("#prs_chart"), data, options);
 
+    $.plot($("#prs_chart"), data, options);
   }
 
   
-
-
   function updatePRsTableCallback(result){
     $("#prs_tbl_ctr").empty();
     $("#prs_tbl_ctr").html(result);
@@ -173,33 +112,7 @@
 
 
   function updatePRsLineGraphCallback(result){
-      var options = {
-      series: {
-        lines: {
-          show: true
-        },
-        points: {
-          show: true
-        }
-      },
-      xaxis: {
-        //tickDecimals: 0, 
-        mode: "time",
-        minTickSize: [1, "month"],
-        //min: (new Date("2010/01/01")).getTime(),
-        //max: (new Date("2014/01/02")).getTime()
-      },
-      legend: {
-        position: "nw"
-
-      },
-      yaxis: {
-        minTickSize: 5
-      },
-      };
-      options.colors = colors;
-
-      $.plot($("#prs_line_graph"), result.response, options);
+    $.plot($("#prs_line_graph"), result.response, LINE_OPTIONS);
   }
 
   $(document).ready(function () {
@@ -271,6 +184,9 @@
       });
     });
 
+    // Load initial  chart
+    // options.colors = COLORS;
+    // $.plot($("#<%= @chart_handle %>"), $.parseJSON('<%= raw @chart_data %>').response, options);
   });
 
 </script>
@@ -489,7 +405,7 @@ Each of the top 5 contributers have their own slice of the pie chart. The remain
                 minTickSize: 5
               },
             };
-            options.colors = colors;
+            options.colors = COLORS;
 
           $.plot($("#prs_line_graph"), data, options);
 
