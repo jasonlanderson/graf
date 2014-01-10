@@ -19,7 +19,13 @@
     // Make API calls to update the data
     apiAJAX(metric, groupBy, month, quarter, year, startDate, endDate, repo, state, company, user, 'prs_chart', 'json', updateChartCallback);
     apiAJAX(metric, groupBy, month, quarter, year, startDate, endDate, repo, state, company, user, 'prs_table', 'text', updateTableCallback);
+    if ($("#metric_filter").val() == "prs"){
+    $("#line-graph-container").show();  
     apiAJAX(metric, groupBy, month, quarter, year, startDate, endDate, repo, state, company, user, 'prs_line_graph', 'json', updateLineGraphCallback);
+    }
+    else {
+      $("#line-graph-container").hide();
+    }
     //apiAJAX(month, quarter, year, repo, state, 'company_table', 'text', updatePRsCompanyTableCallback);
     //apiAJAX(month, quarter, year, repo, state, 'monthly_line_graph', 'json', updateMonthlyLineGraphCallback);
   }
@@ -159,7 +165,19 @@
 
 
 
-<h1>GitHub Repository Analytics with Filtering </h1>
+<h1 style="margin-bottom: 0; padding-bottom: 0; font-weight:normal;">GitHub Repository Analytics with Filtering 
+
+<a href="#" class="tooltip"> <%= image_tag "tooltip.gif" %> <span style="font-size: 15px;">  
+GitHub Repository Analytics with Filtering (GRAF) is a web service that has the ability to collect and visually represent useful statistics on various Github repositories. At the moment, this application is only collecting data on repositories hosted by the "CloudFoundry" Github organization. We plan to expand this application to collect data on repositories from other organizations (Openstack, Openshift, etc.) in the near future.
+<br><br>
+These statistics are collected through the Github API. We use the API's functions to gather information on every "Pull Request" that has been contributed to the CloudFoundry repositories. Once this data has been successfully collected and stored into our database, our application allows the user to generate figures that are customized by timeframe, repository, company, etc.
+<br><br>
+Company affiliation is determined by polling each Github user's profile. If a user does not have an affliated company listed on their profile, the application then checks to see whether the user is a member of any corporate Github organizations. If they are not, the user is assumed to be independent.
+<br>
+</span> </a>
+</h1>
+
+
 <hr>
 <div style="float:right">Last Data Load: <%= @last_updated.load_start_time.strftime("%m/%d/%Y %H:%I%P") %></div>
 
@@ -308,7 +326,8 @@ Group By:
 This pie chart represents all pull requests submitted to the Cloud Foundry Github repositories during the specifed time period. <br> Each slice represents a separate company, and the size of each slice is proportional to the company's quantity of contributions. 
 <br>
 Each of the top 5 contributers have their own slice of the pie chart. The remaining contributers are then merged together into the "Others" slice.
-</span> </a>View As:
+</span> </a>
+View As:
 <select id="view_type">
     <option value="pie">Pie Chart</option>
     <option value="bar">Bar Chart</option>
@@ -354,7 +373,7 @@ This table displays the amount of pull requests submitted by each contributer.
   });
 
 </script>
-<div class="prs-line-graph-container">
+<div id="line-graph-container" class="prs-line-graph-container">
   <a href="#" class="tooltip"> <%= image_tag "tooltip.gif" %> <span style="font-size: 15px;">
   In this line graph, we compare the activity of the top five contributors to the #{repo_name} repository over the specified time period. Here, the y axis represents the quantity of contributions, and the x axis represents which month the contribution was submitted  
   </span></a>
