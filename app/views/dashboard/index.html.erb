@@ -2,7 +2,6 @@
 #prs_chart { width: 450px; height: 450px; font-size:18px; position:relative; }
 #prs_tbl_ctr { width: 500px; height: 450px; font-size:18px; position:relative; }
 
-#placeholder { width: 450px; height: 200px; }
 .legend table, .legend > div {
     height: 82px !important;
     opacity: 1 !important;
@@ -117,26 +116,6 @@
         success: callback
     });
   }
-/*
-  function chartUpdate(){
-    <% @chart_handle = "prs_chart" %>
-    <% @chart_data = @prs_chart_str %>
-    data = $.parseJSON('<%= raw @chart_data %>').response;
-    if ($("#view_type").val() == "pie") {
-          
-    }
-    else {
-          
-      
-
-      
-
-    }
-    options.colors = colors;
-    $.plot($("#<%= @chart_handle %>"), data, options);
-
-  }
-*/
 
   function updatePRsChartCallback(result){
     $("#prs_chart").empty();
@@ -179,15 +158,19 @@
                         "state_filter", 
                         "company_filter", 
                         "user_filter"];
+
+    // Clear all the dropdowns
     for ( id in whereDropDownIds ) {
       $("#" + whereDropDownIds[id]).val("");
     }
 
+    // Clear the date range
     $("#start_date_filter").val("");
     $("#end_date_filter").val("");
 
     filterUpdate();
   }
+
 
   function updatePRsLineGraphCallback(result){
       var options = {
@@ -440,7 +423,7 @@ Group By:
 <%# Pull Requests Section %>
 
 <h2 style="margin-bottom: 0; padding-bottom: 0; font-weight:normal;" >Pull Request Contributions by User  
-<a href="#" class="tooltip"> <img src="http://www.iparts.pro/catalog/view/theme/default/image/tooltip_icon.gif" /> <span style="font-size: 15px;">  
+<a href="#" class="tooltip"> <%= image_tag "tooltip.gif" %> <span style="font-size: 15px;">  
 This pie chart represents all pull requests submitted to the Cloud Foundry Github repositories during the specifed time period. <br> Each slice represents a separate company, and the size of each slice is proportional to the company's quantity of contributions. 
 <br>
 Each of the top 5 contributers have their own slice of the pie chart. The remaining contributers are then merged together into the "Others" slice.
@@ -459,7 +442,7 @@ Each of the top 5 contributers have their own slice of the pie chart. The remain
       <div id="prs_chart"></div>
     </td>
     <td>
-      <a href="#" class="tooltip"> <img src="http://www.iparts.pro/catalog/view/theme/default/image/tooltip_icon.gif" /> <span style="font-size: 15px;">  
+      <a href="#" class="tooltip"> <%= image_tag "tooltip.gif" %> <span style="font-size: 15px;">  
       This table displays the amount of pull requests submitted by each contributer.
       </span></a>
       <% @table_handle = "prs_table" %>
@@ -514,7 +497,7 @@ Each of the top 5 contributers have their own slice of the pie chart. The remain
 
       </script>
       <div class="prs-line-graph-container">
-            <a href="#" class="tooltip"> <img  src="http://www.iparts.pro/catalog/view/theme/default/image/tooltip_icon.gif" /> <span style="font-size: 15px;">
+            <a href="#" class="tooltip"> <%= image_tag "tooltip.gif" %> <span style="font-size: 15px;">
             In this line graph, we compare the activity of the top five contributors to the #{repo_name} repository over the specified time period. Here, the y axis represents the quantity of contributions, and the x axis represents which month the contribution was submitted  
             </span></a>
 
@@ -522,9 +505,6 @@ Each of the top 5 contributers have their own slice of the pie chart. The remain
       </div>
     </td>
   </tr>
-
-<div id="placeholder"></div>
-
 
 <%
 =begin %>
