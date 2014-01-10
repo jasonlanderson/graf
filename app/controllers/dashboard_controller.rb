@@ -19,6 +19,8 @@ class DashboardController < ApplicationController
     @companies = Company.order(:name)
     @users = User.order(:login)
 
+    @last_updated = GithubLoad.last
+
     #@timestamps = AnalyticUtils.get_timestamps
   end
   
