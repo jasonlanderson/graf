@@ -42,16 +42,16 @@
     state = $("#state_filter").val()
     company = $("#company_filter").val()
     user = $("#user_filter").val()
-    apiAJAX(metric, groupBy, month, quarter, year, repo, state, company, user, 'prs_chart', 'json', updatePRsChartCallback);
-    apiAJAX(metric, groupBy, month, quarter, year, repo, state, company, user, 'prs_table', 'text', updatePRsTableCallback);
-    apiAJAX(metric, groupBy, month, quarter, year, repo, state, company, user, 'prs_line_graph', 'json', updatePRsLineGraphCallback);
+    apiAJAX(metric, groupBy, month, quarter, year, startDate, endDate, repo, state, company, user, 'prs_chart', 'json', updatePRsChartCallback);
+    apiAJAX(metric, groupBy, month, quarter, year, startDate, endDate, repo, state, company, user, 'prs_table', 'text', updatePRsTableCallback);
+    apiAJAX(metric, groupBy, month, quarter, year, startDate, endDate, repo, state, company, user, 'prs_line_graph', 'json', updatePRsLineGraphCallback);
     //apiAJAX(month, quarter, year, repo, state, 'company_table', 'text', updatePRsCompanyTableCallback);
     //apiAJAX(month, quarter, year, repo, state, 'monthly_line_graph', 'json', updateMonthlyLineGraphCallback);
   }
 
-  function apiAJAX(metric, groupBy, month, quarter, year, repo, state, company, user, data_request, response_type, callback){
+  function apiAJAX(metric, groupBy, month, quarter, year, start_date, end_date, repo, state, company, user, data_request, response_type, callback){
     $.ajax({
-        url: "api?metric=" + metric + "&group_by=" + groupBy + "&month=" + month + "&quarter=" + quarter + "&year=" + year + "&repo=" + repo + "&state=" + state + "&company=" + company + "&user=" + user + "&data_request=" + data_request,
+        url: "api?metric=" + metric + "&group_by=" + groupBy + "&month=" + month + "&quarter=" + quarter + "&year=" + year + "&start_date=" + start_date + "&end_date=" + end_date + "&repo=" + repo + "&state=" + state + "&company=" + company + "&user=" + user + "&data_request=" + data_request,
         method: 'GET',
         dataType: response_type,
         success: callback
@@ -191,16 +191,18 @@
     });
 
     $(function() {
-      $( "#start_date_filter" ).datepicker();
-      $( "#anim" ).change(function() {
-        $( "#start_date_filter" ).datepicker( "option", "showAnim", $( this ).val() );
+      $( "#start_date_filter" ).datepicker({
+        showOn: "button",
+        buttonImage: "<%= image_path "calendar.png" %>",
+        buttonImageOnly: true
       });
     });
 
     $(function() {
-      $( "#end_date_filter" ).datepicker();
-      $( "#anim" ).change(function() {
-        $( "#end_date_filter" ).datepicker( "option", "showAnim", $( this ).val() );
+      $( "#end_date_filter" ).datepicker({
+        showOn: "button",
+        buttonImage: "<%= image_path "calendar.png" %>",
+        buttonImageOnly: true
       });
     });
 
@@ -303,7 +305,7 @@ Group By:
       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Start Date:
     </td>
     <td>
-      <input type="text" id="start_date_filter" size="25">
+      <input type="text" id="start_date_filter" size="20">
     </td>
     <td>
       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Company:
@@ -335,7 +337,7 @@ Group By:
       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;End Date:
     </td>
     <td>
-      <input type="text" id="end_date_filter" size="25">
+      <input type="text" id="end_date_filter" size="20">
     </td>
     <td>
       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;User:
