@@ -85,7 +85,7 @@ class ApiController < ApplicationController
               company,
               user
             )
-      @table_handle = "prs_table"
+      @table_handle = "metric_table"
       @table_data = prs_data
       @label_header = LABEL_MAPPING[group_by][:hash_name].titleize
       @data_header = "Contributions"
@@ -95,7 +95,17 @@ class ApiController < ApplicationController
       
 
     elsif data_request == 'prs_line_graph'
-       line_graph = AnalyticUtils.get_timestamps(LABEL_MAPPING[group_by][:sql_select], LABEL_MAPPING[group_by][:hash_name], month, quarter, year, repo, state, company, user)
+       line_graph = AnalyticUtils.get_timestamps(LABEL_MAPPING[group_by][:sql_select],
+                LABEL_MAPPING[group_by][:hash_name],
+                month,
+                quarter,
+                year,
+                start_date,
+                end_date,
+                repo,
+                state,
+                company,
+                user)
        render :json => "{\"response\": #{line_graph}}"
     else
       render :text => "Error: Invalid data_request: #{data_request}"

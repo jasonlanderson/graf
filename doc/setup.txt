@@ -38,7 +38,7 @@ GRANT ALL PRIVILEGES ON graf_db.* TO 'graf_user'@'localhost' IDENTIFIED BY 'time
 ###
 # Deploying to BlueMix
 ###
-cf push --command 'bundle exec rake db:create db:migrate' graf
+cf push --command 'bundle exec rake db:create db:migrate' graf-test
 cf push --command 'bundle exec rails s'
 
 {
@@ -61,6 +61,11 @@ cf push --command 'bundle exec rails s'
 
 # Prod DB
 mysql -h 10.0.116.62 -u uJ4LJCgf7xsGT -P 3307 d6e8e1188b2124bc7b67fdefa63b8c980 -p pZDbbwCIZUacr
+
+
+
+
+Database Info: {"adapter"=>"mysql2", "database"=>"df1b37c18545c47a3b1be0abef97b1de5", "username"=>"uYl77NvVqpQQR", "password"=>"pEtQQMsomNskb", "host"=>"10.0.116.62", "port"=>3307}
 
 # Test DB
 mysql -h 10.0.116.62 -P 3307 -u uYl77NvVqpQQR df1b37c18545c47a3b1be0abef97b1de5 -p

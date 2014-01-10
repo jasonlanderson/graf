@@ -1,44 +1,7 @@
-<style type="text/css">
-#prs_chart { width: 450px; height: 450px; font-size:18px; position:relative; }
-#prs_tbl_ctr { width: 500px; height: 450px; font-size:18px; position:relative; }
-
-.legend table, .legend > div {
-    height: 82px !important;
-    opacity: 1 !important;
-    right: -55px;
-    top: 10px;
-    width: 116px !important;
-}
- 
-.legend table {
-    border: 1px solid #555;
-    padding: 5px;
-}
-</style>
-
-
-
 <script type="text/javascript">
   $(function() {
     $( document ).tooltip();
   });
-
-  function makeAsDataTableOnLoad(tableHandleIdStr) {
-    $(document).ready( function () {
-      makeAsDataTable(tableHandleIdStr)
-    } );
-  }
-
-  function makeAsDataTable(tableHandleIdStr) {
-    $(tableHandleIdStr).dataTable({
-      "sScrollY": "350px", "sScrollX": "500px",
-      "bPaginate": false,
-      "bSort": false,
-      "bAutoWidth" : true,
-      "bFilter": true
-    } );
-  }
-
 
   function filterUpdate() {
     metric = $("#metric_filter").val()
@@ -54,15 +17,15 @@
     user = $("#user_filter").val()
 
     // Make API calls to update the data
-    apiAJAX(metric, groupBy, month, quarter, year, startDate, endDate, repo, state, company, user, 'prs_chart', 'json', updatePRsChartCallback);
-    apiAJAX(metric, groupBy, month, quarter, year, startDate, endDate, repo, state, company, user, 'prs_table', 'text', updatePRsTableCallback);
-    apiAJAX(metric, groupBy, month, quarter, year, startDate, endDate, repo, state, company, user, 'prs_line_graph', 'json', updatePRsLineGraphCallback);
+    apiAJAX(metric, groupBy, month, quarter, year, startDate, endDate, repo, state, company, user, 'prs_chart', 'json', updateChartCallback);
+    apiAJAX(metric, groupBy, month, quarter, year, startDate, endDate, repo, state, company, user, 'prs_table', 'text', updateTableCallback);
+    apiAJAX(metric, groupBy, month, quarter, year, startDate, endDate, repo, state, company, user, 'prs_line_graph', 'json', updateLineGraphCallback);
     //apiAJAX(month, quarter, year, repo, state, 'company_table', 'text', updatePRsCompanyTableCallback);
     //apiAJAX(month, quarter, year, repo, state, 'monthly_line_graph', 'json', updateMonthlyLineGraphCallback);
   }
 
-  function updatePRsChartCallback(result){
-    $("#prs_chart").empty();
+  function updateChartCallback(result){
+    $("#metric_chart").empty();
     if (result.response.length == 0) {
       data = [{ label: "No Pull Requests", data: 1, color:'#E0E0E0' }];
     }
@@ -79,14 +42,14 @@
       options = PIE_OPTIONS;
     }
 
-    $.plot($("#prs_chart"), data, options);
+    $.plot($("#metric_chart"), data, options);
   }
 
   
-  function updatePRsTableCallback(result){
-    $("#prs_tbl_ctr").empty();
-    $("#prs_tbl_ctr").html(result);
-    makeAsDataTable("#prs_table")
+  function updateTableCallback(result){
+    $("#table_container").empty();
+    $("#table_container").html(result);
+    makeAsDataTable("#metric_table")
   }
 
   function clearSearchCriteria(){
@@ -107,14 +70,18 @@
     $("#start_date_filter").val("");
     $("#end_date_filter").val("");
 
+    // Update chart now that values have been reset
     filterUpdate();
   }
 
 
-  function updatePRsLineGraphCallback(result){
+  function updateLineGraphCallback(result){
     $.plot($("#prs_line_graph"), result.response, LINE_OPTIONS);
   }
 
+  //
+  // Initial Page Load Activities
+  //
   $(document).ready(function () {
     $("#metric_filter").change(function () {
       filterUpdate()
@@ -185,8 +152,7 @@
     });
 
     // Load initial  chart
-    // options.colors = COLORS;
-    // $.plot($("#<%= @chart_handle %>"), $.parseJSON('<%= raw @chart_data %>').response, options);
+    $.plot($("#metric_chart"), $.parseJSON('<%= raw @chart_data_str %>').response, PIE_OPTIONS);
   });
 
 </script>
@@ -336,173 +302,62 @@ Group By:
 
 
 <hr>
-<%# Pull Requests Section %>
 
-<h2 style="margin-bottom: 0; padding-bottom: 0; font-weight:normal;" >Pull Request Contributions by User  
+<div style="margin-bottom: 0; padding-bottom: 0; font-weight:normal;" >Pull Request Contributions by User  
 <a href="#" class="tooltip"> <%= image_tag "tooltip.gif" %> <span style="font-size: 15px;">  
 This pie chart represents all pull requests submitted to the Cloud Foundry Github repositories during the specifed time period. <br> Each slice represents a separate company, and the size of each slice is proportional to the company's quantity of contributions. 
 <br>
 Each of the top 5 contributers have their own slice of the pie chart. The remaining contributers are then merged together into the "Others" slice.
-</span> </a>
-</h2>
+</span> </a>View As:
 <select id="view_type">
     <option value="pie">Pie Chart</option>
     <option value="bar">Bar Chart</option>
 </select>
-<table cellspacing="30px">
-  <tr>
-    <td>
-      <% @chart_handle = "prs_chart" %>
-      <% @chart_data = @prs_chart_str %>
-      <%= render 'pie_chart' %>
-      <div id="prs_chart"></div>
-    </td>
-    <td>
-      <a href="#" class="tooltip"> <%= image_tag "tooltip.gif" %> <span style="font-size: 15px;">  
-      This table displays the amount of pull requests submitted by each contributer.
-      </span></a>
-      <% @table_handle = "prs_table" %>
-      <% @table_data = @prs_data %>
-      <% @label_header = @prs_table_label_header %>
-      <% @data_header = @prs_table_data_header %>
-      <% @label_index_name = @prs_label_index_name %>
-      <% @data_index_name = @prs_data_index_name %>
-      <% @table_data_width = "500" %>
+</div>
 
-      <div id="prs_tbl_ctr">
-        <%= render 'hash_as_table' %>
-      </div>
-      <script type="text/javascript">makeAsDataTableOnLoad('#<%= @table_handle %>');</script>
-    </td>
-  </tr>
-  <tr>
-    <td colspan="2" align="center">
-      <script type="text/javascript">
-        $(function() {
-          var data =  [  { "label": "Pivotal", "data" : [["1301641200000", 1], ["1304233200000", 1], ["1309503600000", 2], ["1314860400000", 1], ["1322726400000", 2], ["1333263600000", 1], ["1357027200000", 19], ["1359705600000", 57], ["1362124800000", 39], ["1364799600000", 53], ["1367391600000", 79], ["1370070000000", 95], ["1372662000000", 64], ["1375340400000", 99], ["1378018800000", 85], ["1380610800000", 52], ["1383289200000", 32], ["1385884800000", 63], ["1388563200000", 16]] },   { "label": "", "data" : [["1301641200000", 15], ["1304233200000", 18], ["1306911600000", 8], ["1309503600000", 1], ["1312182000000", 3], ["1314860400000", 6], ["1317452400000", 2], ["1320130800000", 2], ["1322726400000", 8], ["1325404800000", 5], ["1328083200000", 6], ["1330588800000", 3], ["1333263600000", 1], ["1335855600000", 2], ["1338534000000", 1], ["1341126000000", 3], ["1343804400000", 2], ["1349074800000", 1], ["1354348800000", 1], ["1357027200000", 15], ["1359705600000", 55], ["1362124800000", 60], ["1364799600000", 29], ["1367391600000", 30], ["1370070000000", 25], ["1372662000000", 25], ["1375340400000", 40], ["1378018800000", 13], ["1380610800000", 30], ["1383289200000", 26], ["1385884800000", 41]] },   { "label": "VMware", "data" : [["1330588800000", 2], ["1357027200000", 1], ["1359705600000", 15], ["1362124800000", 20], ["1364799600000", 3], ["1367391600000", 7], ["1370070000000", 16], ["1372662000000", 9], ["1375340400000", 8], ["1378018800000", 4], ["1380610800000", 4], ["1383289200000", 3], ["1385884800000", 12], ["1388563200000", 2]] },   { "label": "IBM", "data" : [["1375340400000", 3], ["1378018800000", 7], ["1380610800000", 22], ["1383289200000", 18], ["1385884800000", 22], ["1388563200000", 3]] },   { "label": "Innovation Factory", "data" : [["1362124800000", 1], ["1367391600000", 1], ["1370070000000", 1], ["1372662000000", 6], ["1375340400000", 10], ["1378018800000", 5], ["1380610800000", 3], ["1383289200000", 1], ["1385884800000", 5]] } ];
 
-          var options = {
-              series: {
-                lines: {
-                  show: true
-                },
-                points: {
-                  show: true
-                }
-              },
 
-              legend: {
-                position: "nw"
-              },
-              xaxis: {
-                //tickDecimals: 0, 
-                mode: "time",
-                minTickSize: [1, "month"],
-                //min: (new Date("2010/01/01")).getTime(),
-                //max: (new Date("2014/01/02")).getTime()
-              },
-              yaxis: {
-                minTickSize: 5
-              },
-            };
-            options.colors = COLORS;
+<%# ----------------- %>
+<%# This is the Chart %>
+<%# ----------------- %>
+<div id="metric_chart"></div>
 
-          $.plot($("#prs_line_graph"), data, options);
 
-        });
+<%# ----------------- %>
+<%# This is the Table %>
+<%# ----------------- %>
+<a href="#" class="tooltip"> <%= image_tag "tooltip.gif" %> <span style="font-size: 15px;">  
+This table displays the amount of pull requests submitted by each contributer.
+</span></a>
+<% @table_handle = "metric_table" %>
+<% @table_data = @metric_data %>
+<% @label_header = @table_label_header %>
+<% @data_header = @table_data_header %>
+<% @label_index_name = @label_index_name %>
+<% @data_index_name = @data_index_name %>
+<% @table_data_width = "500" %>
 
-      </script>
-      <div class="prs-line-graph-container">
-            <a href="#" class="tooltip"> <%= image_tag "tooltip.gif" %> <span style="font-size: 15px;">
-            In this line graph, we compare the activity of the top five contributors to the #{repo_name} repository over the specified time period. Here, the y axis represents the quantity of contributions, and the x axis represents which month the contribution was submitted  
-            </span></a>
-
-        <div id="prs_line_graph" class="prs-line-graph"></div>
-      </div>
-    </td>
-  </tr>
-
-<%
-=begin %>
-<table cellpadding="50px"><tr><td>
-  
-  <br>
-  <%# For User Statistics %>
-  <% @chart_handle = "user_prs_chart" %>
-  <% @chart_data = @prs_by_user_pie_str %>
-  <%= render 'pie_chart' %>
-  <div id="user_prs_chart"></div>
-<br><br>
-  <% @table_handle = "user_prs_table" %>
-  <% @table_data = @prs_by_user %>
-  <% @label_header = "User" %>
-  <% @data_header = "Contributions" %>
-  <% @label_index_name = "login" %>
-  <% @data_index_name = "num_prs" %>
-  <div id="user_tbl_ctr">
+<div id="table_container">
   <%= render 'hash_as_table' %>
-  </div>
-  <script type="text/javascript">makeAsDataTableOnLoad('#<%= @table_handle %>');</script>
-
-</td><td>
-  <h2>Contributions by Company</h2><br>
-  <%# For Company Statistics %>
-  <% @chart_handle = "company_prs_chart" %>
-  <% @chart_data = @prs_by_company_pie_str %>
-  <%= render 'pie_chart' %>
-  <div id="company_prs_chart"></div>
-<br><br>
-  <% @table_handle = "company_prs_table" %>
-  <% @table_data = @prs_by_company %>
-  <% @label_header = "Company" %>
-  <% @data_header = "Contributions" %>
-  <% @label_index_name = "name" %>
-  <% @data_index_name = "num_prs" %>	
-  <div id="company_tbl_ctr">
-  <%= render 'hash_as_table' %>
-  </div>
-  <script type="text/javascript">makeAsDataTableOnLoad('#<%= @table_handle %>');</script>
+</div>
+<script type="text/javascript">makeAsDataTableOnLoad('#<%= @table_handle %>');</script>
 
 
-</td></tr></table>
-
-
-
-<br><br><br><br><br><br>
-
-
-
-<% @table_handle = "prs_days_elapsed_table" %>
-<% @table_data = @avg_days_elapsed %>
-<% @label_header = "Company" %>
-<% @data_header = "Average Days Elapsed" %>
-<% @label_index_name = "name" %>
-<% @data_index_name = "avg_days_open" %>  
-<center>
-<table>
-<td>
-<%= render 'hash_as_table' %>
-</td>
-</table>
-</center>
-
+<%# ---------------- %>
+<%# This needs to go %>
+<%# ---------------- %>
 <script type="text/javascript">
-$("#prs_days_elapsed_table").dataTable({
-      "sScrollY": "350px", "sScrollX": "650px",
-      "bPaginate": false,
-      "bSort": false,
-      "bAutoWidth" : true,
-      "bFilter": true
-    } );
+  $(function() {
+    var data =  [  { "label": "Pivotal", "data" : [["1301641200000", 1], ["1304233200000", 1], ["1309503600000", 2], ["1314860400000", 1], ["1322726400000", 2], ["1333263600000", 1], ["1357027200000", 19], ["1359705600000", 57], ["1362124800000", 39], ["1364799600000", 53], ["1367391600000", 79], ["1370070000000", 95], ["1372662000000", 64], ["1375340400000", 99], ["1378018800000", 85], ["1380610800000", 52], ["1383289200000", 32], ["1385884800000", 63], ["1388563200000", 16]] },   { "label": "", "data" : [["1301641200000", 15], ["1304233200000", 18], ["1306911600000", 8], ["1309503600000", 1], ["1312182000000", 3], ["1314860400000", 6], ["1317452400000", 2], ["1320130800000", 2], ["1322726400000", 8], ["1325404800000", 5], ["1328083200000", 6], ["1330588800000", 3], ["1333263600000", 1], ["1335855600000", 2], ["1338534000000", 1], ["1341126000000", 3], ["1343804400000", 2], ["1349074800000", 1], ["1354348800000", 1], ["1357027200000", 15], ["1359705600000", 55], ["1362124800000", 60], ["1364799600000", 29], ["1367391600000", 30], ["1370070000000", 25], ["1372662000000", 25], ["1375340400000", 40], ["1378018800000", 13], ["1380610800000", 30], ["1383289200000", 26], ["1385884800000", 41]] },   { "label": "VMware", "data" : [["1330588800000", 2], ["1357027200000", 1], ["1359705600000", 15], ["1362124800000", 20], ["1364799600000", 3], ["1367391600000", 7], ["1370070000000", 16], ["1372662000000", 9], ["1375340400000", 8], ["1378018800000", 4], ["1380610800000", 4], ["1383289200000", 3], ["1385884800000", 12], ["1388563200000", 2]] },   { "label": "IBM", "data" : [["1375340400000", 3], ["1378018800000", 7], ["1380610800000", 22], ["1383289200000", 18], ["1385884800000", 22], ["1388563200000", 3]] },   { "label": "Innovation Factory", "data" : [["1362124800000", 1], ["1367391600000", 1], ["1370070000000", 1], ["1372662000000", 6], ["1375340400000", 10], ["1378018800000", 5], ["1380610800000", 3], ["1383289200000", 1], ["1385884800000", 5]] } ];
+
+    $.plot($("#prs_line_graph"), data, LINE_OPTIONS);
+  });
+
 </script>
+<div class="prs-line-graph-container">
+  <a href="#" class="tooltip"> <%= image_tag "tooltip.gif" %> <span style="font-size: 15px;">
+  In this line graph, we compare the activity of the top five contributors to the #{repo_name} repository over the specified time period. Here, the y axis represents the quantity of contributions, and the x axis represents which month the contribution was submitted  
+  </span></a>
 
-<%
-=end %>
-
-
-
-
-
-
-
-
+  <div id="prs_line_graph" class="prs-line-graph"></div>
+</div>

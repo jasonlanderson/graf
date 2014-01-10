@@ -1,3 +1,4 @@
+WIDTH_OF_CHART = "1000px";
 COLORS = ['#B82E2E', '#2EB82E', '#C75000', '#6629A3', '#2966A3', '#649ED8'];
 
 PIE_OPTIONS = {
@@ -82,4 +83,20 @@ function parsePieToBar(data) {
     };
     options.colors = COLORS;
     return {data: data, options: options};
+}
+
+function makeAsDataTableOnLoad(tableHandleIdStr) {
+  $(document).ready( function () {
+    makeAsDataTable(tableHandleIdStr)
+  } );
+}
+
+function makeAsDataTable(tableHandleIdStr) {
+  $(tableHandleIdStr).dataTable({
+    "sScrollY": "350px", "sScrollX": WIDTH_OF_CHART,
+    "bPaginate": false,
+    "bSort": false,
+    "bAutoWidth" : true,
+    "bFilter": true
+  } );
 }

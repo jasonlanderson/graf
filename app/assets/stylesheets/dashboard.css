@@ -36,8 +36,23 @@ a.tooltip span { z-index:10;display:none; padding:14px 20px; margin-top:-30px; m
 a.tooltip:hover span{ display:inline; position:absolute; color:#111; border:1px solid #DCA; background:#fffAF0;} .callout {z-index:20;position:absolute;top:30px;border:0;left:-12px;} /*CSS3 extras*/ 
 a.tooltip span { border-radius:4px; -moz-border-radius: 4px; -webkit-border-radius: 4px; -moz-box-shadow: 5px 5px 8px #CCC; -webkit-box-shadow: 5px 5px 8px #CCC; box-shadow: 5px 5px 8px #CCC; } 
 
+#metric_chart { width: 1000px; height: 450px; font-size:18px; position:relative; }
+#table_container { width: 1000px; height: 450px; font-size:18px; position:relative; }
+
+.legend table, .legend > div {
+    height: 82px !important;
+    opacity: 1 !important;
+    right: -55px;
+    top: 10px;
+    width: 116px !important;
+}
+ 
+.legend table {
+    border: 1px solid #555;
+    padding: 5px;
+}
+
 /* 
 TODO 
-Decrease size of graphs
 Auto resize based on browser size
  */
