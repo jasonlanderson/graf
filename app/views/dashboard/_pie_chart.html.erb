@@ -1,6 +1,10 @@
+
 <script type="text/javascript">
 $(document).ready(function () {
-    options = {
+    
+data = $.parseJSON('<%= raw @chart_data %>').response;
+
+options = {
          series: {
             pie: {
                 show: true,
@@ -20,10 +24,31 @@ $(document).ready(function () {
             backgroundOpacity: 0.5
          }
     }
-    options.colors = colors;
 
-    $.plot($("#<%= @chart_handle %>"), $.parseJSON('<%= raw @chart_data %>').response, options);
+
+
+points = [];
+ticks = [];
+for (i = 0 ; i < data.length ; i++) {
+   points.push(Array(i, data[i].data));
+   ticks.push(Array(i, data[i].label));
+}
+data = [{ data: points,
+            minTickSize: 1,
+            bars: { 
+                    show: true,
+                    align: 'center'
+                   }         }];
+options = {
+    xaxis: {
+                tickDecimals: 0,
+                labelAngle: 90,
+                ticks: ticks
+            }
+}
+
+options.colors = colors;
+$.plot($("#<%= @chart_handle %>"), data, options);
+
 });
 </script>
-
-
