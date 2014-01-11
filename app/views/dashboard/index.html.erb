@@ -172,14 +172,14 @@
 
 <h1 style="margin-bottom: 0; padding-bottom: 0; font-weight:normal;">GitHub Repository Analytics with Filtering 
 
-<a href="#" class="tooltip"> <%= image_tag "tooltip.gif" %> <span style="font-size: 15px;">  
-GitHub Repository Analytics with Filtering (GRAF) is a web service that has the ability to collect and visually represent useful statistics on various Github repositories. At the moment, this application is only collecting data on repositories hosted by the "CloudFoundry" Github organization. We plan to expand this application to collect data on repositories from other organizations (Openstack, Openshift, etc.) in the near future.
+<a href="#" class="tooltip"><%= image_tag "tooltip.gif" %><span style="font-size: 15px;">  
+GitHub Repository Analytics with Filtering (GRAF) is a web service that collects and visually represents statistics on various Github repositories. The application uses data from the "CloudFoundry" repositories hosted on GitHub. GRAF is designed for use with any GitHub repository and will be expanded in the near future (e.g. Openstack, Openshift, etc.).
 <br><br>
-These statistics are collected through the Github API. We use the API's functions to gather information on every "Pull Request" that has been contributed to the CloudFoundry repositories. Once this data has been successfully collected and stored into our database, our application allows the user to generate figures that are customized by timeframe, repository, company, etc.
+The GitHub API is leveraged to gather information on every "Pull Request" that has been contributed to the Cloud Foundry repositories. Once this data has been successfully collected and stored into our database, our application allows the user to generate figures that are customized by timeframe, repository, company, etc.
 <br><br>
-Company affiliation is determined by polling each Github user's profile. If a user does not have an affliated company listed on their profile, the application then checks to see whether the user is a member of any corporate Github organizations. If they are not, the user is assumed to be independent.
+Company affiliation is determined by polling each GitHub user's profile. If a user does not have an affliated company listed on their profile, the application then checks to see whether the user is a member of any corporate GitHub organizations. If they are not, the user is assumed to be independent.
 <br>
-</span> </a>
+</span></a>
 </h1>
 
 
@@ -328,13 +328,16 @@ Group By:
 
 <div style="margin-bottom: 0; padding-bottom: 0; font-weight:normal;" >
 <p id="chart_title" style="display:inline; margin-bottom: 0; padding-bottom: 0; font-size:20px"> Pull Requests Grouped By Company</p>
-<a href="#" class="tooltip"> <%= image_tag "tooltip.gif" %> 
-<span style="font-size: 15px;">  
-This pie chart represents all pull requests submitted to the Cloud Foundry Github repositories during the specifed time period. <br> Each slice represents a separate company, and the size of each slice is proportional to the company's quantity of contributions. 
+<a href="#" class="tooltip"> <%= image_tag "tooltip.gif" %><span style="font-size: 15px;">  
+This pie chart represents all pull requests submitted to the Cloud Foundry Github repositories during the specifed time period.
+<br>
+<br>
+Each slice represents a separate group, and the size of each slice is proportional to the group's contributions. 
+<br>
 <br>
 Each of the top 5 contributers have their own slice of the pie chart. The remaining contributers are then merged together into the "Others" slice.
-</span> </a>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></a>
+
 <br><br>
 <div>
 View As:
@@ -391,10 +394,10 @@ This table displays the amount of pull requests submitted by each contributer.
 
 </script>
 <div id="line-graph-container" class="prs-line-graph-container">
-<h1 id="line_graph_title">Contributions per month</h1>
-  <a href="#" class="tooltip"> <%= image_tag "tooltip.gif" %> <span style="font-size: 15px;">
-  In this line graph, we compare the activity of the top five Pull Request contributors over the specified time period. Here, the y axis represents the quantity of contributions, and the x axis represents the timeframe in which the contribution was submitted  
-  </span></a>
+<h1 id="line_graph_title">Contributions per month&nbsp;<a href="#" class="tooltip"><%= image_tag "tooltip.gif" %><span style="font-size: 15px;">
+This line graph compares the activity of the top five pull request contributors over the specified time period. The y-axis represents the number of pull requests and the x-axis represents the time the pull requests were created.  
+  </span></a></h1>
+  
 
   <div id="prs_line_graph" class="prs-line-graph"></div>
 </div>
