@@ -21,7 +21,8 @@ class DashboardController < ApplicationController
 
     @last_updated = GithubLoad.last
 
-    #@timestamps = AnalyticUtils.get_timestamps
+    @timestamps = AnalyticUtils.get_timestamps('c.name', 'month')
+    puts @timestamps
   end
   
 end
