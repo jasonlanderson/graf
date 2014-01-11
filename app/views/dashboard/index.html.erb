@@ -19,6 +19,11 @@
     // Make API calls to update the data
     apiAJAX(metric, groupBy, month, quarter, year, startDate, endDate, repo, state, company, user, 'prs_chart', 'json', updateChartCallback);
     apiAJAX(metric, groupBy, month, quarter, year, startDate, endDate, repo, state, company, user, 'prs_table', 'text', updateTableCallback);
+
+    
+    $("#chart_title").html($("#metric_filter option:selected").text() +  " Grouped By " + $("#group_by_filter option:selected").text());
+    $("#table_title").html($("#metric_filter option:selected").text() +  " Grouped By " + $("#group_by_filter option:selected").text());
+    
     if ($("#metric_filter").val() == "prs"){
     $("#line-graph-container").show();  
     apiAJAX(metric, groupBy, month, quarter, year, startDate, endDate, repo, state, company, user, 'prs_line_graph', 'json', updateLineGraphCallback);
@@ -321,17 +326,23 @@ Group By:
 
 <hr>
 
-<div style="margin-bottom: 0; padding-bottom: 0; font-weight:normal;" >Pull Request Contributions by User  
-<a href="#" class="tooltip"> <%= image_tag "tooltip.gif" %> <span style="font-size: 15px;">  
+<div style="margin-bottom: 0; padding-bottom: 0; font-weight:normal;" >
+<p id="chart_title" style="display:inline; margin-bottom: 0; padding-bottom: 0; font-size:20px"> Pull Requests Grouped By Company</p>
+<a href="#" class="tooltip"> <%= image_tag "tooltip.gif" %> 
+<span style="font-size: 15px;">  
 This pie chart represents all pull requests submitted to the Cloud Foundry Github repositories during the specifed time period. <br> Each slice represents a separate company, and the size of each slice is proportional to the company's quantity of contributions. 
 <br>
 Each of the top 5 contributers have their own slice of the pie chart. The remaining contributers are then merged together into the "Others" slice.
 </span> </a>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<br><br>
+<div>
 View As:
-<select id="view_type">
+<select id="view_type" >
     <option value="pie">Pie Chart</option>
     <option value="bar">Bar Chart</option>
 </select>
+</div>
 </div>
 
 
@@ -345,6 +356,12 @@ View As:
 <%# ----------------- %>
 <%# This is the Table %>
 <%# ----------------- %>
+<br><br>
+<p id="table_title" style="margin-bottom: 0; padding-bottom: 0; font-size:20px; display:inline;"> 
+Pull Requests Sorted By Company
+</p>
+
+
 <a href="#" class="tooltip"> <%= image_tag "tooltip.gif" %> <span style="font-size: 15px;">  
 This table displays the amount of pull requests submitted by each contributer.
 </span></a>
@@ -374,8 +391,9 @@ This table displays the amount of pull requests submitted by each contributer.
 
 </script>
 <div id="line-graph-container" class="prs-line-graph-container">
+<h1 id="line_graph_title">Contributions per month</h1>
   <a href="#" class="tooltip"> <%= image_tag "tooltip.gif" %> <span style="font-size: 15px;">
-  In this line graph, we compare the activity of the top five contributors to the #{repo_name} repository over the specified time period. Here, the y axis represents the quantity of contributions, and the x axis represents which month the contribution was submitted  
+  In this line graph, we compare the activity of the top five Pull Request contributors over the specified time period. Here, the y axis represents the quantity of contributions, and the x axis represents the timeframe in which the contribution was submitted  
   </span></a>
 
   <div id="prs_line_graph" class="prs-line-graph"></div>
