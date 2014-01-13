@@ -1,0 +1,39 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Repo:</strong>
+  <%= @commit.repo %>
+</p>
+
+<p>
+  <strong>User:</strong>
+  <%= @commit.user %>
+</p>
+
+<p>
+  <strong>Sha:</strong>
+  <%= @commit.sha %>
+</p>
+
+<p>
+  <strong>Message:</strong>
+  <%= @commit.message %>
+</p>
+
+<p>
+  <strong>Date created:</strong>
+  <%= @commit.date_created %>
+</p>
+
+<p>
+  <strong>Created at:</strong>
+  <%= @commit.created_at %>
+</p>
+
+<p>
+  <strong>Updated at:</strong>
+  <%= @commit.updated_at %>
+</p>
+
+<%= link_to 'Edit', edit_commit_path(@commit) %> |
+<%= link_to 'Back', commits_path %>

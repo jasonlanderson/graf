@@ -66,6 +66,10 @@ class GithubLoader
     current_load.log_msg("***Loading Repos", LogLevel::INFO)
     load_repos
 
+    current_load.log_msg("***Loading Commits", LogLevel::INFO)
+    load_all_commits
+
+
     current_load.log_msg("***Loading Pull Requests", LogLevel::INFO)
     load_all_prs
     #load_prs_for_repo(Repo.find_by(name: "bosh"))
@@ -112,6 +116,12 @@ class GithubLoader
     }
   end
 
+  def self.load_all_commits()
+    Repo.all().each { |repo|
+      load_commits_for_repo(repo)
+    }
+  end
+
   def self.load_prs_for_repo(repo)
     puts "---------"
     puts "--- Loading PRs for #{repo.full_name}"
@@ -143,16 +153,70 @@ class GithubLoader
     }
   end
 
+  def self.load_commits_for_repo(repo)
+    puts "---------"
+    puts "--- Loading Commits for #{repo.full_name}"
+    puts "---------"
+    @@current_load.log_msg("Loading Commits for #{repo.full_name}", LogLevel::INFO)
+
+    client = OctokitUtils.get_octokit_client
+    commits = client.commits(repo.full_name)
+    commits.each { |commit|
+
+    unless commit[:attrs][:commit][:attrs][:author][:name] == "Jenkins User"
+        
+      # This does not work if commit pushed by "Jenkins User"
+      # How do we avoid hitting the search API limit?
+      names = commit[:attrs][:commit][:attrs][:author][:name].gsub(" and ", "|").gsub(", ","|").gsub(" & ", '|').split('|')
+      puts commit[:attrs][:commit][:attrs][:author][:email]
+      names.each do |name| 
+        #print name.to_s + " "
+        search_results = nil
+        if User.find_by(name: name)
+          login = User.find_by(name: name)[:login] # See if user table has matching record
+          user_id = User.find_by(name: name)[:id]         
+        end
+        #name = User.find_by(name: name)[:name] 
+
+        unless login && user_id
+          search_results = client.search_users(name) # If not, search for user object. 
+          #if (search_results[:attrs][:total_count] > 0))
+          ((search_results[:attrs][:total_count]) && (search_results[:attrs][:total_count] > 0)) ? nil : break # If this if false, name is incorrectly spelled / has no associated profile
+          login = search_results[:attrs][:items][0][:attrs][:login]
+          user_obj = client.user(login)
+          user = create_user_if_not_exist(user_obj) 
+        end
+        
+        Commit.create(
+          :repo_id => repo.id,
+          :user_id => user_id,
+          :sha => commit[:sha], # Change sha to string
+          :message => commit[:attrs][:commit][:attrs][:message],
+          :date_created => commit[:attrs][:commit][:attrs][:author][:date]
+        )
+        
+        #puts User.find_by(name: name) #? nil : next
+        #login = client.search_users(commit[:attrs][:commit][:attrs][:author][:name])[:attrs][:items][0][:attrs][:login]
+        #user_obj = client.user(login)
+      end
+    #client.search_users()
+    end
+    }
+
+  end
+
 
   def self.create_user_if_not_exist(pr_user)
-
-    user = User.find_by(login: pr_user[:attrs][:login])
-
+    user_login = (pr_user[:attrs][:login] || pr_user[:attrs][:items][0][:attrs][:login])
+    puts user_login
+    user = User.find_by(login: user_login) 
+#    puts user_obj[:attrs][:login]
+#    puts user_obj[:attrs][:items][0][:attrs][:login]
     unless user
       puts "---------"
-      puts "--- Creating User: #{pr_user[:attrs][:login]}"
+      puts "--- Creating User: #{user_login}"
       puts "---------"
-      @@current_load.log_msg("Creating User: #{pr_user[:attrs][:login]}", LogLevel::INFO)
+      @@current_load.log_msg("Creating User: #{user_login}", LogLevel::INFO)
 
       user_details = pr_user[:_rels][:self].get.data
 
