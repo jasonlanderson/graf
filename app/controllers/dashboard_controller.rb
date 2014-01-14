@@ -16,7 +16,7 @@ class DashboardController < ApplicationController
     @data_index_name = 'num_prs'
 
     @repos = Repo.order(:name)
-    @companies = Company.order(:name)
+    @companies = Company.order(:name).select('DISTINCT(name)')
     @users = User.order(:login)
 
     @last_updated = GithubLoad.last

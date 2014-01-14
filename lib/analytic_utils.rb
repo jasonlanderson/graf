@@ -13,7 +13,7 @@ class AnalyticUtils
       "LEFT OUTER JOIN repos r ON pr.repo_id = r.id "
 
     sql_stmt += where_clause_stmt(month, quarter, year, start_date, end_date, repo, state, company, user)
-      
+
     sql_stmt += "GROUP BY #{group_by_label_col} ORDER BY #{order_by_data_col} DESC"
 
     return ActiveRecord::Base.connection.exec_query(sql_stmt)

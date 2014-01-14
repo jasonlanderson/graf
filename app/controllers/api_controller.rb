@@ -16,7 +16,7 @@ LABEL_MAPPING = {
 
 DATA_MAPPING = {
   "prs"            => {sql_select: "COUNT(*) num_prs", hash_name: 'num_prs'},
-  "avg_days_open"  => {sql_select: "ROUND(AVG(#{DBUtils.get_date_difference('pr.date_closed','pr.date_created')}), 1)  avg_days_open", hash_name: 'avg_days_open'},
+  "avg_days_open"  => {sql_select: "IFNULL(ROUND(AVG(#{DBUtils.get_date_difference('pr.date_closed','pr.date_created')}), 1), 0)  avg_days_open", hash_name: 'avg_days_open'},
   "percent_merged" => {sql_select: "SUM( CASE WHEN pr.date_merged IS NOT NULL THEN 1 ELSE 0 END) /  (COUNT(*) * 1.0) percent_merged", hash_name: 'percent_merged'}
 }
 
