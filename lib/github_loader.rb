@@ -159,48 +159,74 @@ class GithubLoader
     puts "---------"
     @@current_load.log_msg("Loading Commits for #{repo.full_name}", LogLevel::INFO)
 
+    no_match = [] # Names that aren't registered in github
     client = OctokitUtils.get_octokit_client
     commits = client.commits(repo.full_name)
     commits.each { |commit|
+      email = commit[:attrs][:commit][:attrs][:author][:email]
+      unless commit[:attrs][:commit][:attrs][:author][:name] == "Jenkins User"
+          
+        # This does not work if commit pushed by "Jenkins User"
+        # How do we avoid hitting the search API limit?
+        names = commit[:attrs][:commit][:attrs][:author][:name].gsub(" and ", "|").gsub(", ","|").gsub(" & ", '|').split('|')
+        puts "________________"
+        puts commit[:attrs][:commit][:attrs][:author][:email]
+          names.each do |name| 
+              puts name
+              # login = commit[:attrs][:author][:login]
+              # Skip name if we've already searched for it with no luck
+              unless no_match.include?(name)
+                login = nil
+                user_id = nil
+                search_results = nil
+                invalid = false
+                # See if user table has matching record
+                if User.find_by(name: name)
+                  login = User.find_by(name: name)[:login] 
+                  user_id = User.find_by(name: name)[:id]
+                # If pivotal pair, create user object for both contributors
+                elsif (email.include?("pair") and email.include?("@pivotallabs.com"))
+                      User.create(
+                          :company => Company.find_by(name: "Pivotal"),
+                          :name => name,
+                          :email => email
+                      )
+                # Search for user object, create record if found
+                else
+                  # Throttle, can only search 20 times per minute, http://developer.github.com/v3/search/#rate-limit
+                  sleep(3.seconds) 
+                  # Search github db to see if the name is registered there. Also, given multiple search results, how can we determine which is correct? 
+                  search_results = client.search_users(name) 
+                  # No results, name has no associated profile. Gem fuzz_ball will use Smith-Waterman to compare similarity of strings...leaving that for another day
+                  ((no_match.push(name)) ; invalid = true ; break ) if (search_results[:attrs][:total_count] == 0)
+                  break if invalid
+                  login = search_results[:attrs][:items][0][:attrs][:login]
+                  user_obj = client.user(login)
+                  user = create_user_if_not_exist(user_obj)
+                  user_id = user.id
+                end
+                #####break if invalid
+                #next if no_match.include?(name)              
+                
+            end
+            CommitsUsers.create(
+                :commit_id => commit[:sha],
+                :user_id => user_id
+            )
+              # c.users << User.find_by(name: name)
+          end
+          #puts User.find_by(name: name) #? nil : next
+          #login = client.search_users(commit[:attrs][:commit][:attrs][:author][:name])[:attrs][:items][0][:attrs][:login]
+          #user_obj = client.user(login)
 
-    unless commit[:attrs][:commit][:attrs][:author][:name] == "Jenkins User"
-        
-      # This does not work if commit pushed by "Jenkins User"
-      # How do we avoid hitting the search API limit?
-      names = commit[:attrs][:commit][:attrs][:author][:name].gsub(" and ", "|").gsub(", ","|").gsub(" & ", '|').split('|')
-      puts commit[:attrs][:commit][:attrs][:author][:email]
-      names.each do |name| 
-        #print name.to_s + " "
-        search_results = nil
-        if User.find_by(name: name)
-          login = User.find_by(name: name)[:login] # See if user table has matching record
-          user_id = User.find_by(name: name)[:id]         
-        end
-        #name = User.find_by(name: name)[:name] 
-
-        unless login && user_id
-          search_results = client.search_users(name) # If not, search for user object. 
-          #if (search_results[:attrs][:total_count] > 0))
-          ((search_results[:attrs][:total_count]) && (search_results[:attrs][:total_count] > 0)) ? nil : break # If this if false, name is incorrectly spelled / has no associated profile
-          login = search_results[:attrs][:items][0][:attrs][:login]
-          user_obj = client.user(login)
-          user = create_user_if_not_exist(user_obj) 
-        end
-        
-        Commit.create(
+      end
+      c = Commit.create(
           :repo_id => repo.id,
-          :user_id => user_id,
+          #:user_id => user_id,
           :sha => commit[:sha], # Change sha to string
           :message => commit[:attrs][:commit][:attrs][:message],
           :date_created => commit[:attrs][:commit][:attrs][:author][:date]
         )
-        
-        #puts User.find_by(name: name) #? nil : next
-        #login = client.search_users(commit[:attrs][:commit][:attrs][:author][:name])[:attrs][:items][0][:attrs][:login]
-        #user_obj = client.user(login)
-      end
-    #client.search_users()
-    end
     }
 
   end
