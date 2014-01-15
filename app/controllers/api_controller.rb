@@ -17,7 +17,8 @@ LABEL_MAPPING = {
 DATA_MAPPING = {
   "prs"            => {sql_select: "COUNT(*) num_prs", hash_name: 'num_prs'},
   "avg_days_open"  => {sql_select: "IFNULL(ROUND(AVG(#{DBUtils.get_date_difference('pr.date_closed','pr.date_created')}), 1), 0)  avg_days_open", hash_name: 'avg_days_open'},
-  "percent_merged" => {sql_select: "SUM( CASE WHEN pr.date_merged IS NOT NULL THEN 1 ELSE 0 END) /  (COUNT(*) * 1.0) percent_merged", hash_name: 'percent_merged'}
+  "percent_merged" => {sql_select: "SUM( CASE WHEN pr.date_merged IS NOT NULL THEN 1 ELSE 0 END) /  (COUNT(*) * 1.0) percent_merged", hash_name: 'percent_merged'},
+  "commits"        => {sql_select: "COUNT(*) num_commits", hash_name: 'num_commits'}
 }
 
 class ApiController < ApplicationController
@@ -38,20 +39,38 @@ class ApiController < ApplicationController
 
     if data_request == 'prs_chart'
       # Get data for the pull request pie chart
-      prs_data = AnalyticUtils.get_pull_request_stats(LABEL_MAPPING[group_by][:sql_select],
-        DATA_MAPPING[metric][:sql_select],
-        LABEL_MAPPING[group_by][:sql_group_by],
-        DATA_MAPPING[metric][:hash_name],
-        month,
-        quarter,
-        year,
-        start_date,
-        end_date,
-        repo,
-        state,
-        company,
-        user
-      )
+      case metric
+          when "commits"
+          data = AnalyticUtils.get_pull_request_stats(LABEL_MAPPING[group_by][:sql_select],
+            DATA_MAPPING[metric][:sql_select],
+            LABEL_MAPPING[group_by][:sql_group_by],
+            DATA_MAPPING[metric][:hash_name],
+            month,
+            quarter,
+            year,
+            start_date,
+            end_date,
+            repo,
+            state,
+            company,
+            user
+          )
+          when "avg_days_open" || "prs" || "percent_merged"
+          data = AnalyticUtils.get_commit_stats(LABEL_MAPPING[group_by][:sql_select],
+            DATA_MAPPING[metric][:sql_select],
+            LABEL_MAPPING[group_by][:sql_group_by],
+            DATA_MAPPING[metric][:hash_name],
+            month,
+            quarter,
+            year,
+            start_date,
+            end_date,
+            repo,
+            state,
+            company,
+            user
+          )
+      end
 
       # When this is an avg, we need to roll up with avg
       rollup_method = ROLLUP_METHOD::SUM
@@ -59,7 +78,7 @@ class ApiController < ApplicationController
         rollup_method = ROLLUP_METHOD::AVG
       end
 
-      prs_data_top_x = AnalyticUtils.top_x_with_rollup(prs_data,
+      data_top_x = AnalyticUtils.top_x_with_rollup(data,
         LABEL_MAPPING[group_by][:hash_name],
         DATA_MAPPING[metric][:hash_name],
         5,
@@ -67,24 +86,42 @@ class ApiController < ApplicationController
         rollup_method
       )
 
-      prs_data_pie_str = JavascriptUtils.get_pull_request_stats(prs_data_top_x, LABEL_MAPPING[group_by][:hash_name], DATA_MAPPING[metric][:hash_name])
+      prs_data_pie_str = JavascriptUtils.get_pull_request_stats(data_top_x, LABEL_MAPPING[group_by][:hash_name], DATA_MAPPING[metric][:hash_name])
       render :json => prs_data_pie_str
     elsif data_request == 'prs_table'
       # Get data for the pull request table
-      prs_data = AnalyticUtils.get_pull_request_stats(LABEL_MAPPING[group_by][:sql_select],
-              DATA_MAPPING[metric][:sql_select],
-              LABEL_MAPPING[group_by][:sql_group_by],
-              DATA_MAPPING[metric][:hash_name],
-              month,
-              quarter,
-              year,
-              start_date,
-              end_date,
-              repo,
-              state,
-              company,
-              user
-            )
+      case metric
+          when "commits"
+          data = AnalyticUtils.get_pull_request_stats(LABEL_MAPPING[group_by][:sql_select],
+            DATA_MAPPING[metric][:sql_select],
+            LABEL_MAPPING[group_by][:sql_group_by],
+            DATA_MAPPING[metric][:hash_name],
+            month,
+            quarter,
+            year,
+            start_date,
+            end_date,
+            repo,
+            state,
+            company,
+            user
+          )
+          when "avg_days_open" || "prs" || "percent_merged"
+          data = AnalyticUtils.get_commit_stats(LABEL_MAPPING[group_by][:sql_select],
+            DATA_MAPPING[metric][:sql_select],
+            LABEL_MAPPING[group_by][:sql_group_by],
+            DATA_MAPPING[metric][:hash_name],
+            month,
+            quarter,
+            year,
+            start_date,
+            end_date,
+            repo,
+            state,
+            company,
+            user
+          )
+      end
       @table_handle = "metric_table"
       @table_data = prs_data
       @label_header = LABEL_MAPPING[group_by][:hash_name].titleize
@@ -95,7 +132,7 @@ class ApiController < ApplicationController
       
 
     elsif data_request == 'prs_line_graph'
-       line_graph = AnalyticUtils.get_timestamps(LABEL_MAPPING[group_by][:sql_select],
+       line_graph = AnalyticUtils.get_timestamps(metric, LABEL_MAPPING[group_by][:sql_select],
                 LABEL_MAPPING[group_by][:hash_name],
                 month,
                 quarter,

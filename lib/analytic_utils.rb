@@ -19,13 +19,47 @@ class AnalyticUtils
     return ActiveRecord::Base.connection.exec_query(sql_stmt)
   end
 
+
+  def self.get_commit_stats(select_label_col, select_data_col, group_by_label_col,
+    order_by_data_col, month = nil, quarter = nil, year = nil, start_date = nil, end_date = nil,
+    repo=nil, state=nil, company=nil, user=nil)
+
+    sql_stmt = "SELECT #{select_label_col}, #{select_data_col} FROM commits_users c_u LEFT OUTER JOIN commits pr " \
+               "ON c_u.commit_id = pr.id LEFT OUTER JOIN users u ON c_u.user_id = u.id LEFT OUTER JOIN companies c " \
+               " ON c.id = u.company_id "
+
+    sql_stmt += where_clause_stmt(month, quarter, year, start_date, end_date, repo, state, company, user)
+
+    sql_stmt += "GROUP BY #{group_by_label_col} ORDER BY #{order_by_data_col} DESC"
+
+    return ActiveRecord::Base.connection.exec_query(sql_stmt)
+  end
+
+  def self.get_detailed_table(month = nil, quarter = nil, year = nil, start_date = nil, end_date = nil,
+    repo=nil, state=nil, company=nil, user=nil)
+
+    sql_stmt = "SELECT c.name, u.name, pr.title, pr.state FROM pull_requests pr LEFT OUTER JOIN users u ON pr.user_id " \
+               "= u.id LEFT OUTER JOIN companies c ON u.company_id = c.id LEFT OUTER JOIN repos r ON pr.repo_id = r.id " \
+               "WHERE 1=1 "
+    sql_stmt += where_clause_stmt(month, quarter, year, start_date, end_date, repo, state, company, user)
+
+    return ActiveRecord::Base.connection.exec_query(sql_stmt)
+  end
+
   # TODO: Change to use parameterized queries
-  def self.get_timestamps(select_col, group_by_col, month = nil, quarter = nil, year = nil,
+  def self.get_timestamps(metric_type, select_col, group_by_col, month = nil, quarter = nil, year = nil,
     start_date = nil, end_date = nil, repo=nil, state=nil, company=nil, user=nil)
 
+    case metric_type
+    when "prs"
     sql_stmt = "SELECT #{select_col}, pr.date_created FROM pull_requests pr LEFT OUTER JOIN users u  ON pr.user_id " \
       " = u.id LEFT OUTER JOIN companies c ON u.company_id = c.id LEFT OUTER JOIN repos r ON pr.repo_id = r.id " 
-    
+    when "commits"
+    sql_stmt = "SELECT #{select_col}, pr.date_created FROM commits_users c_u LEFT OUTER JOIN commits pr " \
+               "ON c_u.commit_id = pr.id LEFT OUTER JOIN users u ON c_u.user_id = u.id LEFT OUTER JOIN companies c " \
+               " ON c.id = u.company_id "  # This should have comm instead of pr, but the where_clause_stmt will break
+    end
+
     sql_stmt += where_clause_stmt(month, quarter, year, start_date, end_date, repo, state, company, user)
 
     query = ActiveRecord::Base.connection.exec_query(sql_stmt)  
@@ -103,7 +137,7 @@ class AnalyticUtils
   end
 
   def self.where_clause_stmt(month = nil, quarter = nil, year = nil, start_date = nil,
-    end_date = nil, repo=nil, state=nil, company=nil, user=nil)
+    end_date = nil, repo=nil, state=nil, company=nil, user=nil, al=nil)
 
     where_stmt = " WHERE 1=1 "
 

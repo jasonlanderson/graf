@@ -66,13 +66,13 @@ class GithubLoader
     current_load.log_msg("***Loading Repos", LogLevel::INFO)
     load_repos
 
+    current_load.log_msg("***Loading Pull Requests", LogLevel::INFO)
+    load_all_prs # This should also load associated commits
+    #load_prs_for_repo(Repo.find_by(name: "bosh"))
+
     current_load.log_msg("***Loading Commits", LogLevel::INFO)
     load_all_commits
 
-
-    current_load.log_msg("***Loading Pull Requests", LogLevel::INFO)
-    load_all_prs
-    #load_prs_for_repo(Repo.find_by(name: "bosh"))
 
     current_load.log_msg("***Fixing Users Without Companies", LogLevel::INFO)
     fix_users_without_companies
@@ -144,11 +144,11 @@ class GithubLoader
         :pr_number => pr[:attrs][:number],
         :body => pr[:attrs][:body],
         :title => pr[:attrs][:title],
-        :state => pr[:attrs][:state],
         :date_created => pr[:attrs][:created_at],
         :date_closed => pr[:attrs][:closed_at],
         :date_updated => pr[:attrs][:updated_at],
-        :date_merged => pr[:attrs][:merged_at]
+        :date_merged => pr[:attrs][:merged_at],
+        :state => (pr[:attrs][:merged_at].nil? ? pr[:attrs][:state] : "merged")
         )
     }
   end
@@ -173,10 +173,10 @@ class GithubLoader
         )
       #unless commit[:attrs][:commit][:attrs][:author][:name] == "Jenkins User"
         # Possible cases
-        # User is already in our db => Fetch login, user_id, generate CommitsUsers record
-        # User is not in our db, but is in the github db => Hit github api, grab user object, create record from user object
-        # User is not in either db, but has a email containing "pair" and "pivotallabs", so we know their affiliation => Create User record, linked to Pivotal. 
-        # User is not in either db => Create a record that only contains the user name, email
+        # 1. User is already in our db => Fetch login, user_id, generate CommitsUsers record
+        # 2. User is not in our db, but is in the github db => Hit github api, grab user object, create record from user object
+        # 3, 5. User is not in either db, but has a email containing "pivotal" or "vmware", so we know their affiliation => Create User record, linked to Pivotal. 
+        # 4. User is not in either db => Create a record that only contains the user name, email 
         names = commit[:attrs][:commit][:attrs][:author][:name].gsub(" and ", "|").gsub(", ","|").gsub(" & ", '|').split('|')
         puts "________________"
         puts commit[:attrs][:commit][:attrs][:author][:email]
@@ -191,14 +191,14 @@ class GithubLoader
                 user_type = 1
               else 
                 sleep(3.seconds) 
-                search_results = client.search_users(name) 
-                user_type = 2 if (search_results[:attrs][:total_count] > 0)
+                search_results = client.search_users(email) # Should only search by email if email doesn't include the word "pair"
+                user_type = 2 if (search_results[:attrs][:total_count] > 0) # search_results[:attrs][:total_count] is the total number of returned requests
                 user_type = 4 if (search_results[:attrs][:total_count] == 0)
-                user_type = 3 if (email.include?("pivotal")) # and user_type == nil) 
+                user_type = 3 if (email.include?("pivotal"))
                 user_type = 5 if email.include?("vmware")
                 #user_type = 6 if email.include?("rbcon")
               end
-              puts "User type! #{user_type}"
+              #puts "User type! #{user_type}"
 
               case user_type
                 when 1
@@ -207,7 +207,7 @@ class GithubLoader
                 when 2
                   login = search_results[:attrs][:items][0][:attrs][:login]
                   user_obj = client.user(login) 
-                  user = create_user_if_not_exist(user_obj) # Search is way too inaccurate
+                  user = create_user_if_not_exist(user_obj) 
                   #User.create(
                   #  :name => name, 
                   #  :email => email
