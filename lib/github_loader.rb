@@ -190,8 +190,7 @@ class GithubLoader
               if (User.find_by(name: name) || User.find_by(login: name))
                 user_type = 1
               else 
-                sleep(3.seconds) 
-                search_results = client.search_users(email) # Should only search by email if email doesn't include the word "pair"
+                OctokitUtils.search_users(email)
                 user_type = 2 if (search_results[:attrs][:total_count] > 0) # search_results[:attrs][:total_count] is the total number of returned requests
                 user_type = 4 if (search_results[:attrs][:total_count] == 0)
                 user_type = 3 if (email.include?("pivotal"))

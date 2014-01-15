@@ -21,5 +21,9 @@ class OctokitUtils
     get_octokit_client().rate_limit_remaining
   end
 
-  
+  def self.search_users(email)
+  	sleep(3.seconds) 
+    search_results = get_octokit_client.search_users(email) # Should only search by email if email doesn't include the word "pair"
+    return search_results
+  end
 end
