@@ -129,7 +129,19 @@ class ApiController < ApplicationController
       @label_index_name = LABEL_MAPPING[group_by][:hash_name]
       @data_index_name = DATA_MAPPING[metric][:hash_name]
       render :partial => "dashboard/hash_as_table"
-      
+    elsif data_request == 'detailed_prs_table'
+      data = AnalyticUtils.get_detailed_table(month,
+            quarter,
+            year,
+            start_date,
+            end_date,
+            repo,
+            state,
+            company,
+            user
+          )
+      #TODO, finish implementation of detailed table
+
 
     elsif data_request == 'prs_line_graph'
        line_graph = AnalyticUtils.get_timestamps(metric, LABEL_MAPPING[group_by][:sql_select],
