@@ -1,1 +1,19 @@
-why <%= @name %>
+Data Viewer
+
+
+<table id="prs_detail_table">
+  <thead>
+    <tr>
+      <th>User</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @@pr_data.each { |pr| %>
+    <tr>
+      <td><%= pr.user %></td>
+      <td><%= pr. %></td>
+    </tr>
+    <% } %>
+  </tbody>
+</table>

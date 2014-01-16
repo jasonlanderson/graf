@@ -1,7 +1,7 @@
 class DataViewerController < ApplicationController
 
   def index
-    @name = "asdf"
+    @pr_data = PullRequest.all()
   end
   
 end
