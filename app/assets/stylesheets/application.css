@@ -13,3 +13,12 @@
  *= require jquery.ui.all
  *= require_tree .
  */
+
+div.banner {
+  margin-right: 5px;
+  margin-bottom: 0;
+  padding-bottom: 0;
+  font-weight:normal;
+  float:left;
+  font-size: 24px;
+}

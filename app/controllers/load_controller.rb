@@ -57,6 +57,7 @@ class LoadController < ApplicationController
 
   # TODO Take this out after development
   def delete_all_data
+    Commit.delete_all
     Company.delete_all
     GithubLoadMsg.delete_all
     GithubLoad.delete_all

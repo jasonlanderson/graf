@@ -6,12 +6,20 @@ Graf::Application.routes.draw do  resources :github_loads
 
   get '/dashboard', to: 'dashboard#index'
   get '/api' => 'api#index'
+
+  # Load Paths
   get '/load', to: 'load#index'
   get '/start_load', to: 'load#start_load'
   get '/load_status', to: 'load#load_status'
   get '/delete_load_history', to: 'load#delete_load_history'
   get '/delete_all_data', to: 'load#delete_all_data'
+
+  # Info Paths
   get '/info', to: 'info#info'
+
+  # Data Viewer Paths
+  get '/data_viewer', to: 'data_viewer#index'
+
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

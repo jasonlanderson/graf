@@ -67,11 +67,12 @@ class GithubLoader
     load_repos
 
     current_load.log_msg("***Loading Pull Requests", LogLevel::INFO)
-    load_all_prs # This should also load associated commits
+    load_all_prs # TODO: This should also load associated commits
     #load_prs_for_repo(Repo.find_by(name: "bosh"))
 
     current_load.log_msg("***Loading Commits", LogLevel::INFO)
-    load_all_commits
+    #load_all_commits
+    #load_commits_for_repo(Repo.find_by(name: "bosh"))
 
 
     current_load.log_msg("***Fixing Users Without Companies", LogLevel::INFO)
@@ -187,10 +188,11 @@ class GithubLoader
               user_id = nil
               search_results = nil
 
+              # TODO: Refactor this into straight forward logic
               if (User.find_by(name: name) || User.find_by(login: name))
                 user_type = 1
               else 
-                OctokitUtils.search_users(email)
+                search_results = OctokitUtils.search_users(email)
                 user_type = 2 if (search_results[:attrs][:total_count] > 0) # search_results[:attrs][:total_count] is the total number of returned requests
                 user_type = 4 if (search_results[:attrs][:total_count] == 0)
                 user_type = 3 if (email.include?("pivotal"))
@@ -248,7 +250,6 @@ class GithubLoader
 
   def self.create_user_if_not_exist(pr_user)
     user_login = (pr_user[:attrs][:login] || pr_user[:attrs][:items][0][:attrs][:login])
-    puts user_login
     user = User.find_by(login: user_login) 
 #    puts user_obj[:attrs][:login]
 #    puts user_obj[:attrs][:items][0][:attrs][:login]
@@ -259,7 +260,6 @@ class GithubLoader
       @@current_load.log_msg("Creating User: #{user_login}", LogLevel::INFO)
 
       user_details = pr_user[:_rels][:self].get.data
-
       company_name = user_details[:attrs][:company]
 
       if ((company_name.nil?) or (company_name.downcase.include? "available") or (company_name.downcase.include? "independent") or (company_name.strip == ""))
@@ -299,7 +299,6 @@ class GithubLoader
       puts "--- Creating Company: #{company_name}"
       puts "---------"
       @@current_load.log_msg("Creating Company: #{company_name}", LogLevel::INFO)
-
 
       company = Company.create(
         :name => company_name,

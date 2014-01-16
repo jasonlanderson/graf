@@ -128,7 +128,7 @@ class ApiController < ApplicationController
       @data_header = "Contributions"
       @label_index_name = LABEL_MAPPING[group_by][:hash_name]
       @data_index_name = DATA_MAPPING[metric][:hash_name]
-      render :partial => "dashboard/hash_as_table"
+      render :partial => "shared/hash_as_table"
     elsif data_request == 'detailed_prs_table'
       data = AnalyticUtils.get_detailed_table(month,
             quarter,
