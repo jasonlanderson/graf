@@ -16,6 +16,7 @@ rails g scaffold Company name:string source:string
 rails g scaffold GithubLoad  load_start_time:datetime load_complete_time:datetime initial_load:boolean
 rails g scaffold GithubLoadMsg github_load:references msg:string log_level:integer log_date:datetime
 
+rails g scaffold Commit repo:references sha:string message:string date_created:date created_at:datetime updated_at:datetime
 
 ###
 # Tips

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140113223804) do
+ActiveRecord::Schema.define(version: 20140116234834) do
 
   create_table "commits", force: true do |t|
     t.integer  "repo_id"
@@ -25,8 +25,8 @@ ActiveRecord::Schema.define(version: 20140113223804) do
   add_index "commits", ["repo_id"], name: "index_commits_on_repo_id"
 
   create_table "commits_users", id: false, force: true do |t|
-    t.integer "commit_id"
-    t.integer "user_id"
+    t.integer "commit_id", null: false
+    t.integer "user_id",   null: false
   end
 
   create_table "companies", force: true do |t|

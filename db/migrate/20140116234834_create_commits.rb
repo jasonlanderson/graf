@@ -2,7 +2,6 @@ class CreateCommits < ActiveRecord::Migration
   def change
     create_table :commits do |t|
       t.references :repo, index: true
-      #t.references :user, index: true
       t.string :sha
       t.string :message
       t.date :date_created

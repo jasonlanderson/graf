@@ -4,7 +4,6 @@
   <thead>
     <tr>
       <th>Repo</th>
-      <th>User</th>
       <th>Sha</th>
       <th>Message</th>
       <th>Date created</th>
@@ -20,7 +19,6 @@
     <% @commits.each do |commit| %>
       <tr>
         <td><%= commit.repo %></td>
-        <td><%= commit.user %></td>
         <td><%= commit.sha %></td>
         <td><%= commit.message %></td>
         <td><%= commit.date_created %></td>
