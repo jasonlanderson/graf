@@ -3,10 +3,10 @@ require "rollup_methods"
 
 class AnalyticUtils
   # TODO: Change to use parameterized queries
-  def self.get_pull_request_stats(select_label_col, select_data_col, group_by_label_col,
+  def self.get_pull_request_analytics(select_label_col, select_data_col, group_by_label_col,
     order_by_data_col, month = nil, quarter = nil, year = nil, start_date = nil, end_date = nil,
     repo=nil, state=nil, company=nil, user=nil)
-
+    puts "Jason is here"
     sql_stmt = "SELECT #{select_label_col}, #{select_data_col} FROM pull_requests pr " \
       "LEFT OUTER JOIN users u ON pr.user_id = u.id " \
       "LEFT OUTER JOIN companies c ON u.company_id = c.id " \
@@ -20,7 +20,7 @@ class AnalyticUtils
   end
 
 
-  def self.get_commit_stats(select_label_col, select_data_col, group_by_label_col,
+  def self.get_commit_analytics(select_label_col, select_data_col, group_by_label_col,
     order_by_data_col, month = nil, quarter = nil, year = nil, start_date = nil, end_date = nil,
     repo=nil, state=nil, company=nil, user=nil)
 
@@ -31,17 +31,6 @@ class AnalyticUtils
     sql_stmt += where_clause_stmt(month, quarter, year, start_date, end_date, repo, state, company, user)
 
     sql_stmt += "GROUP BY #{group_by_label_col} ORDER BY #{order_by_data_col} DESC"
-
-    return ActiveRecord::Base.connection.exec_query(sql_stmt)
-  end
-
-  def self.get_detailed_table(month = nil, quarter = nil, year = nil, start_date = nil, end_date = nil,
-    repo=nil, state=nil, company=nil, user=nil)
-
-    sql_stmt = "SELECT c.name, u.name, pr.title, pr.state FROM pull_requests pr LEFT OUTER JOIN users u ON pr.user_id " \
-               "= u.id LEFT OUTER JOIN companies c ON u.company_id = c.id LEFT OUTER JOIN repos r ON pr.repo_id = r.id " \
-               "WHERE 1=1 "
-    sql_stmt += where_clause_stmt(month, quarter, year, start_date, end_date, repo, state, company, user)
 
     return ActiveRecord::Base.connection.exec_query(sql_stmt)
   end
@@ -100,6 +89,23 @@ class AnalyticUtils
 
     return json_dataset
 
+  end
+
+  def self.get_pull_request_data(month = nil, quarter = nil, year = nil, start_date = nil, end_date = nil,
+    repo=nil, state=nil, company=nil, user=nil)
+
+    sql_stmt = "SELECT pr.pr_number, pr.title, pr.body, pr.state, IFNULL(NULLIF(u.name, ''), u.login) user_name, c.name company, r.full_name repo_full_name,  " \
+      "pr.date_created, pr.date_closed, pr.date_merged, #{DBUtils.get_date_difference('pr.date_closed','pr.date_created')} days_open " \
+      "FROM pull_requests pr " \
+      "LEFT OUTER JOIN users u ON pr.user_id = u.id " \
+      "LEFT OUTER JOIN companies c ON u.company_id = c.id " \
+      "LEFT OUTER JOIN repos r ON pr.repo_id = r.id "
+
+    sql_stmt += where_clause_stmt(month, quarter, year, start_date, end_date, repo, state, company, user)
+
+    sql_stmt += "ORDER BY user_name"
+
+    return ActiveRecord::Base.connection.exec_query(sql_stmt)
   end
 
   # Input array must be [{label_index_name => label, data_index_name => data}]

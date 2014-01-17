@@ -1,19 +1,33 @@
 Data Viewer
 
-
-<table id="prs_detail_table">
+<div id="table_container">
+<table id="prs_details_table" class="display">
   <thead>
     <tr>
-      <th>User</th>
-      <th></th>
+      <th>User Name</th>
+      <th width="300px">Title</th>
+      <th>Company</th>
+      <th>State</th>
+      <th>Days Open</th>
+      <th>Date Created</th>
+      <th>Date Closed</th>
+      <th>Date Merged</th>
     </tr>
   </thead>
   <tbody>
-    <% @@pr_data.each { |pr| %>
+    <% @pr_data.each { |rec| %>
     <tr>
-      <td><%= pr.user %></td>
-      <td><%= pr. %></td>
+      <td><%= rec['user_name'] %></td>
+      <td><a href="https://github.com/<%= rec['repo_full_name'] %>/pull/<%= rec['pr_number'] %>"><%= rec['title'].titleize %></a></td>
+      <td><%= rec['company'] %></td>
+      <td><%= rec['state'] %></td>
+      <td><%= rec['days_open'] %></td>
+      <td><%= rec['date_created'] %></td>
+      <td><%= rec['date_closed'] %></td>
+      <td><%= rec['date_merged'] %></td>
     </tr>
     <% } %>
   </tbody>
-</table>
+</table
+</div>
+<script type="text/javascript">makeAsDataTableOnLoad('prs_details_table');</script>

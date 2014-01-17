@@ -37,39 +37,40 @@ class ApiController < ApplicationController
     company = params[:company]
     user = params[:user]
 
-    if data_request == 'prs_chart'
+    if data_request == 'chart'
       # Get data for the pull request pie chart
-      case metric
-          when "commits"
-          data = AnalyticUtils.get_pull_request_stats(LABEL_MAPPING[group_by][:sql_select],
-            DATA_MAPPING[metric][:sql_select],
-            LABEL_MAPPING[group_by][:sql_group_by],
-            DATA_MAPPING[metric][:hash_name],
-            month,
-            quarter,
-            year,
-            start_date,
-            end_date,
-            repo,
-            state,
-            company,
-            user
-          )
-          when "avg_days_open" || "prs" || "percent_merged"
-          data = AnalyticUtils.get_commit_stats(LABEL_MAPPING[group_by][:sql_select],
-            DATA_MAPPING[metric][:sql_select],
-            LABEL_MAPPING[group_by][:sql_group_by],
-            DATA_MAPPING[metric][:hash_name],
-            month,
-            quarter,
-            year,
-            start_date,
-            end_date,
-            repo,
-            state,
-            company,
-            user
-          )
+      if metric == "commits"
+        data = AnalyticUtils.get_commit_analytics(LABEL_MAPPING[group_by][:sql_select],
+          DATA_MAPPING[metric][:sql_select],
+          LABEL_MAPPING[group_by][:sql_group_by],
+          DATA_MAPPING[metric][:hash_name],
+          month,
+          quarter,
+          year,
+          start_date,
+          end_date,
+          repo,
+          state,
+          company,
+          user
+        )
+      elsif metric == "avg_days_open" || metric == "prs" || metric == "percent_merged"
+        data = AnalyticUtils.get_pull_request_analytics(LABEL_MAPPING[group_by][:sql_select],
+          DATA_MAPPING[metric][:sql_select],
+          LABEL_MAPPING[group_by][:sql_group_by],
+          DATA_MAPPING[metric][:hash_name],
+          month,
+          quarter,
+          year,
+          start_date,
+          end_date,
+          repo,
+          state,
+          company,
+          user
+        )
+      else
+        render :text => "Error: Unknown Metric '#{metric}"
       end
 
       # When this is an avg, we need to roll up with avg
@@ -88,60 +89,48 @@ class ApiController < ApplicationController
 
       prs_data_pie_str = JavascriptUtils.get_pull_request_stats(data_top_x, LABEL_MAPPING[group_by][:hash_name], DATA_MAPPING[metric][:hash_name])
       render :json => prs_data_pie_str
-    elsif data_request == 'prs_table'
+    elsif data_request == 'table'
       # Get data for the pull request table
-      case metric
-          when "commits"
-          data = AnalyticUtils.get_pull_request_stats(LABEL_MAPPING[group_by][:sql_select],
-            DATA_MAPPING[metric][:sql_select],
-            LABEL_MAPPING[group_by][:sql_group_by],
-            DATA_MAPPING[metric][:hash_name],
-            month,
-            quarter,
-            year,
-            start_date,
-            end_date,
-            repo,
-            state,
-            company,
-            user
-          )
-          when "avg_days_open" || "prs" || "percent_merged"
-          data = AnalyticUtils.get_commit_stats(LABEL_MAPPING[group_by][:sql_select],
-            DATA_MAPPING[metric][:sql_select],
-            LABEL_MAPPING[group_by][:sql_group_by],
-            DATA_MAPPING[metric][:hash_name],
-            month,
-            quarter,
-            year,
-            start_date,
-            end_date,
-            repo,
-            state,
-            company,
-            user
-          )
+      if metric == "commits"
+        data = AnalyticUtils.get_commit_analytics(LABEL_MAPPING[group_by][:sql_select],
+          DATA_MAPPING[metric][:sql_select],
+          LABEL_MAPPING[group_by][:sql_group_by],
+          DATA_MAPPING[metric][:hash_name],
+          month,
+          quarter,
+          year,
+          start_date,
+          end_date,
+          repo,
+          state,
+          company,
+          user
+        )
+      elsif metric == "avg_days_open" || metric == "prs" || metric == "percent_merged"
+        data = AnalyticUtils.get_pull_request_analytics(LABEL_MAPPING[group_by][:sql_select],
+          DATA_MAPPING[metric][:sql_select],
+          LABEL_MAPPING[group_by][:sql_group_by],
+          DATA_MAPPING[metric][:hash_name],
+          month,
+          quarter,
+          year,
+          start_date,
+          end_date,
+          repo,
+          state,
+          company,
+          user
+        )
+      else
+        render :text => "Error: Unknown Metric '#{metric}"
       end
       @table_handle = "metric_table"
-      @table_data = prs_data
+      @table_data = data
       @label_header = LABEL_MAPPING[group_by][:hash_name].titleize
       @data_header = "Contributions"
       @label_index_name = LABEL_MAPPING[group_by][:hash_name]
       @data_index_name = DATA_MAPPING[metric][:hash_name]
       render :partial => "shared/hash_as_table"
-    elsif data_request == 'detailed_prs_table'
-      data = AnalyticUtils.get_detailed_table(month,
-            quarter,
-            year,
-            start_date,
-            end_date,
-            repo,
-            state,
-            company,
-            user
-          )
-      #TODO, finish implementation of detailed table
-
 
     elsif data_request == 'prs_line_graph'
        line_graph = AnalyticUtils.get_timestamps(metric, LABEL_MAPPING[group_by][:sql_select],

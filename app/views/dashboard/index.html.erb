@@ -17,13 +17,15 @@
     user = $("#user_filter").val()
 
     // Make API calls to update the data
-    apiAJAX(metric, groupBy, month, quarter, year, startDate, endDate, repo, state, company, user, 'prs_chart', 'json', updateChartCallback);
-    apiAJAX(metric, groupBy, month, quarter, year, startDate, endDate, repo, state, company, user, 'prs_table', 'text', updateTableCallback);
-
+    apiAJAX(metric, groupBy, month, quarter, year, startDate, endDate, repo, state, company, user, 'chart', 'json', updateChartCallback);
+    apiAJAX(metric, groupBy, month, quarter, year, startDate, endDate, repo, state, company, user, 'table', 'text', updateTableCallback);
     
+
+    // Update the titles
     $("#chart_title").html($("#metric_filter option:selected").text() +  " Grouped By " + $("#group_by_filter option:selected").text());
     $("#table_title").html($("#metric_filter option:selected").text() +  " Grouped By " + $("#group_by_filter option:selected").text());
     
+    // TODO: Get rid of this and integrate
     if (($("#metric_filter").val() == "prs") || ($("#metric_filter").val() == "commits"))  {
     $("#line-graph-container").show();  
     apiAJAX(metric, groupBy, month, quarter, year, startDate, endDate, repo, state, company, user, 'prs_line_graph', 'json', updateLineGraphCallback);
@@ -31,8 +33,6 @@
     else {
       $("#line-graph-container").hide();
     }
-    //apiAJAX(month, quarter, year, repo, state, 'company_table', 'text', updatePRsCompanyTableCallback);
-    //apiAJAX(month, quarter, year, repo, state, 'monthly_line_graph', 'json', updateMonthlyLineGraphCallback);
   }
 
   function updateChartCallback(result){
@@ -91,9 +91,9 @@
   }
 
   //
-  // Initial Page Load Activities
+  // Search Criteria Box Functions
   //
-  $(document).ready(function () {
+  function initializeSearchCriteria() {
     $("#metric_filter").change(function () {
       filterUpdate()
     });
@@ -161,6 +161,12 @@
         buttonImageOnly: true
       });
     });
+  }
+
+  //
+  // Initial Page Load Activities
+  //
+  $(document).ready(function () {
 
     // Load initial  chart
     $.plot($("#metric_chart"), $.parseJSON('<%= raw @chart_data_str %>').response, PIE_OPTIONS);
@@ -207,121 +213,7 @@ Group By:
 
 <br><br>
 
-<h2>Search Criteria:</h2>
-
-<table>
-  <tr>
-    <td>
-      Month:
-    </td>
-    <td>
-      <select id="month_filter" style="width: 100px;">
-        <option value="" selected>All</option>
-        <option value="1">January</option>
-        <option value="2">February</option>
-        <option value="3">March</option>
-        <option value="4">April</option>
-        <option value="5">May</option>
-        <option value="6">June</option>
-        <option value="7">July</option>
-        <option value="8">August</option>
-        <option value="9">September</option>
-        <option value="10">October</option>
-        <option value="11">November</option>
-        <option value="12">December</option>
-      </select>
-    </td>
-    <td>
-      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;State:
-    </td>
-    <td>
-      <select id="state_filter">
-        <option value="" selected>All</option>
-        <option value="open">Open</option>
-        <option value="merged">Merged</option>
-        <option value="closed">Closed (Not Merged)</option>
-      </select>
-    </td>
-    <td>
-      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Repository:
-    </td>
-    <td>
-      <% @drop_down_id = "repo_filter" %>
-      <% @drop_down_data = @repos %>
-      <% @drop_down_data_index = "name" %>
-      <% @drop_down_empty_label = "All" %>
-      <% @drop_down_selected = nil %>
-      <% @drop_down_width = "500px" %>
-      <%= render 'shared/drop_down' %>
-    </td>
-    <td rowspan="3">
-      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button id="clear_search_criteria_button">Clear Search Criteria</button>
-    </td>
-  </tr>
-  <tr>
-    <td>
-      Quarter:
-    </td>
-    <td>
-      <select id="quarter_filter" style="width: 100px;">
-        <option value="" selected>All</option>
-        <option value="q1">Q1</option>
-        <option value="q2">Q2</option>
-        <option value="q3">Q3</option>
-        <option value="q4">Q4</option>
-      </select>
-    </td>
-    <td>
-      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Start Date:
-    </td>
-    <td>
-      <input type="text" id="start_date_filter" size="20">
-    </td>
-    <td>
-      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Company:
-    </td>
-    <td>
-      <% @drop_down_id = "company_filter" %>
-      <% @drop_down_data = @companies %>
-      <% @drop_down_data_index = "name" %>
-      <% @drop_down_empty_label = "All" %>
-      <% @drop_down_selected = nil %>
-      <% @drop_down_width = "500px" %>
-      <%= render 'shared/drop_down' %>
-    </td>
-  </tr>
-  <tr>
-    <td>
-      Year:
-    </td>
-    <td>
-      <select id="year_filter" style="width: 100px;">
-        <option value="" selected>All</option>
-        <option value="2011">2011</option>
-        <option value="2012">2012</option>
-        <option value="2013">2013</option>
-        <option value="2014">2014</option>
-      </select>
-    </td>
-    <td>
-      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;End Date:
-    </td>
-    <td>
-      <input type="text" id="end_date_filter" size="20">
-    </td>
-    <td>
-      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;User:
-    </td>
-    <td>
-      <% @drop_down_id = "user_filter" %>
-      <% @drop_down_data = @users %>
-      <% @drop_down_data_index = "login" %>
-      <% @drop_down_empty_label = "All" %>
-      <% @drop_down_selected = nil %>
-      <%= render 'shared/drop_down' %>
-    </td>
-  </tr>
-</table>
+<%= render 'shared/search_criteria' %>
 
 
 <hr>
