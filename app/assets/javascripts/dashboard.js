@@ -104,3 +104,4 @@ function makeAsDataTable(tableHandleIdStr) {
     "bFilter": true
   } );
 }
+

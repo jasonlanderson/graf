@@ -1,33 +1,81 @@
-Data Viewer
+<script type="text/javascript">
+  $(function() {
+    $( document ).tooltip();
+  });
 
-<div id="table_container">
-<table id="prs_details_table" class="display">
+  //
+  // Initial Page Load Activities
+  //
+  $(document).ready(function () {
+    makeAsDataTableOnLoad('prs_details_table');
+  });
+
+</script>
+
+
+
+
+<br>
+<br>
+<b>Data Viewer</b> 
+<br>
+<br>
+  
+Pull Request Summary
+<table>
   <thead>
     <tr>
-      <th>User Name</th>
-      <th width="300px">Title</th>
-      <th>Company</th>
-      <th>State</th>
-      <th>Days Open</th>
-      <th>Date Created</th>
-      <th>Date Closed</th>
-      <th>Date Merged</th>
+      <th># Open</th>
+      <th># Closed</th>
+      <th># Merged</th>
+      <th>Total</th>
     </tr>
   </thead>
   <tbody>
-    <% @pr_data.each { |rec| %>
     <tr>
+      <td><%= @pr_state_stats[:open] %></td>
+      <td><%= @pr_state_stats[:closed] %></td>
+      <td><%= @pr_state_stats[:merged] %></td>
+      <td><%= @pr_state_stats[:total] %></td>
+    </tr>
+  </tbody>
+</table>
+
+
+<br>
+<br>
+
+
+
+<div>
+<table id="prs_details_table" cellpadding="5px">
+  <thead>
+    <tr>
+      <th>&nbsp;</th>
+      <th>User</th>
+      <th>Title</th>
+      <th>Company</th>
+      <th>State</th>
+      <th>Days Open</th>
+      <th>Created</th>
+      <th>Closed</th>
+      <th>Merged</th>
+    </tr>
+  </thead>
+  <tbody>
+    <%  @pr_data.each_with_index { |rec, index| %>
+    <tr>
+      <td><%= index+1 %></td>
       <td><%= rec['user_name'] %></td>
       <td><a href="https://github.com/<%= rec['repo_full_name'] %>/pull/<%= rec['pr_number'] %>"><%= rec['title'].titleize %></a></td>
       <td><%= rec['company'] %></td>
       <td><%= rec['state'] %></td>
       <td><%= rec['days_open'] %></td>
-      <td><%= rec['date_created'] %></td>
-      <td><%= rec['date_closed'] %></td>
-      <td><%= rec['date_merged'] %></td>
+      <td><%= DateUtils.db_format_to_human_slash_date_format(rec['date_created']) %></td>
+      <td><%= DateUtils.db_format_to_human_slash_date_format(rec['date_closed']) %></td>
+      <td><%= DateUtils.db_format_to_human_slash_date_format(rec['date_merged']) %></td>
     </tr>
     <% } %>
   </tbody>
-</table
+</table>
 </div>
-<script type="text/javascript">makeAsDataTableOnLoad('prs_details_table');</script>

@@ -103,7 +103,7 @@ class AnalyticUtils
 
     sql_stmt += where_clause_stmt(month, quarter, year, start_date, end_date, repo, state, company, user)
 
-    sql_stmt += "ORDER BY user_name"
+    sql_stmt += "ORDER BY user_name, pr.date_created"
 
     return ActiveRecord::Base.connection.exec_query(sql_stmt)
   end
@@ -197,5 +197,24 @@ class AnalyticUtils
     end
 
     return where_stmt
+  end
+
+  def self.get_state_stats(data)
+    total = 0
+    open = 0
+    closed = 0
+    merged = 0
+    data.each { |x|
+      total += 1
+      if x['date_merged']
+        merged += 1
+      elsif x['date_closed']
+        closed += 1
+      else
+        open += 1
+      end
+    }
+
+    return {:total => total, :open => open, :closed => closed, :merged => merged}
   end
 end

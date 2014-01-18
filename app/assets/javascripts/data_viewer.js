@@ -2,6 +2,7 @@
 //
 // Data Table Functions
 //
+
 function makeAsDataTableOnLoad(tableHandleIdStr) {
   $(document).ready( function () {
     makeAsDataTable(tableHandleIdStr)
