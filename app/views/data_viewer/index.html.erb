@@ -17,18 +17,16 @@
 
 <br>
 <br>
-<b>Data Viewer</b> 
+<b>Pull Request Summary for IBMers</b>
 <br>
 <br>
-  
-Pull Request Summary
-<table>
+<table width="300px" border="1px">
   <thead>
     <tr>
-      <th># Open</th>
-      <th># Closed</th>
-      <th># Merged</th>
-      <th>Total</th>
+      <td># Open</td>
+      <td># Closed</td>
+      <td># Merged</td>
+      <td>Total</td>
     </tr>
   </thead>
   <tbody>
@@ -41,20 +39,23 @@ Pull Request Summary
   </tbody>
 </table>
 
-
-<br>
 <br>
 
+<hr>  
 
+<br>  
 
 <div>
-<table id="prs_details_table" cellpadding="5px">
+<b>Pull Request Details for IBMers</b>
+<br>
+<br>
+<table id="prs_details_table" cellpadding="5px" border="1px">
   <thead>
     <tr>
       <th>&nbsp;</th>
       <th>User</th>
       <th>Title</th>
-      <th>Company</th>
+      <!--th>Company</th-->
       <th>State</th>
       <th>Days Open</th>
       <th>Created</th>
@@ -68,7 +69,7 @@ Pull Request Summary
       <td><%= index+1 %></td>
       <td><%= rec['user_name'] %></td>
       <td><a href="https://github.com/<%= rec['repo_full_name'] %>/pull/<%= rec['pr_number'] %>"><%= rec['title'].titleize %></a></td>
-      <td><%= rec['company'] %></td>
+      <!--td><%= rec['company'] %></td-->
       <td><%= rec['state'] %></td>
       <td><%= rec['days_open'] %></td>
       <td><%= DateUtils.db_format_to_human_slash_date_format(rec['date_created']) %></td>
