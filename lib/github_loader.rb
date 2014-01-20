@@ -67,12 +67,12 @@ class GithubLoader
     load_repos
 
     current_load.log_msg("***Loading Pull Requests", LogLevel::INFO)
-    load_all_prs # TODO: This should also load associated commits
-    #load_prs_for_repo(Repo.find_by(name: "bosh"))
+    #load_all_prs # TODO: This should also load associated commits
+    load_prs_for_repo(Repo.find_by(name: "vmc"))
 
     current_load.log_msg("***Loading Commits", LogLevel::INFO)
     #load_all_commits
-    #load_commits_for_repo(Repo.find_by(name: "bosh"))
+    load_commits_for_repo(Repo.find_by(name: "vmc"))
 
 
     current_load.log_msg("***Fixing Users Without Companies", LogLevel::INFO)
@@ -164,6 +164,7 @@ class GithubLoader
     client = OctokitUtils.get_octokit_client
     commits = client.commits(repo.full_name)
     commits.each { |commit|
+      #unless commit[:attrs][:commit][:attrs][:author][:name] == "Jenkins User"
       email = commit[:attrs][:commit][:attrs][:author][:email]
       c = Commit.create(
           :repo_id => repo.id,
@@ -182,6 +183,7 @@ class GithubLoader
         puts "________________"
         puts commit[:attrs][:commit][:attrs][:author][:email]
           names.each do |name| 
+
               puts name
               user_type = nil
               login = nil
@@ -231,17 +233,18 @@ class GithubLoader
                     :email => email
                     ) 
               end
-
-              CommitsUsers.create(
-                :commit_id => c.id.to_i,
-                :user_id => (User.find_by(name: name) || User.find_by(login: name) || User.find_by(login: login))[:id]
-              )
+              c.users << (User.find_by(name: name) || User.find_by(login: name) || User.find_by(login: login))
+              c.save()
+              #CommitsUsers.create(
+              #  :commit_id => c.id.to_i,
+              #  :user_id => (User.find_by(name: name) || User.find_by(login: name) || User.find_by(login: login))[:id]
+              #)
           end
           #puts User.find_by(name: name) #? nil : next
           #login = client.search_users(commit[:attrs][:commit][:attrs][:author][:name])[:attrs][:items][0][:attrs][:login]
           #user_obj = client.user(login)
 
-      #end
+      #end # Bot unless
       
     }
 
