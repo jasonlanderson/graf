@@ -17,3 +17,6 @@
 
 # Ignore CF files
 /manifest.yml
+
+# Generated assets
+/public/assets
