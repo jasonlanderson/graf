@@ -319,10 +319,11 @@ class GithubLoader
     ORG_TO_COMPANY.each { |org_name, company_name|
       company = Company.find_by(name: company_name, source: "org")
 
-      orgMembers = client.organization(org_name)[:_rels][:members]
-      orgMembers.get.data.each { |member|
+      orgMembers = client.organization_members("cfibmers")
+      orgMembers.each { |member|
         user = User.find_by(login: member[:attrs][:login])
         if user
+          puts "#{user} is in #{company}"
           user.company = company
           user.save
         end
