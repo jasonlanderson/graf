@@ -66,13 +66,16 @@ class GithubLoader
     current_load.log_msg("***Loading Repos", LogLevel::INFO)
     load_repos
 
+    current_load.log_msg("***Loading Users", LogLevel::INFO)
+    load_users
+
     current_load.log_msg("***Loading Pull Requests", LogLevel::INFO)
-    #load_all_prs # TODO: This should also load associated commits
-    load_prs_for_repo(Repo.find_by(name: "vmc"))
+    load_all_prs # TODO: This should also load associated commits
+    #load_prs_for_repo(Repo.find_by(name: "vmc"))
 
     current_load.log_msg("***Loading Commits", LogLevel::INFO)
-    #load_all_commits
-    load_commits_for_repo(Repo.find_by(name: "vmc"))
+    load_all_commits
+    #load_commits_for_repo(Repo.find_by(name: "vmc"))
 
 
     current_load.log_msg("***Fixing Users Without Companies", LogLevel::INFO)
@@ -110,6 +113,23 @@ class GithubLoader
     }
   end
 
+  def self.load_users()
+    client = OctokitUtils.get_octokit_client
+    start = Time.now           
+    puts "Loading Users!"
+    Repo.all().each {|repo|
+        contributors = client.contributors(repo[:full_name])     
+        contributors.each {|user| 
+          unless User.find_by(login: user[:login]) 
+            puts "Creating record for User #{user[:login]}"
+            user_obj = client.user(user[:login]) 
+            create_user_if_not_exist(user_obj)
+            puts (Time.now - start)
+          end 
+          
+        }
+    }
+  end
 
   def self.load_all_prs()
     Repo.all().each { |repo|
@@ -189,63 +209,58 @@ class GithubLoader
               login = nil
               user_id = nil
               search_results = nil
+              user = (User.find_by(name: name) || User.find_by(login: name)) 
 
-              # TODO: Refactor this into straight forward logic
-              if (User.find_by(name: name) || User.find_by(login: name))
-                user_type = 1
-              else 
-                search_results = OctokitUtils.search_users(email)
-                user_type = 2 if (search_results[:attrs][:total_count] > 0) # search_results[:attrs][:total_count] is the total number of returned requests
-                user_type = 4 if (search_results[:attrs][:total_count] == 0)
-                user_type = 3 if (email.include?("pivotal"))
-                user_type = 5 if email.include?("vmware")
-                #user_type = 6 if email.include?("rbcon")
-              end
-              #puts "User type! #{user_type}"
+              unless user
+                if name == "Ian Baker"
+                    user = client.user("raindrift")
+                end                    
 
-              case user_type
-                when 1
-                  login = (User.find_by(name: name) || User.find_by(login: name))[:login] 
-                  user_id = (User.find_by(name: name) || User.find_by(login: name))[:id]
-                when 2
+              
+                # Search by email, unless commit has multiple contributors
+                unless email.include?("pair")
+                  search_results = OctokitUtils.search_users(email)
+                end
+
+                # Search by name if commit submitted by pair, or if email not in github db
+                if (!search_results || (search_results[:attrs][:total_count] == 0))
+                  search_results = OctokitUtils.search_users(name)
+                end
+
+
+                if search_results && (search_results[:attrs][:total_count] > 1) 
+                  puts "WARNING: Search returned #{search_results[:attrs][:total_count]} results for #{name}, #{email}" 
                   login = search_results[:attrs][:items][0][:attrs][:login]
                   user_obj = client.user(login) 
                   user = create_user_if_not_exist(user_obj) 
-                  #User.create(
-                  #  :name => name, 
-                  #  :email => email
-                  #  )
-                when 3
-                  User.create(
+                elsif email.include?("pivotal")
+                  user = User.create(
                     :company => Company.find_by(name: "Pivotal"), 
                     :name => name, 
                     :email => email
                     ) 
-                when 4
-                  User.create(
-                    :name => name, 
-                    :email => email
-                    )
-                when 5
-                  User.create(
+                elsif email.include?("vmware") 
+                  user = User.create(
                     :company => Company.find_by(name: "VMware"), 
                     :name => name, 
                     :email => email
+                    )  
+                elsif email.include?("rbcon") 
+                  user = User.create(
+                    :company => Company.find_by(name: "Rbcon"), 
+                    :name => name, 
+                    :email => email
                     ) 
+                else
+                  user = User.create(
+                    :name => name, 
+                    :email => email
+                    )
+                end
               end
-              c.users << (User.find_by(name: name) || User.find_by(login: name) || User.find_by(login: login))
+              c.users << user # Maps user to commit
               c.save()
-              #CommitsUsers.create(
-              #  :commit_id => c.id.to_i,
-              #  :user_id => (User.find_by(name: name) || User.find_by(login: name) || User.find_by(login: login))[:id]
-              #)
-          end
-          #puts User.find_by(name: name) #? nil : next
-          #login = client.search_users(commit[:attrs][:commit][:attrs][:author][:name])[:attrs][:items][0][:attrs][:login]
-          #user_obj = client.user(login)
-
-      #end # Bot unless
-      
+        end
     }
 
   end
@@ -271,6 +286,8 @@ class GithubLoader
           company_name = "VMware"
       elsif ((company_name.downcase.include? "pivotal") || (company_name.downcase.include? "springsource")) 
           company_name = "Pivotal"
+      elsif (company_name.downcase.include? "ibm")
+          company_name = "IBM"
       end
 
       company = nil
@@ -322,7 +339,7 @@ class GithubLoader
       orgMembers = client.organization_members("cfibmers")
       orgMembers.each { |member|
         user = User.find_by(login: member[:attrs][:login])
-        if user
+        if user && !user.company
           puts "#{user} is in #{company}"
           user.company = company
           user.save

@@ -27,8 +27,8 @@
     
     // TODO: Get rid of this and integrate
     if (($("#metric_filter").val() == "prs") || ($("#metric_filter").val() == "commits"))  {
-    $("#line-graph-container").show();  
-    apiAJAX(metric, groupBy, month, quarter, year, startDate, endDate, repo, state, company, user, 'prs_line_graph', 'json', updateLineGraphCallback);
+      $("#line-graph-container").show();  
+      apiAJAX(metric, groupBy, month, quarter, year, startDate, endDate, repo, state, company, user, 'prs_line_graph', 'json', updateLineGraphCallback);
     }
     else {
       $("#line-graph-container").hide();
@@ -60,7 +60,10 @@
   function updateTableCallback(result){
     $("#table_container").empty();
     $("#table_container").html(result);
-    makeAsDataTable("#metric_table")
+
+    //makeAsDataTable("#metric_table")
+    $("table#metric_table").dataTable(TABLE_OPTIONS);
+
   }
 
   function clearSearchCriteria(){
@@ -172,6 +175,8 @@
     $.plot($("#metric_chart"), $.parseJSON('<%= raw @chart_data_str %>').response, PIE_OPTIONS);
   });
 
+
+
 </script>
 
 
@@ -267,7 +272,7 @@ This table displays the amount of pull requests submitted by each contributer.
 <div id="table_container">
   <%= render 'shared/hash_as_table' %>
 </div>
-<script type="text/javascript">makeAsDataTableOnLoad('#<%= @table_handle %>');</script>
+<script type="text/javascript">$('#<%= @table_handle %>').dataTable(TABLE_OPTIONS);</script>
 
 
 <%# ---------------- %>

@@ -7,8 +7,10 @@
   // Initial Page Load Activities
   //
   $(document).ready(function () {
-    makeAsDataTableOnLoad('#prs_details_table');
+    $("table#prs_details_table").dataTable(TABLE_OPTIONS);
+    $("table#states").dataTable(TABLE_OPTIONS);
   });
+
 
 </script>
 
@@ -22,7 +24,7 @@
 <b>Pull Request Summary for IBMers</b>
 <br>
 <br>
-<table width="300px" border="1px">
+<table id="states" class="display">
   <thead>
     <tr>
       <td># Open</td>
@@ -49,7 +51,7 @@
 <b>Pull Request Details for IBMers</b>
 <br>
 <br>
-<table id="prs_details_table" cellpadding="5px" border="1px">
+<table id="prs_details_table" class="display">
   <thead>
     <tr>
       <th>&nbsp;</th>
