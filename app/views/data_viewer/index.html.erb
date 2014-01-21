@@ -7,7 +7,7 @@
   // Initial Page Load Activities
   //
   $(document).ready(function () {
-    makeAsDataTableOnLoad('prs_details_table');
+    makeAsDataTableOnLoad('#prs_details_table');
   });
 
 </script>
@@ -68,8 +68,8 @@
     <tr>
       <td><%= index+1 %></td>
       <td><%= rec['user_name'] %></td>
-      <%= PullRequest.get_github_pr_link(rec['repo_full_name'], rec['pr_number'])  %>
-      <td><a href="https://github.com/<%= rec['repo_full_name'] %>/pull/<%= rec['pr_number'] %>"><%= rec['title'].titleize %></a></td>
+
+      <td><a href="<%= PullRequest.get_github_pr_link(rec['repo_full_name'], rec['pr_number'])  %>"><%= rec['title'].titleize %></a></td>
       <!--td><%= rec['company'] %></td-->
       <td><%= rec['state'] %></td>
       <td><%= rec['days_open'] %></td>
