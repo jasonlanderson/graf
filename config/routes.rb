@@ -20,7 +20,8 @@ Graf::Application.routes.draw do  resources :github_loads
   # Info Paths
   get '/info', to: 'info#info'
 
-  # Data Viewer Paths
+  # Main Page Paths
+  get '/analytics', to: 'dashboard#index'
   get '/data_viewer', to: 'data_viewer#index'
 
 

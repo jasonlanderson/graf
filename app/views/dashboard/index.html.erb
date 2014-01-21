@@ -1,192 +1,188 @@
-<script type="text/javascript">
-  $(function() {
-    $( document ).tooltip();
-  });
-
-  function filterUpdate() {
-    metric = $("#metric_filter").val()
-    groupBy = $("#group_by_filter").val()
-    month = $("#month_filter").val()
-    quarter = $("#quarter_filter").val()
-    year = $("#year_filter").val()
-    startDate = $("#start_date_filter").val()
-    endDate = $("#end_date_filter").val()
-    repo = $("#repo_filter").val()
-    state = $("#state_filter").val()
-    company = $("#company_filter").val()
-    user = $("#user_filter").val()
-
-    // Make API calls to update the data
-    apiAJAX(metric, groupBy, month, quarter, year, startDate, endDate, repo, state, company, user, 'chart', 'json', updateChartCallback);
-    apiAJAX(metric, groupBy, month, quarter, year, startDate, endDate, repo, state, company, user, 'table', 'text', updateTableCallback);
-    
-
-    // Update the titles
-    $("#chart_title").html($("#metric_filter option:selected").text() +  " Grouped By " + $("#group_by_filter option:selected").text());
-    $("#table_title").html($("#metric_filter option:selected").text() +  " Grouped By " + $("#group_by_filter option:selected").text());
-    
-    // TODO: Get rid of this and integrate
-    if (($("#metric_filter").val() == "prs") || ($("#metric_filter").val() == "commits"))  {
-    $("#line-graph-container").show();  
-    apiAJAX(metric, groupBy, month, quarter, year, startDate, endDate, repo, state, company, user, 'prs_line_graph', 'json', updateLineGraphCallback);
-    }
-    else {
-      $("#line-graph-container").hide();
-    }
-  }
-
-  function updateChartCallback(result){
-    $("#metric_chart").empty();
-    if (result.response.length == 0) {
-      data = [{ label: "No Pull Requests", data: 1, color:'#E0E0E0' }];
-    }
-    else {
-      data = result.response;
-    }
-
-    if ($("#view_type").val() == "bar") {
-      result = parsePieToBar(data);
-      var data = result.data;
-      var options = result.options;
-    }
-    else {
-      options = PIE_OPTIONS;
-    }
-
-    $.plot($("#metric_chart"), data, options);
-  }
-
-  
-  function updateTableCallback(result){
-    $("#table_container").empty();
-    $("#table_container").html(result);
-    makeAsDataTable("#metric_table")
-  }
-
-  function clearSearchCriteria(){
-    whereDropDownIds = ["month_filter", 
-                        "quarter_filter", 
-                        "year_filter", 
-                        "repo_filter", 
-                        "state_filter", 
-                        "company_filter", 
-                        "user_filter"];
-
-    // Clear all the dropdowns
-    for ( id in whereDropDownIds ) {
-      $("#" + whereDropDownIds[id]).val("");
-    }
-
-    // Clear the date range
-    $("#start_date_filter").val("");
-    $("#end_date_filter").val("");
-
-    // Update chart now that values have been reset
-    filterUpdate();
-  }
-
-
-  function updateLineGraphCallback(result){
-    $.plot($("#prs_line_graph"), result.response, LINE_OPTIONS);
-  }
-
-  //
-  // Search Criteria Box Functions
-  //
-  function initializeSearchCriteria() {
-    $("#metric_filter").change(function () {
-      filterUpdate()
-    });
-
-    $("#group_by_filter").change(function () {
-      filterUpdate()
-    });
-
-    $("#month_filter").change(function () {
-      filterUpdate()
-    });
-
-    $("#quarter_filter").change(function () {
-      filterUpdate()
-    });
-
-    $("#year_filter").change(function () {
-      filterUpdate()
-    });
-
-    $("#repo_filter").change(function () {
-      filterUpdate()
-    });
-
-    $("#state_filter").change(function () {
-      filterUpdate()
-    });
-
-    $("#company_filter").change(function () {
-      filterUpdate()
-    });
-
-    $("#user_filter").change(function () {
-      filterUpdate()
-    });
-
-    $("#start_date_filter").change(function () {
-      filterUpdate()
-    });
-
-    $("#end_date_filter").change(function () {
-      filterUpdate()
-    });
-
-    $("#view_type").change(function () {
-      filterUpdate()
-    });
-
-    $("#clear_search_criteria_button").click(function () {
-      clearSearchCriteria();
-    });
-
+<%################%>
+<%# Extra Headers %>
+<%################%>
+<% content_for(:extra_headers) do %>
+  <script type="text/javascript">
     $(function() {
-      $( "#start_date_filter" ).datepicker({
-        showOn: "button",
-        buttonImage: "<%= image_path "calendar.png" %>",
-        buttonImageOnly: true
-      });
+      $( document ).tooltip();
     });
 
-    $(function() {
-      $( "#end_date_filter" ).datepicker({
-        showOn: "button",
-        buttonImage: "<%= image_path "calendar.png" %>",
-        buttonImageOnly: true
+    function filterUpdate() {
+      metric = $("#metric_filter").val()
+      groupBy = $("#group_by_filter").val()
+      month = $("#month_filter").val()
+      quarter = $("#quarter_filter").val()
+      year = $("#year_filter").val()
+      startDate = $("#start_date_filter").val()
+      endDate = $("#end_date_filter").val()
+      repo = $("#repo_filter").val()
+      state = $("#state_filter").val()
+      company = $("#company_filter").val()
+      user = $("#user_filter").val()
+
+      // Make API calls to update the data
+      apiAJAX(metric, groupBy, month, quarter, year, startDate, endDate, repo, state, company, user, 'chart', 'json', updateChartCallback);
+      apiAJAX(metric, groupBy, month, quarter, year, startDate, endDate, repo, state, company, user, 'table', 'text', updateTableCallback);
+      
+
+      // Update the titles
+      $("#chart_title").html($("#metric_filter option:selected").text() +  " Grouped By " + $("#group_by_filter option:selected").text());
+      $("#table_title").html($("#metric_filter option:selected").text() +  " Grouped By " + $("#group_by_filter option:selected").text());
+      
+      // TODO: Get rid of this and integrate
+      if (($("#metric_filter").val() == "prs") || ($("#metric_filter").val() == "commits"))  {
+      $("#line-graph-container").show();  
+      apiAJAX(metric, groupBy, month, quarter, year, startDate, endDate, repo, state, company, user, 'prs_line_graph', 'json', updateLineGraphCallback);
+      }
+      else {
+        $("#line-graph-container").hide();
+      }
+    }
+
+    function updateChartCallback(result){
+      $("#metric_chart").empty();
+      if (result.response.length == 0) {
+        data = [{ label: "No Pull Requests", data: 1, color:'#E0E0E0' }];
+      }
+      else {
+        data = result.response;
+      }
+
+      if ($("#view_type").val() == "bar") {
+        result = parsePieToBar(data);
+        var data = result.data;
+        var options = result.options;
+      }
+      else {
+        options = PIE_OPTIONS;
+      }
+
+      $.plot($("#metric_chart"), data, options);
+    }
+
+    
+    function updateTableCallback(result){
+      $("#table_container").empty();
+      $("#table_container").html(result);
+      makeAsDataTable("#metric_table")
+    }
+
+    function clearSearchCriteria(){
+      whereDropDownIds = ["month_filter", 
+                          "quarter_filter", 
+                          "year_filter", 
+                          "repo_filter", 
+                          "state_filter", 
+                          "company_filter", 
+                          "user_filter"];
+
+      // Clear all the dropdowns
+      for ( id in whereDropDownIds ) {
+        $("#" + whereDropDownIds[id]).val("");
+      }
+
+      // Clear the date range
+      $("#start_date_filter").val("");
+      $("#end_date_filter").val("");
+
+      // Update chart now that values have been reset
+      filterUpdate();
+    }
+
+
+    function updateLineGraphCallback(result){
+      $.plot($("#prs_line_graph"), result.response, LINE_OPTIONS);
+    }
+
+    //
+    // Search Criteria Box Functions
+    //
+    function initializeSearchCriteria() {
+      $("#metric_filter").change(function () {
+        filterUpdate()
       });
+
+      $("#group_by_filter").change(function () {
+        filterUpdate()
+      });
+
+      $("#month_filter").change(function () {
+        filterUpdate()
+      });
+
+      $("#quarter_filter").change(function () {
+        filterUpdate()
+      });
+
+      $("#year_filter").change(function () {
+        filterUpdate()
+      });
+
+      $("#repo_filter").change(function () {
+        filterUpdate()
+      });
+
+      $("#state_filter").change(function () {
+        filterUpdate()
+      });
+
+      $("#company_filter").change(function () {
+        filterUpdate()
+      });
+
+      $("#user_filter").change(function () {
+        filterUpdate()
+      });
+
+      $("#start_date_filter").change(function () {
+        filterUpdate()
+      });
+
+      $("#end_date_filter").change(function () {
+        filterUpdate()
+      });
+
+      $("#view_type").change(function () {
+        filterUpdate()
+      });
+
+      $("#clear_search_criteria_button").click(function () {
+        clearSearchCriteria();
+      });
+
+      $(function() {
+        $( "#start_date_filter" ).datepicker({
+          showOn: "button",
+          buttonImage: "<%= image_path "calendar.png" %>",
+          buttonImageOnly: true
+        });
+      });
+
+      $(function() {
+        $( "#end_date_filter" ).datepicker({
+          showOn: "button",
+          buttonImage: "<%= image_path "calendar.png" %>",
+          buttonImageOnly: true
+        });
+      });
+    }
+
+    //
+    // Initial Page Load Activities
+    //
+    $(document).ready(function () {
+      // Load initial  chart
+      $.plot($("#metric_chart"), $.parseJSON('<%= raw @chart_data_str %>').response, PIE_OPTIONS);
     });
-  }
 
-  //
-  // Initial Page Load Activities
-  //
-  $(document).ready(function () {
-
-    // Load initial  chart
-    $.plot($("#metric_chart"), $.parseJSON('<%= raw @chart_data_str %>').response, PIE_OPTIONS);
-  });
-
-</script>
-
-
-<a href="#" class="tooltip"> <%= image_tag "tooltip.gif" %> <span style="font-size: 12px;">  
-GitHub Repository Analytics with Filtering (GRAF) is a web service that has the ability to collect and visually represent useful statistics on various Github repositories. At the moment, this application is only collecting data on repositories hosted by the "CloudFoundry" Github organization. We plan to expand this application to collect data on repositories from other organizations (Openstack, Openshift, etc.) in the near future.
-<br><br>
-These statistics are collected through the Github API. We use the API's functions to gather information on every "Pull Request" that has been contributed to the CloudFoundry repositories. Once this data has been successfully collected and stored into our database, our application allows the user to generate figures that are customized by timeframe, repository, company, etc.
-<br><br>
-Company affiliation is determined by polling each Github user's profile. If a user does not have an affliated company listed on their profile, the application then checks to see whether the user is a member of any corporate Github organizations. If they are not, the user is assumed to be independent.
-<br>
-</span> </a>
+  </script>
+<% end %>
 
 
 
-<hr>
+<%###############%>
+<%# Body Section %>
+<%###############%>
 <% if @last_updated %>
   <div style="float:right">Last Data Load: <%= @last_updated.load_start_time.strftime("%m/%d/%Y %I:%M%P") %></div>
 <% end %>

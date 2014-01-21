@@ -22,3 +22,12 @@ div.banner {
   float:left;
   font-size: 24px;
 }
+
+div.header-links {
+  margin-right: 5px;
+  margin-bottom: 0;
+  padding-bottom: 0;
+  font-weight:normal;
+  float:right;
+  font-size: 16px;
+}

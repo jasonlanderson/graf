@@ -1,21 +1,26 @@
-<script type="text/javascript">
-  $(function() {
-    $( document ).tooltip();
-  });
+<%################%>
+<%# Extra Headers %>
+<%################%>
+<% content_for(:extra_headers) do %>
+  <script type="text/javascript">
+    $(function() {
+      $( document ).tooltip();
+    });
 
-  //
-  // Initial Page Load Activities
-  //
-  $(document).ready(function () {
-    makeAsDataTableOnLoad('#prs_details_table');
-  });
+    //
+    // Initial Page Load Activities
+    //
+    $(document).ready(function () {
+      makeAsDataTableOnLoad('#prs_details_table');
+    });
 
-</script>
-
-
-
+  </script>
+<% end %>
 
 
+<%###############%>
+<%# Body Section %>
+<%###############%>
 
 <br>
 <br>
@@ -56,6 +61,7 @@
       <th>User</th>
       <th>Title</th>
       <!--th>Company</th-->
+      <th>Repo</th>
       <th>State</th>
       <th>Days Open</th>
       <th>Created</th>
@@ -71,6 +77,7 @@
 
       <td><a href="<%= PullRequest.get_github_pr_link(rec['repo_full_name'], rec['pr_number'])  %>"><%= rec['title'].titleize %></a></td>
       <!--td><%= rec['company'] %></td-->
+      <td><%= rec['repo_name'] %></td>
       <td><%= rec['state'] %></td>
       <td><%= rec['days_open'] %></td>
       <td><%= DateUtils.db_format_to_human_slash_date_format(rec['date_created']) %></td>
