@@ -12,6 +12,7 @@ gem 'octokit'
 gem "flot-rails", "~> 0.0.4"
 gem "jquery-datatables-rails"
 gem "jquery-ui-rails"
+gem 'rspec-rails'
 
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 4.0.0'

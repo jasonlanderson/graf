@@ -3,6 +3,9 @@ Graf::Application.routes.draw do  resources :github_loads
   resources :users
   resources :pull_requests
   resources :repos
+  resources :github_loads
+  resources :github_load_msgs
+  resources :commits
 
   get '/dashboard', to: 'dashboard#index'
   get '/api' => 'api#index'

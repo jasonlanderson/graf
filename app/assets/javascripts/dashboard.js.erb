@@ -1,5 +1,4 @@
 WIDTH_OF_CHART = "1000px";
-COLORS = <%= Constants::CHART_COLORS.to_json %>;
 
 PIE_OPTIONS = {
   series: {
@@ -21,7 +20,7 @@ PIE_OPTIONS = {
     backgroundOpacity: 0.5
   }
 };
-PIE_OPTIONS.colors = COLORS;
+PIE_OPTIONS.colors = <%= Constants::CHART_COLORS.to_json %>;
 
 LINE_OPTIONS = {
   series: {
@@ -46,7 +45,7 @@ LINE_OPTIONS = {
     minTickSize: 5
   }
 };
-LINE_OPTIONS.colors = COLORS;
+LINE_OPTIONS.colors = <%= Constants::CHART_COLORS.to_json %>;
 
 function apiAJAX(metric, groupBy, month, quarter, year, start_date, end_date, repo, state, company, user, data_request, response_type, callback){
   $.ajax({
@@ -81,7 +80,7 @@ function parsePieToBar(data) {
         ticks: ticks
       }
     };
-    options.colors = COLORS;
+    options.colors = <%= Constants::CHART_COLORS.to_json %>;
     return {data: data, options: options};
 }
 
