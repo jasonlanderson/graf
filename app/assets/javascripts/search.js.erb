@@ -1,0 +1,94 @@
+//
+// Search Criteria Box Functions
+//
+function initializeSearchCriteria() {
+  $("#metric_filter").change(function () {
+    filterUpdate()
+  });
+
+  $("#group_by_filter").change(function () {
+    filterUpdate()
+  });
+
+  $("#month_filter").change(function () {
+    filterUpdate()
+  });
+
+  $("#quarter_filter").change(function () {
+    filterUpdate()
+  });
+
+  $("#year_filter").change(function () {
+    filterUpdate()
+  });
+
+  $("#repo_filter").change(function () {
+    filterUpdate()
+  });
+
+  $("#state_filter").change(function () {
+    filterUpdate()
+  });
+
+  $("#company_filter").change(function () {
+    filterUpdate()
+  });
+
+  $("#user_filter").change(function () {
+    filterUpdate()
+  });
+
+  $("#start_date_filter").change(function () {
+    filterUpdate()
+  });
+
+  $("#end_date_filter").change(function () {
+    filterUpdate()
+  });
+
+  $("#view_type").change(function () {
+    filterUpdate()
+  });
+
+  $("#clear_search_criteria_button").click(function () {
+    clearSearchCriteria();
+  });
+
+  $(function() {
+    $( "#start_date_filter" ).datepicker({
+      showOn: "button",
+      buttonImage: "<%= image_path "calendar.png" %>",
+      buttonImageOnly: true
+    });
+  });
+
+  $(function() {
+    $( "#end_date_filter" ).datepicker({
+      showOn: "button",
+      buttonImage: "<%= image_path "calendar.png" %>",
+      buttonImageOnly: true
+    });
+  });
+}
+
+function clearSearchCriteria(){
+  whereDropDownIds = ["month_filter", 
+                      "quarter_filter", 
+                      "year_filter", 
+                      "repo_filter", 
+                      "state_filter", 
+                      "company_filter", 
+                      "user_filter"];
+
+  // Clear all the dropdowns
+  for ( id in whereDropDownIds ) {
+    $("#" + whereDropDownIds[id]).val("");
+  }
+
+  // Clear the date range
+  $("#start_date_filter").val("");
+  $("#end_date_filter").val("");
+
+  // Update chart now that values have been reset
+  filterUpdate();
+}

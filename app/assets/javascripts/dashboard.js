@@ -1,12 +1,3 @@
-WIDTH_OF_CHART = "1000px";
-COLORS = ['#B82E2E', '#2EB82E', '#C75000', '#6629A3', '#2966A3', '#649ED8'];
-TABLE_OPTIONS = {
-    "sScrollY": "350px", "sScrollX": "800px",
-    "bPaginate": true,
-    "bAutoWidth" : true,
-    "bFilter": true,
-    "aaSorting": [[ 1, "desc" ]]
-  };
 PIE_OPTIONS = {
   series: {
     pie: {
@@ -27,7 +18,7 @@ PIE_OPTIONS = {
     backgroundOpacity: 0.5
   }
 };
-PIE_OPTIONS.colors = COLORS;
+PIE_OPTIONS.colors = CHART_COLORS;
 
 LINE_OPTIONS = {
   series: {
@@ -52,7 +43,7 @@ LINE_OPTIONS = {
     minTickSize: 5
   }
 };
-LINE_OPTIONS.colors = COLORS;
+LINE_OPTIONS.colors = CHART_COLORS;
 
 function apiAJAX(metric, groupBy, month, quarter, year, start_date, end_date, repo, state, company, user, data_request, response_type, callback){
   $.ajax({
@@ -64,51 +55,29 @@ function apiAJAX(metric, groupBy, month, quarter, year, start_date, end_date, re
 }
 
 function parsePieToBar(data) {
-    points = [];
-    ticks = [];
-    for (i = 0 ; i < data.length ; i++) {
-       points.push(Array(i, data[i].data));
-       ticks.push(Array(i, data[i].label));
+  points = [];
+  ticks = [];
+  for (i = 0 ; i < data.length ; i++) {
+     points.push(Array(i, data[i].data));
+     ticks.push(Array(i, data[i].label));
+  }
+
+  data = [{
+    data: points,
+    minTickSize: 1,
+    bars: { 
+      show: true,
+      align: 'center'
+    }         
+  }];
+
+  options = {
+    xaxis: {
+      tickDecimals: 0,
+      labelAngle: 90,
+      ticks: ticks
     }
-
-    data = [{
-      data: points,
-      minTickSize: 1,
-      bars: { 
-        show: true,
-        align: 'center'
-      }         
-    }];
-
-    options = {
-      xaxis: {
-        tickDecimals: 0,
-        labelAngle: 90,
-        ticks: ticks
-      }
-    };
-    options.colors = COLORS;
-    return {data: data, options: options};
+  };
+  options.colors = CHART_COLORS;
+  return {data: data, options: options};
 }
-
-
-//
-// Data Table Functions
-//
-/*
-function makeAsDataTableOnLoad(tableHandleIdStr) {
-  $(document).ready( function () {
-    makeAsDataTable(tableHandleIdStr)
-  } );
-}
-
-function makeAsDataTable(tableHandleIdStr) {
-  $(tableHandleIdStr).dataTable({
-    "sScrollY": "350px", "sScrollX": "800px",
-    "bPaginate": true,
-    "bSort": false,
-    "bAutoWidth" : true,
-    "bFilter": true
-  } );
-}*/
-
