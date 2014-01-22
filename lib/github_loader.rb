@@ -74,7 +74,7 @@ class GithubLoader
     #load_prs_for_repo(Repo.find_by(name: "vmc"))
 
     current_load.log_msg("***Loading Commits", LogLevel::INFO)
-    load_all_commits
+    #load_all_commits
     #load_commits_for_repo(Repo.find_by(name: "vmc"))
 
 

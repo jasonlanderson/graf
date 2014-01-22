@@ -74,7 +74,7 @@
       });
 
       // Load initial  chart
-      $.plot($("#metric_chart"), $.parseJSON('<%= raw @chart_data_str %>').response, PIE_OPTIONS);
+      filterUpdate();
     });
 
   </script>
@@ -153,15 +153,5 @@ Pull Requests Sorted By Company
 <a href="#" class="tooltip"> <%= image_tag "tooltip.gif" %> <span style="font-size: 15px;">  
 This table displays the amount of pull requests submitted by each contributer.
 </span></a>
-<% @table_handle = "metric_table" %>
-<% @table_data = @metric_data %>
-<% @label_header = @table_label_header %>
-<% @data_header = @table_data_header %>
-<% @label_index_name = @label_index_name %>
-<% @data_index_name = @data_index_name %>
-<% @table_data_width = "500" %>
 
-<div id="table_container">
-  <%= render 'shared/hash_as_table' %>
-</div>
-<script type="text/javascript">$('#<%= @table_handle %>').dataTable(ANALYTICS_TABLE_OPTIONS);</script>
+<div id="table_container"></div>
