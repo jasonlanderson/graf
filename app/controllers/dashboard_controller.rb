@@ -17,7 +17,7 @@ class DashboardController < ApplicationController
 
     @repos = Repo.order(:name)
     @companies = Company.order(:name).select('DISTINCT(name)')
-    @users = User.order(:login)
+    @users = User.order(:login).select('DISTINCT(login)')
 
     @last_updated = GithubLoad.last
   end

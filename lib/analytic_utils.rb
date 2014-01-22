@@ -24,7 +24,7 @@ class AnalyticUtils
 
     sql_stmt = "SELECT #{select_label_col}, #{select_data_col} FROM commits_users c_u LEFT OUTER JOIN commits pr " \
                "ON c_u.commit_id = pr.id LEFT OUTER JOIN users u ON c_u.user_id = u.id LEFT OUTER JOIN companies c " \
-               " ON c.id = u.company_id "
+               " ON c.id = u.company_id LEFT OUTER JOIN repos r ON pr.repo_id = r.id "
 
     sql_stmt += where_clause_stmt(search_criteria)
 
