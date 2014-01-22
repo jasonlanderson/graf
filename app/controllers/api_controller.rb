@@ -43,7 +43,7 @@ class ApiController < ApplicationController
             search_criteria
           )
       else
-        data = AnalyticUtils.get_pull_request_data()
+        data = AnalyticUtils.get_pull_request_data(search_criteria)
       end
     when 'commits'
       data = AnalyticUtils.get_commit_analytics(LABEL_MAPPING[group_by][:sql_select],
