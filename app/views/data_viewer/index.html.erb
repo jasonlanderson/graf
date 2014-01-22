@@ -11,7 +11,8 @@
     // Initial Page Load Activities
     //
     $(document).ready(function () {
-      $("#raw_data_table").dataTable(TABLE_OPTIONS);
+      // Run the filter update on load to get the data
+      filterUpdate();
     });
 
     function filterUpdate() {
@@ -28,7 +29,7 @@
       $("#table_container").empty();
       $("#table_container").html(result);
 
-      $("#raw_data_table").dataTable(TABLE_OPTIONS);
+      $("#raw_data_table").dataTable(DATA_VIEWER_TABLE_OPTIONS);
     }
   </script>
 <% end %>
@@ -74,10 +75,6 @@
 <br>
 <br>
 
-
-<% @table_data = @metric_data %>
-<div id="table_container">
-  <%= render 'pr_data_table' %>
-</div>
+<div id="table_container"></div>
 
 </div>

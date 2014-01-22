@@ -54,8 +54,7 @@
       $("#table_container").empty();
       $("#table_container").html(result);
 
-      //makeAsDataTable("#metric_table")
-      $("#metric_table").dataTable(TABLE_OPTIONS);
+      $("#metric_table").dataTable(ANALYTICS_TABLE_OPTIONS);
     }
 
     //
@@ -165,4 +164,4 @@ This table displays the amount of pull requests submitted by each contributer.
 <div id="table_container">
   <%= render 'shared/hash_as_table' %>
 </div>
-<script type="text/javascript">$('#<%= @table_handle %>').dataTable(TABLE_OPTIONS);</script>
+<script type="text/javascript">$('#<%= @table_handle %>').dataTable(ANALYTICS_TABLE_OPTIONS);</script>
