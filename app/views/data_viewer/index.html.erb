@@ -11,24 +11,24 @@
     // Initial Page Load Activities
     //
     $(document).ready(function () {
-      $("#prs_details_table").dataTable(TABLE_OPTIONS);
+      $("#raw_data_table").dataTable(TABLE_OPTIONS);
     });
 
     function filterUpdate() {
       data = {
+        metric: 'prs',
         searchCriteria: createSearchCriteriaJSON()
       }
 
       // Make API calls to update the data
-      apiAJAX(data, 'table', 'text', updateTableCallback);
+      apiAJAX(data, 'raw_table', 'text', updateTableCallback);
     }
 
     function updateTableCallback(result){
       $("#table_container").empty();
       $("#table_container").html(result);
 
-      //makeAsDataTable("#metric_table")
-      $("table#metric_table").dataTable(TABLE_OPTIONS);
+      $("#raw_data_table").dataTable(TABLE_OPTIONS);
     }
   </script>
 <% end %>

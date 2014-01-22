@@ -34,12 +34,17 @@ class ApiController < ApplicationController
     ###
     case metric
     when 'prs', 'percent_merged', 'avg_days_open'
-      data = AnalyticUtils.get_pull_request_analytics(LABEL_MAPPING[group_by][:sql_select],
-          DATA_MAPPING[metric][:sql_select],
-          LABEL_MAPPING[group_by][:sql_group_by],
-          DATA_MAPPING[metric][:hash_name],
-          search_criteria
-        )
+      # TODO: Might not be the best way to do this based on group by
+      if group_by
+        data = AnalyticUtils.get_pull_request_analytics(LABEL_MAPPING[group_by][:sql_select],
+            DATA_MAPPING[metric][:sql_select],
+            LABEL_MAPPING[group_by][:sql_group_by],
+            DATA_MAPPING[metric][:hash_name],
+            search_criteria
+          )
+      else
+        data = AnalyticUtils.get_pull_request_data()
+      end
     when 'commits'
       data = AnalyticUtils.get_commit_analytics(LABEL_MAPPING[group_by][:sql_select],
           DATA_MAPPING[metric][:sql_select],
@@ -97,7 +102,8 @@ class ApiController < ApplicationController
       @data_index_name = DATA_MAPPING[metric][:hash_name]
       render :partial => "shared/hash_as_table"
     when 'raw_table'
-
+      @table_data = data
+      render :partial => "data_viewer/pr_data_table"
     else
       render :text => "Error: Unknown Format '#{format}'"
     end
