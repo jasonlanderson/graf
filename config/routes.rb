@@ -8,7 +8,7 @@ Graf::Application.routes.draw do  resources :github_loads
   resources :commits
 
   get '/dashboard', to: 'dashboard#index'
-  get '/api' => 'api#index'
+  post '/api' => 'api#index'
 
   # Load Paths
   get '/load', to: 'load#index'

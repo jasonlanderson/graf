@@ -46,10 +46,6 @@ function initializeSearchCriteria() {
     filterUpdate()
   });
 
-  $("#view_type").change(function () {
-    filterUpdate()
-  });
-
   $("#clear_search_criteria_button").click(function () {
     clearSearchCriteria();
   });
@@ -71,7 +67,22 @@ function initializeSearchCriteria() {
   });
 }
 
-function clearSearchCriteria(){
+
+function createSearchCriteriaJSON() {
+  return {
+          month: $("#month_filter").val(),
+          quarter: $("#quarter_filter").val(),
+          year: $("#year_filter").val(),
+          startDate: $("#start_date_filter").val(),
+          endDate: $("#end_date_filter").val(),
+          repo: $("#repo_filter").val(),
+          state: $("#state_filter").val(),
+          company: $("#company_filter").val(),
+          user: $("#user_filter").val()
+        }
+}
+
+function clearSearchCriteria() {
   whereDropDownIds = ["month_filter", 
                       "quarter_filter", 
                       "year_filter", 

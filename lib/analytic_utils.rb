@@ -4,15 +4,14 @@ require "rollup_methods"
 class AnalyticUtils
   # TODO: Change to use parameterized queries
   def self.get_pull_request_analytics(select_label_col, select_data_col, group_by_label_col,
-    order_by_data_col, month = nil, quarter = nil, year = nil, start_date = nil, end_date = nil,
-    repo=nil, state=nil, company=nil, user=nil)
+    order_by_data_col, search_criteria = nil)
 
     sql_stmt = "SELECT #{select_label_col}, #{select_data_col} FROM pull_requests pr " \
       "LEFT OUTER JOIN users u ON pr.user_id = u.id " \
       "LEFT OUTER JOIN companies c ON u.company_id = c.id " \
       "LEFT OUTER JOIN repos r ON pr.repo_id = r.id "
 
-    sql_stmt += where_clause_stmt(month, quarter, year, start_date, end_date, repo, state, company, user)
+    sql_stmt += where_clause_stmt(search_criteria)
 
     sql_stmt += "GROUP BY #{group_by_label_col} ORDER BY #{order_by_data_col} DESC"
 
@@ -21,14 +20,13 @@ class AnalyticUtils
 
 
   def self.get_commit_analytics(select_label_col, select_data_col, group_by_label_col,
-    order_by_data_col, month = nil, quarter = nil, year = nil, start_date = nil, end_date = nil,
-    repo=nil, state=nil, company=nil, user=nil)
+    order_by_data_col, search_criteria = nil)
 
     sql_stmt = "SELECT #{select_label_col}, #{select_data_col} FROM commits_users c_u LEFT OUTER JOIN commits pr " \
                "ON c_u.commit_id = pr.id LEFT OUTER JOIN users u ON c_u.user_id = u.id LEFT OUTER JOIN companies c " \
                " ON c.id = u.company_id "
 
-    sql_stmt += where_clause_stmt(month, quarter, year, start_date, end_date, repo, state, company, user)
+    sql_stmt += where_clause_stmt(search_criteria)
 
     sql_stmt += "GROUP BY #{group_by_label_col} ORDER BY #{order_by_data_col} DESC"
 
@@ -36,8 +34,7 @@ class AnalyticUtils
   end
 
   # TODO: Change to use parameterized queries
-  def self.get_timestamps(metric_type, select_col, group_by_col, month = nil, quarter = nil, year = nil,
-    start_date = nil, end_date = nil, repo=nil, state=nil, company=nil, user=nil)
+  def self.get_timestamps(metric_type, select_col, group_by_col, search_criteria = nil)
 
     case metric_type
     when "prs"
@@ -49,7 +46,7 @@ class AnalyticUtils
                " ON c.id = u.company_id "  # This should have comm instead of pr, but the where_clause_stmt will break
     end
 
-    sql_stmt += where_clause_stmt(month, quarter, year, start_date, end_date, repo, state, company, user)
+    sql_stmt += where_clause_stmt(search_criteria)
 
     query = ActiveRecord::Base.connection.exec_query(sql_stmt)  
     pr_dates_by_group = Hash.new
@@ -91,8 +88,7 @@ class AnalyticUtils
 
   end
 
-  def self.get_pull_request_data(month = nil, quarter = nil, year = nil, start_date = nil, end_date = nil,
-    repo=nil, state=nil, company=nil, user=nil)
+  def self.get_pull_request_data(search_criteria = nil)
 
     sql_stmt = "SELECT pr.pr_number, pr.title, pr.body, pr.state, IFNULL(NULLIF(u.name, ''), u.login) user_name, c.name company, r.name repo_name,  " \
       "r.full_name repo_full_name, pr.date_created, pr.date_closed, pr.date_merged, #{DBUtils.get_date_difference('pr.date_closed','pr.date_created')} days_open " \
@@ -101,7 +97,7 @@ class AnalyticUtils
       "LEFT OUTER JOIN companies c ON u.company_id = c.id " \
       "LEFT OUTER JOIN repos r ON pr.repo_id = r.id "
 
-    sql_stmt += where_clause_stmt(month, quarter, year, start_date, end_date, repo, state, company, user)
+    sql_stmt += where_clause_stmt(search_criteria)
 
     sql_stmt += "ORDER BY user_name, pr.date_created"
 
@@ -142,17 +138,19 @@ class AnalyticUtils
     return result
   end
 
-  def self.where_clause_stmt(month = nil, quarter = nil, year = nil, start_date = nil,
-    end_date = nil, repo=nil, state=nil, company=nil, user=nil, al=nil)
+  def self.where_clause_stmt(search_criteria)
+
+    # If there is no search criteria, just return
+    return "" unless search_criteria
 
     where_stmt = " WHERE 1=1 "
 
-    if month && month != ''
-      where_stmt += "AND #{DBUtils.get_month('pr.date_created')} = '#{month}' "
+    if search_criteria[:month] && search_criteria[:month] != ''
+      where_stmt += "AND #{DBUtils.get_month('pr.date_created')} = '#{search_criteria[:month]}' "
     end
 
-    if quarter && quarter != ''
-      case quarter
+    if search_criteria[:quarter] && search_criteria[:quarter] != ''
+      case search_criteria[:quarter]
       when "q1"
         where_stmt += "AND #{DBUtils.get_month('pr.date_created')} IN ('01', '02', '03') "
       when "q2"
@@ -164,36 +162,51 @@ class AnalyticUtils
       end
     end
 
-    if year && year != ''
-      where_stmt += "AND #{DBUtils.get_year('pr.date_created')} = '#{year}' "
+    if search_criteria[:year] && search_criteria[:year] != ''
+      where_stmt += "AND #{DBUtils.get_year('pr.date_created')} = '#{search_criteria[:year]}' "
     end
 
-    if start_date && start_date != ''
+    if search_criteria[:start_date] && search_criteria[:start_date] != ''
+      start_date = search_criteria[:start_date]
+
+      if start_date.include?("/")
+        start_date = DateUtils.human_slash_date_format_to_db_format(start_date)
+      end
+      
       where_stmt += "AND pr.date_created >= '#{start_date}' "
     end
 
-    if end_date && end_date != ''
+    if search_criteria[:end_date] && search_criteria[:end_date] != ''
+      end_date = search_criteria[:end_date]
+      
+      if end_date.include?("/")
+        end_date = DateUtils.human_slash_date_format_to_db_format(end_date)
+      end
+
       where_stmt += "AND pr.date_created <= '#{end_date}'  "
     end
 
-    if repo && repo != ''
-      where_stmt += "AND r.name = '#{repo}' "
+    if search_criteria[:repo] && search_criteria[:repo] != ''
+      where_stmt += "AND r.name = '#{search_criteria[:repo]}' "
     end
 
-    if state && (state == "open")
-      where_stmt += "AND pr.state = 'open' "
-    elsif state && (state == "merged")
-      where_stmt += "AND pr.date_merged IS NOT NULL "
-    elsif state && (state == "closed") # Not including merged prs
-      where_stmt += "AND pr.state = 'closed' AND pr.date_merged IS NULL "
+    if search_criteria[:state]
+      if search_criteria[:state] == 'open'
+        where_stmt += "AND pr.state = 'open' "
+      elsif search_criteria[:state] == 'merged'
+        where_stmt += "AND pr.date_merged IS NOT NULL "
+      elsif search_criteria[:state] == 'closed'
+        # Not including merged prs
+        where_stmt += "AND pr.state = 'closed' AND pr.date_merged IS NULL "
+      end
     end
 
-    if company && company != ''
-      where_stmt += "AND c.name = '#{company}' "
+    if search_criteria[:company] && search_criteria[:company] != ''
+      where_stmt += "AND c.name = '#{search_criteria[:company]}' "
     end
 
-    if user && user != ''
-      where_stmt += "AND u.login = '#{user}' "
+    if search_criteria[:user] && search_criteria[:user] != ''
+      where_stmt += "AND u.login = '#{search_criteria[:user]}' "
     end
 
     return where_stmt

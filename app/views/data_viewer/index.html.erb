@@ -11,8 +11,25 @@
     // Initial Page Load Activities
     //
     $(document).ready(function () {
-      $("table#prs_details_table").dataTable(TABLE_OPTIONS);
+      $("#prs_details_table").dataTable(TABLE_OPTIONS);
     });
+
+    function filterUpdate() {
+      data = {
+        searchCriteria: createSearchCriteriaJSON()
+      }
+
+      // Make API calls to update the data
+      apiAJAX(data, 'table', 'text', updateTableCallback);
+    }
+
+    function updateTableCallback(result){
+      $("#table_container").empty();
+      $("#table_container").html(result);
+
+      //makeAsDataTable("#metric_table")
+      $("table#metric_table").dataTable(TABLE_OPTIONS);
+    }
   </script>
 <% end %>
 
@@ -20,6 +37,10 @@
 <%###############%>
 <%# Body Section %>
 <%###############%>
+
+<br><br>
+
+<%= render 'shared/search_criteria' %>
 <br>
 <br>
 <b>Pull Request Summary for IBMers</b>
@@ -52,37 +73,11 @@
 <b>Pull Request Details for IBMers</b>
 <br>
 <br>
-<table id="prs_details_table" class="display">
-  <thead>
-    <tr>
-      <th>&nbsp;</th>
-      <th>User</th>
-      <th>Title</th>
-      <!--th>Company</th-->
-      <th>Repo</th>
-      <th>State</th>
-      <th>Days Open</th>
-      <th>Created</th>
-      <th>Closed</th>
-      <th>Merged</th>
-    </tr>
-  </thead>
-  <tbody>
-    <%  @pr_data.each_with_index { |rec, index| %>
-    <tr>
-      <td><%= index+1 %></td>
-      <td><%= rec['user_name'] %></td>
 
-      <td><a href="<%= PullRequest.get_github_pr_link(rec['repo_full_name'], rec['pr_number'])  %>"><%= rec['title'].titleize %></a></td>
-      <!--td><%= rec['company'] %></td-->
-      <td><%= rec['repo_name'] %></td>
-      <td><%= rec['state'] %></td>
-      <td><%= rec['days_open'] %></td>
-      <td><%= DateUtils.db_format_to_human_slash_date_format(rec['date_created']) %></td>
-      <td><%= DateUtils.db_format_to_human_slash_date_format(rec['date_closed']) %></td>
-      <td><%= DateUtils.db_format_to_human_slash_date_format(rec['date_merged']) %></td>
-    </tr>
-    <% } %>
-  </tbody>
-</table>
+
+<% @table_data = @metric_data %>
+<div id="table_container">
+  <%= render 'pr_data_table' %>
+</div>
+
 </div>

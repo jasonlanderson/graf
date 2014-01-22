@@ -1,8 +1,9 @@
 CHART_COLORS = <%= Constants::CHART_COLORS.to_json %>;
 
 TABLE_OPTIONS = {
-    "sScrollY": "350px", "sScrollX": "800px",
-    "bPaginate": true,
+    "sScrollY": "350px",
+    //"sScrollX": "800px",
+    "bPaginate": false,
     "bAutoWidth" : true,
     "bFilter": true,
     "aaSorting": [[ 1, "desc" ]]
@@ -18,12 +19,6 @@ function makeAsDataTableOnLoad(tableHandleIdStr) {
 }
 
 function makeAsDataTable(tableHandleIdStr) {
-  $(tableHandleIdStr).dataTable({
-    "sScrollY": "350px", "sScrollX": "800px",
-    "bPaginate": true,
-    "bSort": false,
-    "bAutoWidth" : true,
-    "bFilter": true
-  } );
+  $(tableHandleIdStr).dataTable(TABLE_OPTIONS);
 }
 

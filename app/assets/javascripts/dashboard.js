@@ -45,11 +45,13 @@ LINE_OPTIONS = {
 };
 LINE_OPTIONS.colors = CHART_COLORS;
 
-function apiAJAX(metric, groupBy, month, quarter, year, start_date, end_date, repo, state, company, user, data_request, response_type, callback){
+function apiAJAX(data, format, responseType, callback){
+  data.format = format
   $.ajax({
-      url: "api?metric=" + metric + "&group_by=" + groupBy + "&month=" + month + "&quarter=" + quarter + "&year=" + year + "&start_date=" + start_date + "&end_date=" + end_date + "&repo=" + repo + "&state=" + state + "&company=" + company + "&user=" + user + "&data_request=" + data_request,
-      method: 'GET',
-      dataType: response_type,
+      url: "api",
+      data: data,
+      method: 'POST',
+      dataType: responseType,
       success: callback
   });
 }
