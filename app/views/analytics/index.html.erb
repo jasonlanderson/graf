@@ -33,6 +33,7 @@
         $("#view_type option[value=pie]").attr('disabled','disabled');
       }
       else {
+        $("#view_type").val("pie");
         $("#view_type option[value=line]").removeAttr('disabled'); // Disable line option in "View by" button
         $("#view_type option[value=pie]").removeAttr('disabled'); 
       }
