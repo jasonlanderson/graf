@@ -14,9 +14,34 @@
         searchCriteria: createSearchCriteriaJSON()
       }
 
+
+      // Restrict state filter and state Group By option
+      if (($("#metric_filter").val() != "prs") && ($("#metric_filter").val() != "avg_days_open")){
+        $("#state_filter").val(""); // Reset state filter to default value
+        $("#state_filter").prop('disabled', true); // Disable state filter
+        $("#group_by_filter option[value=state]").prop('disabled', true); // Disable state option in "Group By" filter
+      }     
+      else {
+        $("#state_filter").prop('disabled', false); // Enable state filter
+        $("#group_by_filter option[value=state]").prop('disabled', false); // Enable state option in "Group By" filter
+      }
+
+      // Restrict view type
+      if (($("#metric_filter").val() != "prs") && ($("#metric_filter").val() != "commits"))  {
+        $("#view_type").val("bar"); // Set to bar view
+        $("#view_type option[value=line]").attr('disabled','disabled'); // Disable line option in "View by" button
+        $("#view_type option[value=pie]").attr('disabled','disabled');
+      }
+      else {
+        $("#view_type option[value=line]").removeAttr('disabled'); // Disable line option in "View by" button
+        $("#view_type option[value=pie]").removeAttr('disabled'); 
+      }
+
       // Make API calls to update the data
       analyticsAJAX(data, $("#view_type").val(), 'json', updateChartCallback);
       analyticsAJAX(data, 'table', 'text', updateTableCallback);
+
+      
 
       // Update the titles
       $("#chart_title").html($("#metric_filter option:selected").text() +  " Grouped By " + $("#group_by_filter option:selected").text());
