@@ -7,8 +7,13 @@ Graf::Application.routes.draw do  resources :github_loads
   resources :github_load_msgs
   resources :commits
 
-  get '/dashboard', to: 'dashboard#index'
-  post '/api' => 'api#index'
+  # Main Page Paths
+  get '/analytics', to: 'analytics#index'
+  get '/report', to: 'report#index'
+
+  # API Paths
+  post '/analytics_data' => 'api#analytics_data'
+  post '/report_data' => 'api#report_data'
 
   # Load Paths
   get '/load', to: 'load#index'
@@ -20,17 +25,13 @@ Graf::Application.routes.draw do  resources :github_loads
   # Info Paths
   get '/info', to: 'info#info'
 
-  # Main Page Paths
-  get '/analytics', to: 'dashboard#index'
-  get '/data_viewer', to: 'data_viewer#index'
-
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
   # You can have the root of your site routed with "root"
   # root 'welcome#index'
-  root :to => 'dashboard#index'
+  root :to => 'analytics#index'
 
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'

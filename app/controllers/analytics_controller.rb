@@ -2,7 +2,7 @@ require "analytic_utils"
 require "javascript_utils"
 require "rollup_methods"
 
-class DashboardController < ApplicationController
+class AnalyticsController < ApplicationController
 
   def index
     # pull_request data by company as the default

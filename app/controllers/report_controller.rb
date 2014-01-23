@@ -1,7 +1,7 @@
 require "analytic_utils"
 require "date_utils"
 
-class DataViewerController < ApplicationController
+class ReportController < ApplicationController
 
   def index
     @metric_data = AnalyticUtils.get_pull_request_data()

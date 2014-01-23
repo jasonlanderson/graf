@@ -17,19 +17,19 @@
 
     function filterUpdate() {
       data = {
-        metric: 'prs',
+        report: 'prs',
         searchCriteria: createSearchCriteriaJSON()
       }
 
       // Make API calls to update the data
-      apiAJAX(data, 'raw_table', 'text', updateTableCallback);
+      reportAJAX(data, 'text', updateTableCallback);
     }
 
     function updateTableCallback(result){
       $("#table_container").empty();
       $("#table_container").html(result);
 
-      $("#raw_data_table").dataTable(DATA_VIEWER_TABLE_OPTIONS);
+      $("#report_table").dataTable(REPORT_TABLE_OPTIONS);
     }
   </script>
 <% end %>

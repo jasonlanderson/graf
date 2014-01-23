@@ -23,7 +23,7 @@ DATA_MAPPING = {
 
 class ApiController < ApplicationController
 
-  def index
+  def analytics_data
     metric = params[:metric]
     format = params[:format]
     group_by = params[:groupBy]
@@ -35,16 +35,12 @@ class ApiController < ApplicationController
     case metric
     when 'prs', 'percent_merged', 'avg_days_open'
       # TODO: Might not be the best way to do this based on group by
-      if group_by
-        data = AnalyticUtils.get_pull_request_analytics(LABEL_MAPPING[group_by][:sql_select],
-            DATA_MAPPING[metric][:sql_select],
-            LABEL_MAPPING[group_by][:sql_group_by],
-            DATA_MAPPING[metric][:hash_name],
-            search_criteria
-          )
-      else
-        data = AnalyticUtils.get_pull_request_data(search_criteria)
-      end
+      data = AnalyticUtils.get_pull_request_analytics(LABEL_MAPPING[group_by][:sql_select],
+          DATA_MAPPING[metric][:sql_select],
+          LABEL_MAPPING[group_by][:sql_group_by],
+          DATA_MAPPING[metric][:hash_name],
+          search_criteria
+        )
     when 'commits'
       data = AnalyticUtils.get_commit_analytics(LABEL_MAPPING[group_by][:sql_select],
           DATA_MAPPING[metric][:sql_select],
@@ -101,15 +97,18 @@ class ApiController < ApplicationController
       @label_index_name = LABEL_MAPPING[group_by][:hash_name]
       @data_index_name = DATA_MAPPING[metric][:hash_name]
       render :partial => "shared/hash_as_table"
-    when 'raw_table'
-      @table_data = data
-      render :partial => "data_viewer/pr_data_table"
     else
       render :text => "Error: Unknown Format '#{format}'"
     end
+  end
 
+  def report_data
+    report = params[:report]
+    search_criteria = params[:searchCriteria]
 
-
+    data = AnalyticUtils.get_pull_request_data(search_criteria)
+    @table_data = data
+    render :partial => "report/prs"
   end
 
 end

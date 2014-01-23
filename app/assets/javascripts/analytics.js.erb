@@ -1,11 +1,14 @@
+<% require 'constants' %>
+CHART_COLORS = <%= Constants::CHART_COLORS.to_json %>;
+
 ANALYTICS_TABLE_OPTIONS = {
-    "sScrollY": "350px",
-    //"sScrollX": "800px",
-    "bPaginate": false,
-    "bAutoWidth" : true,
-    "bFilter": true,
-    "aaSorting": [[ 1, "desc" ]]
-  };
+  "sScrollY": "350px",
+  //"sScrollX": "800px",
+  "bPaginate": false,
+  "bAutoWidth" : true,
+  "bFilter": true,
+  "aaSorting": [[ 1, "desc" ]]
+};
 
 PIE_OPTIONS = {
   series: {
@@ -54,10 +57,10 @@ LINE_OPTIONS = {
 };
 LINE_OPTIONS.colors = CHART_COLORS;
 
-function apiAJAX(data, format, responseType, callback){
+function analyticsAJAX(data, format, responseType, callback){
   data.format = format
   $.ajax({
-      url: "api",
+      url: "analytics_data",
       data: data,
       method: 'POST',
       dataType: responseType,

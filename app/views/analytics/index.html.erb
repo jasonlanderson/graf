@@ -15,8 +15,8 @@
       }
 
       // Make API calls to update the data
-      apiAJAX(data, $("#view_type").val(), 'json', updateChartCallback);
-      apiAJAX(data, 'table', 'text', updateTableCallback);
+      analyticsAJAX(data, $("#view_type").val(), 'json', updateChartCallback);
+      analyticsAJAX(data, 'table', 'text', updateTableCallback);
 
       // Update the titles
       $("#chart_title").html($("#metric_filter option:selected").text() +  " Grouped By " + $("#group_by_filter option:selected").text());
