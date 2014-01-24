@@ -4,7 +4,7 @@
         <th>&nbsp;</th>
         <th>User</th>
         <th>Title</th>
-        <!--th>Company</th-->
+        <th>Company</th>
         <th>Repo</th>
         <th>State</th>
         <th>Days Open</th>
@@ -19,8 +19,8 @@
         <td><%= index+1 %></td>
         <td><%= rec['user_name'] %></td>
 
-        <td><a href="<%= PullRequest.get_github_pr_link(rec['repo_full_name'], rec['pr_number'])  %>"><%= rec['title'].titleize %></a></td>
-        <!--td><%= rec['company'] %></td-->
+        <td><a target="_blank" href="<%= PullRequest.get_github_pr_link(rec['repo_full_name'], rec['pr_number'])  %>"><%= rec['title'].titleize %></a></td>
+        <td><%= rec['company'] %></td>
         <td><%= rec['repo_name'] %></td>
         <td><%= rec['state'] %></td>
         <td><%= rec['days_open'] %></td>
