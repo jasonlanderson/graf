@@ -93,7 +93,15 @@ class ApiController < ApplicationController
       @table_handle = "metric_table"
       @table_data = data
       @label_header = LABEL_MAPPING[group_by][:hash_name].titleize
-      @data_header = "Contributions"
+      if metric == "commits"
+        @data_header = "Commits"
+      elsif metric == "prs"
+        @data_header = "Pull Requests"
+      elsif metric == "avg_days_open"
+        @data_header ="Days"
+      elsif metric == "percent_merged"
+        @data_header ="Percentage"
+      end          
       @label_index_name = LABEL_MAPPING[group_by][:hash_name]
       @data_index_name = DATA_MAPPING[metric][:hash_name]
       render :partial => "shared/hash_as_table"
@@ -108,7 +116,9 @@ class ApiController < ApplicationController
 
     data = AnalyticUtils.get_pull_request_data(search_criteria)
     @table_data = data
+    puts data
     render :partial => "report/prs"
+
   end
 
 end

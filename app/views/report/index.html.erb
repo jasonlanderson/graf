@@ -19,13 +19,15 @@
       data = {
         report: 'prs',
         searchCriteria: createSearchCriteriaJSON()
+        // Add summary
       }
-
       // Make API calls to update the data
       reportAJAX(data, 'text', updateTableCallback);
+
     }
 
     function updateTableCallback(result){
+      alert(result)
       $("#table_container").empty();
       $("#table_container").html(result);
 

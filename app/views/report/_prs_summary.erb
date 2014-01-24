@@ -1,0 +1,18 @@
+<table id="summary_report_table">
+  <thead>
+    <tr>
+      <td># Open</td>
+      <td># Closed</td>
+      <td># Merged</td>
+      <td>Total</td>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><%= @pr_state_stats[:open] %></td>
+      <td><%= @pr_state_stats[:closed] %></td>
+      <td><%= @pr_state_stats[:merged] %></td>
+      <td><%= @pr_state_stats[:total] %></td>
+    </tr>
+  </tbody>
+</table>
