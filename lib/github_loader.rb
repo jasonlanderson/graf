@@ -188,6 +188,20 @@ class GithubLoader
     }
   end
 
+  def self.search_email(email)
+      sleep(3.0)  
+      search_results = OctokitUtils.search_users(email)
+      num_results = search_results[:attrs][:total_count] 
+      return search_results, num_results
+  end
+        
+  def self.search_name(name)    
+      sleep(3.0) # Throttling
+      search_results = client.search_users("#{name} in:name", options = {:sort => "followers"}) # Grabs the most active/visual member with given name. 
+      num_results = search_results[:attrs][:total_count]
+      return search_results, num_results
+  end    
+
   def self.load_commits_for_repo(repo)
     puts "---------"
     puts "--- Loading Commits for #{repo.full_name}"
@@ -287,23 +301,13 @@ class GithubLoader
               )
           else
             # Search by email, unless commit has multiple contributors
-            if !email.include?("pair")
-              sleep(3.0)
-              search_results = OctokitUtils.search_users(email)
-              num_results = search_results[:attrs][:total_count] 
-            end
-
+            search_results, num_results = search_email(email) if !email.include?("pair")
             # Search by name if commit submitted by pair, or if email not in github db
-            if ((!search_results || (search_results[:attrs][:total_count] == 0)) && (name.split(' ').length > 1))
-              sleep(3.0) # Throttling
-              search_results = client.search_users("#{name} in:name", options = {:sort => "followers"}) # Grabs the most active/visual member with given name. 
-              num_results = search_results[:attrs][:total_count] 
-            end
-
+            search_results, num_results = search_name(name) if ((!search_results || (search_results[:attrs][:total_count] == 0)) && (name.split(' ').length > 1))  
+          
             if search_results && (num_results > 0)
               # puts "Creating record for user #{name}"
               # puts "WARNING: Search returned #{search_results[:attrs][:total_count]} results for #{name}, #{email}" if (num_results > 1)
-
               login = search_results[:attrs][:items][0][:attrs][:login]
               user_obj = client.user(login) 
               user = create_user_if_not_exist(user_obj) 
