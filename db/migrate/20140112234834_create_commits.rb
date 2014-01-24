@@ -3,7 +3,7 @@ class CreateCommits < ActiveRecord::Migration
     create_table :commits do |t|
       t.references :repo, index: true
       t.string :sha
-      t.string :message
+      t.text :message
       t.date :date_created
       t.datetime :created_at
       t.datetime :updated_at
