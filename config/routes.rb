@@ -22,6 +22,10 @@ Graf::Application.routes.draw do  resources :github_loads
   get '/delete_load_history', to: 'load#delete_load_history'
   get '/delete_all_data', to: 'load#delete_all_data'
 
+  # Release Notes Paths
+  get '/release_notes', to: 'release_notes#index'
+  get '/release_notes/:action', to: 'release_notes#:action'
+
   # Info Paths
   get '/info', to: 'info#info'
 

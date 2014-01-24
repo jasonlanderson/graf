@@ -63,27 +63,21 @@ class GithubLoader
   def self.initial_load(current_load)
     # Do initial load
     full_start = Time.now
-    current_load.log_msg("***Loading Companies", LogLevel::INFO)
     load_org_companies
 
-    current_load.log_msg("***Loading Repos", LogLevel::INFO)
     load_repos
 
-    current_load.log_msg("***Loading Users", LogLevel::INFO)
     load_users
-
-    current_load.log_msg("***Loading Pull Requests", LogLevel::INFO)
+    
     load_all_prs # TODO: This should also load associated commits
     #load_prs_for_repo(Repo.find_by(name: "vmc"))
-
-    current_load.log_msg("***Loading Commits", LogLevel::INFO)
-    com_start = Time.now   
+    
+    com_start = Time.now
     load_all_commits
     current_load.log_msg("Total time to process commits is #{Time.now - com_start}", LogLevel::INFO)
     current_load.log_msg("Total time to process everything is #{Time.now - full_start}", LogLevel::INFO)
     #load_commits_for_repo(Repo.find_by(name: "vmc"))
 
-    current_load.log_msg("***Fixing Users Without Companies", LogLevel::INFO)
     fix_users_without_companies
   end
 
@@ -97,12 +91,14 @@ class GithubLoader
   end
 
   def self.load_org_companies()
+    current_load.log_msg("***Loading Companies", LogLevel::INFO)
     ORG_TO_COMPANY.each { |org, company|
       create_company_if_not_exist(company, "org")
     }
   end
 
   def self.load_repos()
+    current_load.log_msg("***Loading Repos", LogLevel::INFO)
   	client = OctokitUtils.get_octokit_client
 
     repos = client.organization_repositories(ORG_NAME)
@@ -121,6 +117,7 @@ class GithubLoader
   end
 
   def self.load_users()
+    current_load.log_msg("***Loading Users", LogLevel::INFO)
     client = OctokitUtils.get_octokit_client
     start = Time.now           
     puts "Loading Users!"
@@ -147,12 +144,14 @@ class GithubLoader
   end
 
   def self.load_all_prs()
+    current_load.log_msg("***Loading Pull Requests", LogLevel::INFO)
     Repo.all().each { |repo|
       load_prs_for_repo(repo)
     }
   end
 
   def self.load_all_commits()
+    current_load.log_msg("***Loading Commits", LogLevel::INFO)
     Repo.all().each { |repo|
       load_commits_for_repo(repo)
     }
@@ -394,6 +393,7 @@ class GithubLoader
   end
 
   def self.fix_users_without_companies()
+    current_load.log_msg("***Fixing Users Without Companies", LogLevel::INFO)
     client = OctokitUtils.get_octokit_client
 
     # For each organization
