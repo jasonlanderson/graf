@@ -9,4 +9,8 @@ class GithubLoadMsg < ActiveRecord::Base
     end
     return messages
   end
+
+  def to_s
+    return "GithubLoadMsg=[#{msg}]"
+  end
 end

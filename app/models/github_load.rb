@@ -1,11 +1,13 @@
 class GithubLoad < ActiveRecord::Base
 
   def log_msg(msg, log_level, log_date = Time.now)
-    return GithubLoadMsg.create(:github_load_id => id,
+    load_msg = GithubLoadMsg.create(:github_load_id => id,
       :msg => msg,
       :log_level => log_level,
       :log_date => log_date
       )
+    puts load_msg
+    return load_msg
   end
 
   def self.last_completed()
