@@ -15,6 +15,7 @@
       filterUpdate();
     });
 
+
     function filterUpdate() {
       data = {
         report: 'prs',
@@ -23,15 +24,29 @@
       }
       // Make API calls to update the data
       reportAJAX(data, 'text', updateTableCallback);
-
+      data = {
+        report: 'summary',
+        searchCriteria: createSearchCriteriaJSON()
+        // Add summary
+      }
+      // Make API calls to update the data
+      reportAJAX(data, 'text', updateSummaryTableCallback);
     }
 
     function updateTableCallback(result){
-      alert(result)
+      //alert(result)
       $("#table_container").empty();
       $("#table_container").html(result);
-
       $("#report_table").dataTable(REPORT_TABLE_OPTIONS);
+    }
+    function updateSummaryTableCallback(result){
+      $("#table_summary_container").empty();
+      $("#table_summary_container").html(result);
+      $("#summary_report_table").dataTable(MIN_TABLE_OPTIONS);
+      
+      // Couldn't get working with regular tables, uncomment below to see example 
+      //$("#summary_report_table").empty();
+      //$("#summary_report_table").html(result);
     }
   </script>
 <% end %>
@@ -49,24 +64,9 @@
 <b>Pull Request Summary for IBMers</b>
 <br>
 <br>
-<table width="300px" border="1px">
-  <thead>
-    <tr>
-      <td># Open</td>
-      <td># Closed</td>
-      <td># Merged</td>
-      <td>Total</td>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td><%= @pr_state_stats[:open] %></td>
-      <td><%= @pr_state_stats[:closed] %></td>
-      <td><%= @pr_state_stats[:merged] %></td>
-      <td><%= @pr_state_stats[:total] %></td>
-    </tr>
-  </tbody>
-</table>
+<div id="table_summary_container" style="width:350px; height:50px; "></div>
+
+</div>
 
 <br>
 <hr>

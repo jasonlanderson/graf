@@ -21,7 +21,7 @@
 
       // Restrict view type
       if (($("#metric_filter").val() != "prs") && ($("#metric_filter").val() != "commits"))  {
-        //$("#view_type").val("bar"); // Set to bar view
+        $("#view_type").val("bar"); // Set to bar view
         $("#view_type option[value=line]").attr('disabled','disabled'); // Disable line option in "View by" button
         $("#view_type option[value=pie]").attr('disabled','disabled');
       }
