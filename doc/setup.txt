@@ -66,6 +66,12 @@ Now do another push and bind to the mysql database you created in the first push
 
 Your app should now be up and running.
 
+###
+# Upgrading on BlueMix with DB Changes
+###
+cf delete graf
+cf create-service mysql graf-db
+cf push
 
 
 ###

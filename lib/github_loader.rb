@@ -144,15 +144,19 @@ class GithubLoader
   end
 
   def self.load_all_prs()
-    @@current_load.log_msg("***Loading Pull Requests", LogLevel::INFO)
-    Repo.all().each { |repo|
+    @@current_load.log_msg("***Loading Pull Requests By Repo", LogLevel::INFO)
+    total_repo_count = Repo.count
+    Repo.all().each_with_index { |repo, index|
+      @@current_load.log_msg("Loading PRs By Repo (#{index} / #{total_repo_count})", LogLevel::INFO)
       load_prs_for_repo(repo)
     }
   end
 
   def self.load_all_commits()
     @@current_load.log_msg("***Loading Commits", LogLevel::INFO)
-    Repo.all().each { |repo|
+    total_repo_count = Repo.count
+    Repo.all().each_with_index { |repo, index|
+      @@current_load.log_msg("Loading Commits By Repo (#{index} / #{total_repo_count})", LogLevel::INFO)
       load_commits_for_repo(repo)
     }
   end
