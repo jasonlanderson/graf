@@ -35,6 +35,16 @@ SELECT User, Host, Password FROM mysql.user;
 CREATE DATABASE graf_db CHARACTER SET utf8 COLLATE utf8_general_ci;
 GRANT ALL PRIVILEGES ON graf_db.* TO 'graf_user'@'localhost' IDENTIFIED BY 'time4fun';
 
+Delete all database tables
+--------
+DROP TABLE companies;
+DROP TABLE github_load_msgs;
+DROP TABLE github_loads;
+DROP TABLE pull_requests;
+DROP TABLE repos;
+DROP TABLE schema_migrations;
+DROP TABLE users;
+
 
 
 ###
@@ -87,7 +97,7 @@ Database Info: {"adapter"=>"mysql2", "database"=>"df1b37c18545c47a3b1be0abef97b1
 
 # Stage DB
 graf-db-stage
-mysql -h 10.0.116.62 -P 3307 -u uGChfT4euIjl2 d2d8439399b664d0b8d8bc4340ef481c7 -p pv8J0hvEmJepB
+mysql -h 10.0.116.62 -P 3307 -u uA2DrUi8T2BtH d2d8439399b664d0b8d8bc4340ef481c7 -p pOFN7NXyRv8WH
 
 
 
