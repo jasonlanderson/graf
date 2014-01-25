@@ -193,7 +193,7 @@ class GithubLoader
   end
 
   def self.search_email(email)
-      sleep(3.0)  
+      sleep(3.0)
       search_results = OctokitUtils.search_users(email)
       num_results = search_results[:attrs][:total_count] 
       return search_results, num_results
@@ -201,6 +201,7 @@ class GithubLoader
         
   def self.search_name(name)    
       sleep(3.0) # Throttling
+      client = OctokitUtils.get_octokit_client
       if (name.split(' ').length < 2) # Only search by name if we have a first and last name
         search_results = client.search_users("#{name} in:login", options = {:sort => "followers"}) # Grabs the most active/visual member with given name. 
         num_results = search_results[:attrs][:total_count]
