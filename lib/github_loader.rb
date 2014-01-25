@@ -201,8 +201,13 @@ class GithubLoader
         
   def self.search_name(name)    
       sleep(3.0) # Throttling
-      search_results = client.search_users("#{name} in:name", options = {:sort => "followers"}) # Grabs the most active/visual member with given name. 
-      num_results = search_results[:attrs][:total_count]
+      if (name.split(' ').length < 2) # Only search by name if we have a first and last name
+        search_results = client.search_users("#{name} in:login", options = {:sort => "followers"}) # Grabs the most active/visual member with given name. 
+        num_results = search_results[:attrs][:total_count]
+      else
+        search_results = client.search_users("#{name} in:name", options = {:sort => "followers"}) # Grabs the most active/visual member with given name. 
+        num_results = search_results[:attrs][:total_count]
+      end
       return search_results, num_results
   end    
 
@@ -212,37 +217,7 @@ class GithubLoader
     puts "---------"
     @@current_load.log_msg("Loading Commits for #{repo.full_name}", LogLevel::INFO)
 
-    # Commits differ from pull requests. Each pull request has a github user profile associated with it. Commits on the other hand may either 
-
-    # Preprocessing
-    # First, use the "list_contributors" and the "list_collaborators" Octokit functions to populate our Users db. These get all Github users that have submitted at least one commit, as well as those that have been added as a "collaborator" by Pivotal.
-
-    # Get commit object
-    # Commit author is either a Github User object, or an "anonymous" contributor. If we get the Github User object, we have all the information we need about the user, but if not, we'll need to
-    # 
-
-    # Analyze commit submitter name to see whether commit was submitted by a pair (contains " and " or " & " or ", "), process names seperately if so  
-    # For ex, take this commit that was submitted by both "Ryan Spore & Stephen Levine" here : https://github.com/cloudfoundry/vmc/commit/310fb38639eb0d3cc1ca645f4c45ca0da35c05aa
-
-    # Check to see if commit submitter's name is already stored in our database. If so, load the user's object from the db, and associate user with commit.
-    # If user isn't in database, search github db by email, and create user object from results.
-    # If there are no results, search by name. If there are still no results, 
-
-    # Case 1, "misspelled" name
-    # For example, commits have been submitted by Maria Shaldibina under the names "Maria Shaldybina", "Maria Shalsybina", and "Mary Shaldybina"
-    # Resolution: Create 
-
-    # Case 2, searching github for name/email returns no results
-
-    # Case 3, searching github for name returns multiple results
-    # Sort results by activity
-
-    # Case 4, name is 
-
-
-
-    #Case
-
+   
     processed = [] # Names that aren't registered in github
     client = OctokitUtils.get_octokit_client
     commits = client.commits(repo.full_name)
@@ -307,7 +282,7 @@ class GithubLoader
             # Search by email, unless commit has multiple contributors
             search_results, num_results = search_email(email) if !email.include?("pair")
             # Search by name if commit submitted by pair, or if email not in github db
-            search_results, num_results = search_name(name) if ((!search_results || (search_results[:attrs][:total_count] == 0)) && (name.split(' ').length > 1))  
+            search_results, num_results = search_name(name) if ( !search_results || (search_results[:attrs][:total_count] == 0))  
           
             if search_results && (num_results > 0)
               # puts "Creating record for user #{name}"
