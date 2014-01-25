@@ -1,0 +1,46 @@
+<h1>Release Notes for 2014-01-24</h1>
+<br>
+
+<u>Key Additions</u>
+<ul>
+  <li>Added support for the commits metric</li>
+  <li>Added a "Reports" page that gives details on each pull request (ex. User's full name, PR title, etc).</li>
+</ul>
+
+<br>
+
+
+<u>Commit Use Cases</u></br>
+<b>Background:</b>
+Gathering data for commits has proven to be a bit trickier than gathering data for pull requests. Gathering data on pull request authors is relatively simple because each pull request must have a github user profile directly associated with it. Commits on the other hand generally have nothing more than an email and a full name associated with it, which are generally configured using the following commands.
+
+<ul>
+  <li>$ git config --global user.name "John Doe"</li>
+  <li>$ git config --global user.email johndoe@example.com</li>
+</ul>
+
+Therefore, to obtain company information on the user "John Doe", we would have to submit a search query to Github's api, and then process the obtained user object to determine the company affiliation. This causes us problems for the following reasons:<br>
+<ol>
+  <li>
+    <b>Commit submitted by a contributor pair:</b>
+    Analyze commit submitter name to see whether commit was submitted by a pair (contains " and " or " & " or ", "), process names separately if so. <br>  
+    For example, <b><a href="https://github.com/cloudfoundry/vmc/commit/310fb38639eb0d3cc1ca645f4c45ca0da35c05aa">this</a></b> commit was submitted by both "Ryan Spore & Stephen Levine"
+  </li>
+  <li>
+    <b>Misspelled name:</b>
+    We have users that likely misspelled their name, for example, commits have been submitted under the names "Maria Shaldibina", "Maria Shaldybina", "Maria Shalsybina", and "Mary Shaldybina". Searching for any of those listed variations other than "Maria Shaldibina" will not return any search results. If the name is misspelled, we create a new user record as an "Independent" user.
+  </li>
+  <li>
+    <b>Searching github for name/email returns no results:</b>
+    This is commonly a result of Case 2. In this case, we'll create a new User object in the database that has an "Independent" company affiliation.
+  </li>
+  <li>
+    <b>Searching github for name returns multiple results:</b>
+    Sort results by user activity/followers, and grab the most active user. Currently working on a way to improve accuracy (Ex. Searching by org, location)
+  </li>
+</ol>
+
+
+<br>
+<u>Commits Numbers Overinflated For Pivotal</u><br>
+A few thousand of Pivotal's commits are collaborations, meaning that these commits were submitted under multiple usernames (Ex. "Ryan Spore & Stephen Levine", viewable <b><a href="https://github.com/cloudfoundry/vmc/commit/310fb38639eb0d3cc1ca645f4c45ca0da35c05aa">here</a></b>). Therefore, though there are only ~42000 commits so far, our charts represent ~51000 commits due to the extra collaborators. We plan to address this issue in the near future.
