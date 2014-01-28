@@ -37,6 +37,7 @@
       data = {
         metric: $("#metric_filter").val(),
         groupBy: $("#group_by_filter").val(),
+        rollupVal: $("#rollup").val(),
         searchCriteria: createSearchCriteriaJSON()
       }
 
@@ -103,6 +104,9 @@
       $("#view_type").change(function () {
         filterUpdate()
       });
+      $("#rollup").change(function () {
+        filterUpdate()
+      });
 
       // Load initial  chart
       filterUpdate();
@@ -163,6 +167,15 @@ Each of the top 5 contributers have their own slice of the pie chart. The remain
         <option value="bar">Bar Chart</option>
         <option value="line">Line Chart</option>
     </select>
+    Rollup:
+    <select id="rollup" >
+        <option value="5" selected>5</option>
+        <option value="6">6</option>
+        <option value="7">7</option>
+        <option value="8">8</option>
+        <option value="9">9</option>
+        <option value="10">10</option>
+    </select>    
   </div>
 </div>
 

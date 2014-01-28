@@ -124,7 +124,7 @@ class GithubLoader
     Repo.all().each {|repo|
       contributors = client.contributors(repo[:full_name])     
       contributors.each {|user| 
-        unless User.find_by(login: user[:login].downcase) 
+        unless User.find_by(login: user[:login]) 
           puts "Creating record for User #{user[:login]}"
           user_obj = client.user(user[:login]) 
           create_user_if_not_exist(user_obj)
@@ -133,7 +133,7 @@ class GithubLoader
       }
       collaborators = client.collaborators(repo[:full_name])     
       collaborators.each {|user| 
-        unless User.find_by(login: user[:login].downcase) 
+        unless User.find_by(login: user[:login]) 
           puts "Creating record for User #{user[:login]}"
           user_obj = client.user(user[:login]) 
           create_user_if_not_exist(user_obj)
@@ -193,21 +193,18 @@ class GithubLoader
   end
 
   def self.search_email(email)
-      sleep(3.0)
-      puts "Throttling"
+      sleep(3.0)  
       search_results = OctokitUtils.search_users(email)
       num_results = search_results[:attrs][:total_count] 
       return search_results, num_results
   end
         
   def self.search_name(name)    
-      sleep(3.0) # Throttling
-      puts "Throttling"
-      client = OctokitUtils.get_octokit_client
-      if (name.split(' ').length < 2) # Only search by name if we have a first and last name. Else, we assume i
-        search_results = client.search_users("#{name} in:login", options = {:sort => "followers"}) # Grabs the most active/visual member with given name. 
-        num_results = search_results[:attrs][:total_count]
+      if (name.split(' ').length < 2) # Only search by name if we have a first and last name
+        #search_results = client.search_users("#{name} in:login", options = {:sort => "followers"}) # Grabs the most active/visual member with given name. 
+        #num_results = search_results[:attrs][:total_count]
       else
+        sleep(3.0) # Throttling
         search_results = client.search_users("#{name} in:name", options = {:sort => "followers"}) # Grabs the most active/visual member with given name. 
         num_results = search_results[:attrs][:total_count]
       end
@@ -219,12 +216,12 @@ class GithubLoader
     puts "--- Loading Commits for #{repo.full_name}"
     puts "---------"
     @@current_load.log_msg("Loading Commits for #{repo.full_name}", LogLevel::INFO)
-    #start = Time.now
+
    
     processed = [] # Names that aren't registered in github
     client = OctokitUtils.get_octokit_client
     commits = client.commits(repo.full_name)
-               
+    start = Time.now           
     commits.each { |commit|
       #unless commit[:attrs][:commit][:attrs][:author][:name] == "Jenkins User"
       email = commit[:attrs][:commit][:attrs][:author][:email]
@@ -242,8 +239,6 @@ class GithubLoader
       # puts "________________"
       # puts commit[:attrs][:commit][:attrs][:author][:email]
       names.each do |name| 
-        next if ((name == "unknown") || email.include?("none") || name.include?("jenkins") || name.include?("Bot") || email.include?("jenkins") || email.include?("-bot") || (email.length > 25) )
-        start = Time.now        
         #puts name
         user = nil
         user_type = nil
@@ -251,18 +246,14 @@ class GithubLoader
         user_id = nil
         search_results = nil
         num_results = 0
-        if (name.split(' ').length < 2)
-          name = name.downcase
-        elsif ((name.split(' ').length > 2) && name.include?('.')) 
-          # Remove initials becuase they don't work in search
+        name = name.titleize
+        # Remove initials becuase they don't work in search
+        if ((name.split(' ').length > 2) && name.include?('.')) 
           name = "#{name.split(' ')[0]} #{name.split(' ')[2]}" 
-        else
-          name = name.titleize
-        end 
+        end
         
-
         # Check our db for user by checking: full name, first name, email
-        user = (User.find_by(name: name ) || User.find_by(login: name) || User.find_by(name: name.split(' ')[0]) || User.find_by(email: email) || User.find_by(login: email.gsub(".", "").split("@")[0]) || User.find_by(login: email.gsub(".", "").split("@")[0].chop) )
+        user = (User.find_by(name: name) || User.find_by(login: name) || User.find_by(name: name.split(' ')[0]) || User.find_by(email: email))
 
         # If not, enter unless/if conditional
         # Search first, or Store based on email?
@@ -271,27 +262,27 @@ class GithubLoader
 
         # Create record for user containing only name and  
         unless user
-            if email.include?("pivotal")
-              user = User.create(
-                :company => Company.find_by(name: "Pivotal"), 
-                :name => name
-                ) 
-            elsif email.include?("vmware") 
-              user = User.create(
-                :company => Company.find_by(name: "VMware"), 
-                :name => name, 
-                :email => email
-                )  
-            elsif email.include?("rbcon") 
-              user = User.create(
-                :company => Company.find_by(name: "Pivotal"), 
-                :name => name
-                )
-            else
+          if email.include?("pivotal")
+            user = User.create(
+              :company => Company.find_by(name: "Pivotal"), 
+              :name => name
+              ) 
+          elsif email.include?("vmware") 
+            user = User.create(
+              :company => Company.find_by(name: "VMware"), 
+              :name => name, 
+              :email => email
+              )  
+          elsif email.include?("rbcon") 
+            user = User.create(
+              :company => Company.find_by(name: "Pivotal"), 
+              :name => name
+              )
+          else
             # Search by email, unless commit has multiple contributors
             search_results, num_results = search_email(email) if !email.include?("pair")
             # Search by name if commit submitted by pair, or if email not in github db
-            search_results, num_results = search_name(name) if ( !search_results || (search_results[:attrs][:total_count] == 0))  
+            search_results, num_results = search_name(name) if ( !search_results || (search_results[:attrs][:total_count] == 0)) && (name.split(' ').length < 2) 
           
             if search_results && (num_results > 0)
               # puts "Creating record for user #{name}"
@@ -308,7 +299,7 @@ class GithubLoader
             end
           end
         end
-        puts "Name: #{name} Email: #{email} Time: #{Time.now - start}" if ((Time.now - start) > 6.0)
+
         c.users << user # Maps user to commit
         c.save()
       end
@@ -361,7 +352,6 @@ class GithubLoader
         :date_created => user_details[:attrs][:created_at],
         :date_updated => user_details[:attrs][:updated_at]
         )
-      user.login = user.login.downcase if user.login
     end
 
     return user

@@ -27,6 +27,7 @@ class ApiController < ApplicationController
     metric = params[:metric]
     format = params[:format]
     group_by = params[:groupBy]
+    rollup = params[:rollupVal]
     search_criteria = params[:searchCriteria]
 
     ###
@@ -66,7 +67,7 @@ class ApiController < ApplicationController
       data = AnalyticUtils.top_x_with_rollup(data,
         LABEL_MAPPING[group_by][:hash_name],
         DATA_MAPPING[metric][:hash_name],
-        5,
+        rollup.to_i,
         'others',
         rollup_method
       )
