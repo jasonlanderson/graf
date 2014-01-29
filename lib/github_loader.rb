@@ -68,7 +68,6 @@ class GithubLoader
     load_repos
 
     load_users
-    
     load_all_prs # TODO: This should also load associated commits
     #load_prs_for_repo(Repo.find_by(name: "vmc"))
     
@@ -348,13 +347,17 @@ class GithubLoader
         company = create_company_if_not_exist("Independent", "user")
       end
 
+
       name = "#{name.split(' ')[0]} #{name.split(' ')[2]}".titleize if (name && (name.split(' ').length > 2) && name.include?('.')) # Remove middle initial
       name = user_details[:attrs][:name].titleize if (user_details[:attrs][:name])
       
+      login = user_details[:attrs][:login]
+      login = login.downcase if user_details[:attrs][:login]
+
       user = User.create(
         :company => company,
         :git_id => user_details[:attrs][:id].to_i,
-        :login => user_details[:attrs][:login],
+        :login => login,
         :name => name,
         :location => user_details[:attrs][:location],
         :email => user_details[:attrs][:email],

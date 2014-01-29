@@ -22,7 +22,7 @@ ActiveRecord::Schema.define(version: 20140113223804) do
     t.datetime "updated_at"
   end
 
-  add_index "commits", ["repo_id"], name: "index_commits_on_repo_id", using: :btree
+  add_index "commits", ["repo_id"], name: "index_commits_on_repo_id"
 
   create_table "commits_users", id: false, force: true do |t|
     t.integer "commit_id", null: false
@@ -45,7 +45,7 @@ ActiveRecord::Schema.define(version: 20140113223804) do
     t.datetime "updated_at"
   end
 
-  add_index "github_load_msgs", ["github_load_id"], name: "index_github_load_msgs_on_github_load_id", using: :btree
+  add_index "github_load_msgs", ["github_load_id"], name: "index_github_load_msgs_on_github_load_id"
 
   create_table "github_loads", force: true do |t|
     t.datetime "load_start_time"
@@ -71,8 +71,8 @@ ActiveRecord::Schema.define(version: 20140113223804) do
     t.datetime "updated_at"
   end
 
-  add_index "pull_requests", ["repo_id"], name: "index_pull_requests_on_repo_id", using: :btree
-  add_index "pull_requests", ["user_id"], name: "index_pull_requests_on_user_id", using: :btree
+  add_index "pull_requests", ["repo_id"], name: "index_pull_requests_on_repo_id"
+  add_index "pull_requests", ["user_id"], name: "index_pull_requests_on_user_id"
 
   create_table "repos", force: true do |t|
     t.integer  "git_id"
@@ -99,6 +99,6 @@ ActiveRecord::Schema.define(version: 20140113223804) do
     t.datetime "updated_at"
   end
 
-  add_index "users", ["company_id"], name: "index_users_on_company_id", using: :btree
+  add_index "users", ["company_id"], name: "index_users_on_company_id"
 
 end

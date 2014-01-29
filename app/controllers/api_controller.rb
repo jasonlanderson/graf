@@ -3,6 +3,7 @@ require "javascript_utils"
 require "db_utils"
 require "date_utils"
 require "rollup_methods"
+require "csv"
 
 LABEL_MAPPING = {
   "month"      => {sql_select: "#{DBUtils.get_month_by_name('pr.date_created')} month", sql_group_by: 'month', hash_name: 'month'},
@@ -79,6 +80,7 @@ class ApiController < ApplicationController
     case format
     when 'pie'
       prs_data_pie_str = JavascriptUtils.get_pull_request_stats(data, LABEL_MAPPING[group_by][:hash_name], DATA_MAPPING[metric][:hash_name])
+      puts prs_data_pie_str
       render :json => prs_data_pie_str
     when 'bar'
       # TODO: Fix this as needed
@@ -106,6 +108,11 @@ class ApiController < ApplicationController
       @label_index_name = LABEL_MAPPING[group_by][:hash_name]
       @data_index_name = DATA_MAPPING[metric][:hash_name]
       render :partial => "shared/hash_as_table"
+    when 'csv'
+      table = JavascriptUtils.get_pull_request_stats(data, LABEL_MAPPING[group_by][:hash_name], DATA_MAPPING[metric][:hash_name])
+      json = JSON.parse(table)
+      #puts table 
+
     else
       render :text => "Error: Unknown Format '#{format}'"
     end
