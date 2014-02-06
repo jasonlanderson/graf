@@ -54,15 +54,15 @@ DROP TABLE users;
 
 From the app's root directory do a push (see following command) and create an mysql db service.
 
-   cf push --command 'bundle exec rake db:create db:migrate' <application_name>
+   cf push --command 'bundle exec rake db:create db:migrate' graf
 
 This command will fail but will setup your database.  Now delete your application using but do NOT delete your orphan database
 
-   cf delete <application_name>
+   cf delete graf
 
 Now do another push and bind to the mysql database you created in the first push:
 
-   cf push <application_name>
+   cf push graf
 
 Your app should now be up and running.
 
@@ -70,9 +70,13 @@ Your app should now be up and running.
 # Upgrading on BlueMix with DB Changes
 ###
 cf delete graf
-cf create-service mysql graf-db
+cf create-service mysql graf-db --plan 200
+cf push graf
+http://graf.ng.w3.bluemix.net/info
+cf delete graf
 cf push --command 'bundle exec rake db:create db:migrate' graf
 cf delete graf
+cf push graf
 cf push graf
 
 ###
@@ -100,7 +104,8 @@ cf push --command 'bundle exec rails s'
 
 # Prod DB
 mysql -h 10.0.116.62 -u uJ4LJCgf7xsGT -P 3307 d6e8e1188b2124bc7b67fdefa63b8c980 -p pZDbbwCIZUacr
-Database Info: {"adapter"=>"mysql2", "database"=>"d66e429cb992348ada6c845910da9b245", "username"=>"u8LPV85ohI8DO", "password"=>"pJ4Rl6rBK6qjn", "host"=>"10.0.116.62", "port"=>3307}
+
+Database Info: {"adapter"=>"mysql2", "database"=>"d25d324270a0f43749176e9cfa5a09ff5", "username"=>"ueZ1rpvq3cySy", "password"=>"pCDypZyO3azn8", "host"=>"10.0.116.121", "port"=>3307}
 
 # Stage DB
 graf-db-stage

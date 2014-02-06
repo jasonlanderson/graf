@@ -130,7 +130,6 @@ class ApiController < ApplicationController
     data = AnalyticUtils.get_pull_request_data(search_criteria)
     if report == 'prs'
       @table_data = data
-      #puts data
       render :partial => "report/prs"
     elsif report == 'summary'
       @summary_table_data = AnalyticUtils.get_state_stats(data)
