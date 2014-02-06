@@ -64,7 +64,10 @@ function analyticsAJAX(data, format, responseType, callback){
       data: data,
       method: 'POST',
       dataType: responseType,
-      success: callback
+      success: callback,
+      error: function(XMLHttpRequest, textStatus, errorThrown) { 
+        alert("Status: " + textStatus); alert("Error: " + errorThrown); 
+    }       
   });
 }
 

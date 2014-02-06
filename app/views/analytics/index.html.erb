@@ -89,6 +89,38 @@
       $("#metric_table").dataTable(ANALYTICS_TABLE_OPTIONS);
     }
 
+    function printStuff(result){
+      //alert("RESULT!");
+      console.log(result);
+      
+      var CSV = result;
+      window.URL = window.webkitURL || window.URL;
+      var contentType = 'text/csv';
+      var csvFile = new Blob([CSV], {type: contentType});
+      var a = document.createElement('a');
+      a.download = 'graf_output.csv';
+      a.href = window.URL.createObjectURL(csvFile);//
+      //a.textContent = 'Download CSV';
+      a.onclick = destroyClickedElement;
+      a.dataset.downloadurl = [contentType, a.download, a.href];
+      console.log(a.dataset.downloadurl)
+      console.log(a.href)
+      document.body.appendChild(a);
+      a.click();
+      //window.location = a.href;
+      //window.open($("#download_button").attr('href'),'_blank')
+      
+    }
+
+    function destroyClickedElement(event)
+    {
+      document.body.removeChild(event.target);
+    }
+
+    function test(){
+      alert("RESULT!");
+    }
+  
     //
     // Initial Page Load Activities
     //
@@ -108,8 +140,36 @@
         filterUpdate()
       });
 
+      $("#download").click(function () {
+        data = {
+          metric: $("#metric_filter").val(),
+          groupBy: $("#group_by_filter").val(),
+          rollupVal: $("#rollup").val(),
+          searchCriteria: createSearchCriteriaJSON()
+        }
+        // function analyticsAJAX(data, format, responseType, callback){
+        //   data.format = format
+        //   $.ajax({
+        //       url: "analytics_data",
+        //       data: data,
+        //       method: 'POST',
+        //       dataType: responseType,
+        //       accept: 'text/csv',
+        //       success: function(data){console.log(data);},
+        //       error: function(XMLHttpRequest, textStatus, errorThrown) { 
+        //         alert("Status: " + textStatus); alert("Error: " + errorThrown); 
+        //     }       
+        //   });
+        // }
+        analyticsAJAX(data, 'csv', 'text', printStuff);
+      });
+
+
+
       // Load initial  chart
       filterUpdate();
+
+
     });
 
   </script>
@@ -170,14 +230,13 @@ Each of the top 5 contributers have their own slice of the pie chart. The remain
     Rollup:
     <select id="rollup" >
         <option value="5" selected>5</option>
-        <option value="6">6</option>
-        <option value="7">7</option>
-        <option value="8">8</option>
-        <option value="9">9</option>
         <option value="10">10</option>
+        <option value="15">15</option>
+        <option value="20">20</option>
     </select>    
   </div>
 </div>
+
 
 <%# ----------------- %>
 <%# This is the Chart %>
@@ -197,5 +256,6 @@ Pull Requests Sorted By Company
 <a href="#" class="tooltip"> <%= image_tag "tooltip.gif" %> <span style="font-size: 15px;">  
 This table displays the amount of pull requests submitted by each contributer.
 </span></a>
+<button id="download">Download to CSV</button>
 
 <div id="table_container"><%= image_tag "spinner.gif" %></div>

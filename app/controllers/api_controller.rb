@@ -90,6 +90,7 @@ class ApiController < ApplicationController
       # TODO: Need to change this so that the data is only pulled once up above (maybe with adding another group by)
       line_graph = AnalyticUtils.get_timestamps(metric, LABEL_MAPPING[group_by][:sql_select],
                 LABEL_MAPPING[group_by][:hash_name],
+                rollup,
                 search_criteria)
        render :json => "{\"response\": #{line_graph}}"
     when 'table'
@@ -110,9 +111,14 @@ class ApiController < ApplicationController
       render :partial => "shared/hash_as_table"
     when 'csv'
       table = JavascriptUtils.get_pull_request_stats(data, LABEL_MAPPING[group_by][:hash_name], DATA_MAPPING[metric][:hash_name])
-      json = JSON.parse(table)
-      #puts table 
-
+      json = JSON.parse(table.to_s)
+      csv_string = to_csv(json)
+      #render :text => csv_string
+      send_data csv_string,
+        :type => 'text/csv; charset=iso-8859-1; header=present',
+        :disposition => "attachment; filename=users.csv",
+        :x_sendfile=>true   
+      
     else
       render :text => "Error: Unknown Format '#{format}'"
     end
@@ -120,7 +126,6 @@ class ApiController < ApplicationController
 
   def report_data
     report = params[:report]
-    puts "REPORT!!!" + report.to_s
     search_criteria = params[:searchCriteria]
     data = AnalyticUtils.get_pull_request_data(search_criteria)
     if report == 'prs'
@@ -129,9 +134,20 @@ class ApiController < ApplicationController
       render :partial => "report/prs"
     elsif report == 'summary'
       @summary_table_data = AnalyticUtils.get_state_stats(data)
-      puts "YO!" + @summary_table_data.to_s
       render :partial => "report/prs_summary"
     end
+  end
+
+
+
+  def to_csv(data)
+    csv_string = CSV.generate do |csv|
+      csv << ["Name", "Contributions"]
+      Hash[data]["response"].each do |user|
+        csv << [user["label"], user["data"]]
+      end
+    end
+    return csv_string    
   end
 
 end

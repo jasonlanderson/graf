@@ -34,7 +34,7 @@ class AnalyticUtils
   end
 
   # TODO: Change to use parameterized queries
-  def self.get_timestamps(metric_type, select_col, group_by_col, search_criteria = nil)
+  def self.get_timestamps(metric_type, select_col, group_by_col, rollup, search_criteria = nil)
 
     case metric_type
     when "prs"
@@ -61,7 +61,7 @@ class AnalyticUtils
     end
 
     # Get the top companies
-    top_group_bys = Hash[pr_dates_by_group.sort_by {|x, y| y.length }.reverse[0..4]]
+    top_group_bys = Hash[pr_dates_by_group.sort_by {|x, y| y.length }.reverse[0..(rollup.to_i - 1)]]
 
     json_dataset = "["
     top_group_bys.each do |group_by_val, pr_date_created_arr|
