@@ -116,10 +116,6 @@
     {
       document.body.removeChild(event.target);
     }
-
-    function test(){
-      alert("RESULT!");
-    }
   
     //
     // Initial Page Load Activities
@@ -147,24 +143,8 @@
           rollupVal: $("#rollup").val(),
           searchCriteria: createSearchCriteriaJSON()
         }
-        // function analyticsAJAX(data, format, responseType, callback){
-        //   data.format = format
-        //   $.ajax({
-        //       url: "analytics_data",
-        //       data: data,
-        //       method: 'POST',
-        //       dataType: responseType,
-        //       accept: 'text/csv',
-        //       success: function(data){console.log(data);},
-        //       error: function(XMLHttpRequest, textStatus, errorThrown) { 
-        //         alert("Status: " + textStatus); alert("Error: " + errorThrown); 
-        //     }       
-        //   });
-        // }
         analyticsAJAX(data, 'csv', 'text', printStuff);
       });
-
-
 
       // Load initial  chart
       filterUpdate();

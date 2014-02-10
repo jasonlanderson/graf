@@ -48,6 +48,54 @@
       //$("#summary_report_table").empty();
       //$("#summary_report_table").html(result);
     }
+
+    function printStuff(result){
+      alert(result);
+
+    }
+    function downloadCSV(result){
+      //alert("RESULT!");
+      console.log(result);
+      var CSV = result;
+      window.URL = window.webkitURL || window.URL;
+      var contentType = 'text/csv';
+      var csvFile = new Blob([CSV], {type: contentType});
+      var a = document.createElement('a');
+      a.download = 'graf_output.csv';
+      a.href = window.URL.createObjectURL(csvFile);//
+      //a.textContent = 'Download CSV';
+      a.onclick = destroyClickedElement;
+      a.dataset.downloadurl = [contentType, a.download, a.href];
+      console.log(a.dataset.downloadurl)
+      console.log(a.href)
+      document.body.appendChild(a);
+      a.click();
+      //window.location = a.href;
+      //window.open($("#download_button").attr('href'),'_blank')
+      
+    }
+
+    function destroyClickedElement(event)
+    {
+      document.body.removeChild(event.target);
+    }
+
+    $(document).ready(function () {
+
+       $("#download").click(function () {
+        data = {
+          /*metric: $("#metric_filter").val(),
+          groupBy: $("#group_by_filter").val(),
+          rollupVal: $("#rollup").val(),
+          searchCriteria: createSearchCriteriaJSON()*/
+          report: 'prs',
+          file: 'csv',
+          searchCriteria: createSearchCriteriaJSON()
+        }
+        reportAJAX(data, 'text', downloadCSV);
+        //analyticsAJAX(data, 'csv', 'text', printStuff);
+      });
+    });
   </script>
 <% end %>
 
@@ -74,6 +122,7 @@
 
 <div>
 <b>Pull Request Details for IBMers</b>
+<button id="download">Download to CSV</button>
 <br>
 <br>
 

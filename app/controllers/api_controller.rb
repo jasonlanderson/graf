@@ -4,6 +4,7 @@ require "db_utils"
 require "date_utils"
 require "rollup_methods"
 require "csv"
+require 'json'
 
 LABEL_MAPPING = {
   "month"      => {sql_select: "#{DBUtils.get_month_by_name('pr.date_created')} month", sql_group_by: 'month', hash_name: 'month'},
@@ -110,9 +111,24 @@ class ApiController < ApplicationController
       @data_index_name = DATA_MAPPING[metric][:hash_name]
       render :partial => "shared/hash_as_table"
     when 'csv'
+      puts "PARAMS #{params}"
+      puts "REQUEST #{request.inspect.to_s}"
+      if params[:action] == "analytics_data"
       table = JavascriptUtils.get_pull_request_stats(data, LABEL_MAPPING[group_by][:hash_name], DATA_MAPPING[metric][:hash_name])
-      json = JSON.parse(table.to_s)
-      csv_string = to_csv(json)
+      puts "TABLE #{table.to_s}" 
+
+      puts "TABLE_CLASS #{table.class}"
+      
+      # elsif params[:action] == "report_data"
+      # table = AnalyticUtils.get_pull_request_data(params[:searchCriteria]) 
+      # puts "TABLE_CLASS #{table.class}"
+      # puts "TABLE #{table}"
+      # puts "RESPONSE {\"response\": #{table.to_json}}" 
+      # table = "{\"response\": #{table.to_json}}" #.to_s
+      # puts "TABLE #{table}"
+      end
+      json = JSON.parse(table)
+      csv_string = to_analytics_csv(json)
       #render :text => csv_string
       send_data csv_string,
         :type => 'text/csv; charset=iso-8859-1; header=present',
@@ -125,10 +141,20 @@ class ApiController < ApplicationController
   end
 
   def report_data
+    puts "PARAMS #{params}"
     report = params[:report]
     search_criteria = params[:searchCriteria]
     data = AnalyticUtils.get_pull_request_data(search_criteria)
-    if report == 'prs'
+    if params[:file] && (params[:file] == 'csv')
+      table = "{\"response\": #{data.to_json}}" #.to_s
+      json = JSON.parse(table)
+      csv_string = to_report_csv(json)
+      #render :text => csv_string
+      send_data csv_string,
+        :type => 'text/csv; charset=iso-8859-1; header=present',
+        :disposition => "attachment; filename=users.csv",
+        :x_sendfile=>true         
+    elsif report == 'prs'
       @table_data = data
       render :partial => "report/prs"
     elsif report == 'summary'
@@ -137,13 +163,26 @@ class ApiController < ApplicationController
     end
   end
 
-
-
-  def to_csv(data)
+  def to_analytics_csv(data)
+    puts "CSV #{data}"
     csv_string = CSV.generate do |csv|
       csv << ["Name", "Contributions"]
       Hash[data]["response"].each do |user|
         csv << [user["label"], user["data"]]
+      end
+    end
+    return csv_string    
+  end
+
+
+  def to_report_csv(data)
+    puts "CSV #{data}"
+    csv_string = CSV.generate do |csv|
+      csv << ["Number", "Title", "Body", "State", "Days Open", "User", "Company", "Repo", "Created", "Closed", "Merged"]
+      #csv << ["Name", "Contributions"]
+      Hash[data]["response"].each do |user|
+        #csv << [user["label"], user["data"]]
+        csv << [user["pr_number"], user["title"], user["body"], user["state"], user["days_open"], user["user_name"], user["company"], user["repo_name"], user["date_created"], user["date_closed"], user["date_merged"]] 
       end
     end
     return csv_string    
