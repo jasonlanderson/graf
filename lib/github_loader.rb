@@ -80,13 +80,79 @@ class GithubLoader
     fix_users_without_companies
   end
 
-  def self.delta_load(current_load)
-
+  def self.delta_load #(current_load)
     # Get last completed
-    last_completed = GithubLoad.last_completed
-
+    puts "Begin Delta load"
+    last_completed = Time.new("2014", "01").utc # GithubLoad.last_completed
+    client = OctokitUtils.get_octokit_client
     # TODO: Create delta load code
 
+
+    Repo.all().each {|repo|
+        # Load PRs for each repo
+        pulls = client.pulls(repo[:full_name], "closed") + client.pulls(repo[:full_name], "open") # Doesn't seem to pick up "If-Modified-Since" error
+        pulls.each { |pull|
+            user = nil
+            record = nil
+
+            # Check to see if given PR is already in our DB.
+            record = PullRequest.find_by(git_id: pull[:id])
+
+            # If we have a record of current pull request already, update all dynamic fields
+            if record and (last_completed < pull[:updated_at]) 
+              puts "Updating PR #{pull[:number]} from #{repo[:full_name]}"
+              record.state = pull[:state]
+              record.date_merged = pull[:date_merged]
+              record.date_updated = Time.now.utc #
+              record.date_closed = pull[:date_closed] 
+              # Are there any other fields that may change?
+              record.save
+
+            # If the PR is new, and not in our DB, create a record for it
+            elsif !record
+              puts "Creating PR #{pull[:number]} from #{repo[:full_name]}"
+              user = create_user_if_not_exist(pr[:attrs][:user])
+              PullRequest.create(
+                :repo_id => repo.id,
+                :user_id => user.id,
+                :git_id => pr[:attrs][:id].to_i,
+                :pr_number => pr[:attrs][:number],
+                :body => pr[:attrs][:body],
+                :title => pr[:attrs][:title],
+                :date_created => pr[:attrs][:created_at],
+                :date_closed => pr[:attrs][:closed_at],
+                :date_updated => Time.now.utc,
+                :date_merged => pr[:attrs][:merged_at],
+                :state => (pr[:attrs][:merged_at].nil? ? pr[:attrs][:state] : "merged")
+              )
+            end
+        }
+
+        commits = client.commits(repo[:full_name], {:headers => { "If-Modified-Since" => "Sun, 05 Jan 2014 15:31:30 GMT" }) # => last_modified
+        commits.each { |commit|
+            record = nil
+            record = Commit.find_by(sha: commit[:sha])
+            if record and (last_completed < pull[:updated_at]) 
+                  record.message = commit[:message] 
+                  record.save                
+            elsif !record
+                  email = commit[:attrs][:commit][:attrs][:author][:email]
+                  # Create record of commit
+                  c = Commit.create(
+                      :repo_id => repo.id,
+                      :sha => commit[:sha], # Change sha to string
+                      :message => commit[:attrs][:commit][:attrs][:message],
+                      :date_created => commit[:attrs][:commit][:attrs][:author][:date]
+                    )
+
+                  names = commit[:attrs][:commit][:attrs][:author][:name].gsub(" and ", "|").gsub(", ","|").gsub(" & ", '|').split('|')
+                  process_authors(c, email, names)
+
+            end
+
+        }
+        
+    }
   end
 
   def self.load_org_companies()
@@ -211,36 +277,10 @@ class GithubLoader
         num_results = search_results[:attrs][:total_count]
       end
       return search_results, num_results
-  end    
+  end   
 
-  def self.load_commits_for_repo(repo)
-    puts "---------"
-    puts "--- Loading Commits for #{repo.full_name}"
-    puts "---------"
-    @@current_load.log_msg("Loading Commits for #{repo.full_name}", LogLevel::INFO)
-    #start = Time.now
-   
-    processed = [] # Names that aren't registered in github
-    client = OctokitUtils.get_octokit_client
-    commits = client.commits(repo.full_name)
-               
-    commits.each { |commit|
-      #unless commit[:attrs][:commit][:attrs][:author][:name] == "Jenkins User"
-      email = commit[:attrs][:commit][:attrs][:author][:email]
-
-      # Create record of commit
-      c = Commit.create(
-          :repo_id => repo.id,
-          #:user_id => user_id,
-          :sha => commit[:sha], # Change sha to string
-          :message => commit[:attrs][:commit][:attrs][:message],
-          :date_created => commit[:attrs][:commit][:attrs][:author][:date]
-        )
-
-      names = commit[:attrs][:commit][:attrs][:author][:name].gsub(" and ", "|").gsub(", ","|").gsub(" & ", '|').split('|')
-      # puts "________________"
-      # puts commit[:attrs][:commit][:attrs][:author][:email]
-      names.each do |name| 
+  def self.process_authors(c, email, names) 
+    names.each do |name| 
         next if ((name == "unknown") || email.include?("none") || name.include?("jenkins") || name.include?("Bot") || email.include?("jenkins") || email.include?("-bot") || (email.length > 25) )
         start = Time.now        
         #puts name
@@ -257,18 +297,11 @@ class GithubLoader
           name = "#{name.split(' ')[0]} #{name.split(' ')[2]}" 
         else
           name = name.titleize
-        end 
-        
+        end
 
         # Check our db for user by checking: full name, first name, email
         user = (User.find_by(name: name ) || User.find_by(login: name) || User.find_by(name: name.split(' ')[0]) || User.find_by(email: email) || User.find_by(login: email.gsub(".", "").split("@")[0]) || User.find_by(login: email.gsub(".", "").split("@")[0].chop) )
 
-        # If not, enter unless/if conditional
-        # Search first, or Store based on email?
-        # Lets choose store for the moment
-
-
-        # Create record for user containing only name and  
         unless user
             if email.include?("pivotal")
               user = User.create(
@@ -311,6 +344,31 @@ class GithubLoader
         c.users << user # Maps user to commit
         c.save()
       end
+  end
+
+  def self.load_commits_for_repo(repo)
+    puts "---------"
+    puts "--- Loading Commits for #{repo.full_name}"
+    puts "---------"
+    @@current_load.log_msg("Loading Commits for #{repo.full_name}", LogLevel::INFO)
+    #start = Time.now
+    client = OctokitUtils.get_octokit_client
+    commits = client.commits(repo.full_name)
+               
+    commits.each { |commit|
+      email = commit[:attrs][:commit][:attrs][:author][:email]
+
+      # Create record of commit
+      c = Commit.create(
+          :repo_id => repo.id,
+          #:user_id => user_id,
+          :sha => commit[:sha], # Change sha to string
+          :message => commit[:attrs][:commit][:attrs][:message],
+          :date_created => commit[:attrs][:commit][:attrs][:author][:date]
+        )
+
+      names = commit[:attrs][:commit][:attrs][:author][:name].gsub(" and ", "|").gsub(", ","|").gsub(" & ", '|').split('|')
+      process_authors(c, email, names)
     }
   end
 

@@ -13,7 +13,8 @@ LABEL_MAPPING = {
   "repository" => {sql_select: 'r.name', sql_group_by: 'r.name', hash_name: 'name'},
   "state"      => {sql_select: "#{DBUtils.get_state_select('pr.state', 'pr.date_merged')} state", sql_group_by: 'state', hash_name: 'state'},
   "company"    => {sql_select: 'c.name', sql_group_by: 'c.name', hash_name: 'name'},
-  "user"       => {sql_select: 'u.login', sql_group_by: 'u.login', hash_name: 'login'}
+  "user"       => {sql_select: 'u.login', sql_group_by: 'u.login', hash_name: 'login'},
+  "name"       => {sql_select: 'u.name', sql_group_by: 'u.name', hash_name: 'name'}
 }
 
 DATA_MAPPING = {
@@ -31,6 +32,8 @@ class ApiController < ApplicationController
     group_by = params[:groupBy]
     rollup = params[:rollupVal]
     search_criteria = params[:searchCriteria]
+
+    puts "LABEL MAPPING #{LABEL_MAPPING[group_by][:sql_group_by]}"
 
     ###
     # Get the data
@@ -81,7 +84,7 @@ class ApiController < ApplicationController
     case format
     when 'pie'
       prs_data_pie_str = JavascriptUtils.get_pull_request_stats(data, LABEL_MAPPING[group_by][:hash_name], DATA_MAPPING[metric][:hash_name])
-      puts prs_data_pie_str
+      #puts prs_data_pie_str
       render :json => prs_data_pie_str
     when 'bar'
       # TODO: Fix this as needed
@@ -111,13 +114,13 @@ class ApiController < ApplicationController
       @data_index_name = DATA_MAPPING[metric][:hash_name]
       render :partial => "shared/hash_as_table"
     when 'csv'
-      puts "PARAMS #{params}"
-      puts "REQUEST #{request.inspect.to_s}"
+      #puts "PARAMS #{params}"
+      #puts "REQUEST #{request.inspect.to_s}"
       if params[:action] == "analytics_data"
       table = JavascriptUtils.get_pull_request_stats(data, LABEL_MAPPING[group_by][:hash_name], DATA_MAPPING[metric][:hash_name])
-      puts "TABLE #{table.to_s}" 
+      #puts "TABLE #{table.to_s}" 
 
-      puts "TABLE_CLASS #{table.class}"
+      #puts "TABLE_CLASS #{table.class}"
       
       # elsif params[:action] == "report_data"
       # table = AnalyticUtils.get_pull_request_data(params[:searchCriteria]) 
@@ -141,7 +144,7 @@ class ApiController < ApplicationController
   end
 
   def report_data
-    puts "PARAMS #{params}"
+    #puts "PARAMS #{params}"
     report = params[:report]
     search_criteria = params[:searchCriteria]
     data = AnalyticUtils.get_pull_request_data(search_criteria)
@@ -164,7 +167,7 @@ class ApiController < ApplicationController
   end
 
   def to_analytics_csv(data)
-    puts "CSV #{data}"
+    #puts "CSV #{data}"
     csv_string = CSV.generate do |csv|
       csv << ["Name", "Contributions"]
       Hash[data]["response"].each do |user|
@@ -176,7 +179,7 @@ class ApiController < ApplicationController
 
 
   def to_report_csv(data)
-    puts "CSV #{data}"
+    #puts "CSV #{data}"
     csv_string = CSV.generate do |csv|
       csv << ["Number", "Title", "Body", "State", "Days Open", "User", "Company", "Repo", "Created", "Closed", "Merged"]
       #csv << ["Name", "Contributions"]

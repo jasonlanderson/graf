@@ -111,6 +111,27 @@
       <% @drop_down_selected = nil %>
       <%= render 'shared/drop_down' %>
     </td>
+    
   </tr>
+  <tr>
+  <td></td>
+  <td></td>
+  <td></td>
+  <td></td>
+
+  <td>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Name:
+    </td>
+    
+    <td>
+      <% @drop_down_id = "name_filter" %>
+      <% @drop_down_data = @names %>
+      <% @drop_down_data_index = "name" %>
+      <% @drop_down_empty_label = "All" %>
+      <% @drop_down_selected = nil %>
+      <%= render 'shared/drop_down' %>
+    </td>
+  </tr>
+
 </table>
 <script type="text/javascript">initializeSearchCriteria();</script>

@@ -46,9 +46,7 @@
 
       // Make API calls to update the data
       analyticsAJAX(data, $("#view_type").val(), 'json', updateChartCallback);
-      analyticsAJAX(data, 'table', 'text', updateTableCallback);
-
-      
+      analyticsAJAX(data, 'table', 'text', updateTableCallback);     
 
       // Update the titles
       $("#chart_title").html($("#metric_filter option:selected").text() +  " Grouped By " + $("#group_by_filter option:selected").text());
@@ -85,11 +83,10 @@
     function updateTableCallback(result){
       $("#table_container").empty();
       $("#table_container").html(result);
-
       $("#metric_table").dataTable(ANALYTICS_TABLE_OPTIONS);
     }
 
-    function printStuff(result){
+    function downloadCSV(result){
       //alert("RESULT!");
       console.log(result);
       
@@ -143,7 +140,7 @@
           rollupVal: $("#rollup").val(),
           searchCriteria: createSearchCriteriaJSON()
         }
-        analyticsAJAX(data, 'csv', 'text', printStuff);
+        analyticsAJAX(data, 'csv', 'text', downloadCSV);
       });
 
       // Load initial  chart
@@ -182,6 +179,7 @@ Group By:
     <option value="state">State</option>
     <option value="company" selected>Company</option>
     <option value="user">User</option>
+    <option value="name">Name</option>
   </select>
 
 <br><br>

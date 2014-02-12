@@ -209,6 +209,10 @@ class AnalyticUtils
       where_stmt += "AND u.login = '#{search_criteria[:user]}' "
     end
 
+    if search_criteria[:name] && search_criteria[:name] != ''
+      where_stmt += "AND u.name = '#{search_criteria[:name]}' "
+    end
+
     return where_stmt
   end
 

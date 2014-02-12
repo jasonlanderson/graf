@@ -11,6 +11,7 @@ class ReportController < ApplicationController
     @repos = Repo.order(:name)
     @companies = Company.order(:name).select('DISTINCT(name)')
     @users = User.order(:login)
+    @names = User.order(:name)
   end
   
 end

@@ -18,7 +18,7 @@ class AnalyticsController < ApplicationController
     @repos = Repo.order(:name)
     @companies = Company.order(:name).select('DISTINCT(name)')
     @users = User.order(:login).select('DISTINCT(login)')
-
+    @names = User.order(:name).select('DISTINCT(name)')
     @last_updated = GithubLoad.last
   end
 

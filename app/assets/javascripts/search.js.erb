@@ -38,6 +38,10 @@ function initializeSearchCriteria() {
     filterUpdate()
   });
 
+  $("#name_filter").change(function () {
+    filterUpdate()
+  });
+
   $("#start_date_filter").change(function () {
     filterUpdate()
   });
@@ -78,7 +82,8 @@ function createSearchCriteriaJSON() {
           repo: $("#repo_filter").val(),
           state: $("#state_filter").val(),
           company: $("#company_filter").val(),
-          user: $("#user_filter").val()
+          user: $("#user_filter").val(),
+          name: $("#name_filter").val()
         }
 }
 
@@ -89,7 +94,8 @@ function clearSearchCriteria() {
                       "repo_filter", 
                       "state_filter", 
                       "company_filter", 
-                      "user_filter"];
+                      "user_filter",
+                      "name_filter"];
 
   // Clear all the dropdowns
   for ( id in whereDropDownIds ) {
