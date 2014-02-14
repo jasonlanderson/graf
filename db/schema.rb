@@ -58,6 +58,7 @@ ActiveRecord::Schema.define(version: 20140214172833) do
   create_table "orgs", force: true do |t|
     t.integer  "git_id"
     t.string   "name"
+    t.string   "login"
     t.date     "date_created"
     t.date     "date_updated"
     t.datetime "created_at"
