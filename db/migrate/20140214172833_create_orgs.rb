@@ -3,6 +3,7 @@ class CreateOrgs < ActiveRecord::Migration
     create_table :orgs do |t|
       t.integer :git_id
       t.string :name
+      t.string :login
       t.date :date_created
       t.date :date_updated
 
