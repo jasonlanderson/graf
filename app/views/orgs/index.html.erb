@@ -1,0 +1,33 @@
+<h1>Listing orgs</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Git</th>
+      <th>Name</th>
+      <th>Date created</th>
+      <th>Date updated</th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @orgs.each do |org| %>
+      <tr>
+        <td><%= org.git_id %></td>
+        <td><%= org.name %></td>
+        <td><%= org.date_created %></td>
+        <td><%= org.date_updated %></td>
+        <td><%= link_to 'Show', org %></td>
+        <td><%= link_to 'Edit', edit_org_path(org) %></td>
+        <td><%= link_to 'Destroy', org, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Org', new_org_path %>

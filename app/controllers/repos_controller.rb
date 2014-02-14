@@ -69,6 +69,6 @@ class ReposController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def repo_params
-      params.require(:repo).permit(:git_id, :name, :full_name, :fork, :date_created, :date_updated, :date_pushed)
+      params.require(:repo).permit(:git_id, :name, :full_name, :fork, :date_created, :date_updated, :date_pushed, :org)
     end
 end

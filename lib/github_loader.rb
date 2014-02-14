@@ -6,7 +6,7 @@ class GithubLoader
   @@current_load = nil
 
   ORG_NAME = "cloudfoundry"
-  ORGS = {"cf" => ["cloudfoundry", "cloudfoundry-attic", "cloudfoundry-incubator"]}
+  ORG_NAMES = ["cloudfoundry", "cloudfoundry-attic", "cloudfoundry-incubator"]
   ORG_TO_COMPANY = {"vmware" => "VMware",
     "pivotal" => "Pivotal",
     "cloudfoundry" => "Pivotal",
@@ -126,7 +126,8 @@ class GithubLoader
                 :date_closed => pr[:attrs][:closed_at],
                 :date_updated => Time.now.utc,
                 :date_merged => pr[:attrs][:merged_at],
-                :state => (pr[:attrs][:merged_at].nil? ? pr[:attrs][:state] : "merged")
+                :state => (pr[:attrs][:merged_at].nil? ? pr[:attrs][:state] : "merged"),
+                :org => repo.org
               )
             end
         }
@@ -168,19 +169,27 @@ class GithubLoader
   def self.load_repos()
     @@current_load.log_msg("***Loading Repos", LogLevel::INFO)
   	client = OctokitUtils.get_octokit_client
-
-    repos = client.organization_repositories(ORG_NAME)
-    repos.each { |repo|
-      unless REPOS_TO_SKIP.include?(repo[:attrs][:name])
-      	Repo.create(:git_id => repo[:attrs][:id].to_i,
-      		:name => repo[:attrs][:name],
-      		:full_name => repo[:attrs][:full_name],
-      		:fork => (repo[:attrs][:fork] == "true" ? true : false),
-      		:date_created => repo[:attrs][:date_created],
-      		:date_updated => repo[:attrs][:date_updated],
-      		:date_pushed => repo[:attrs][:date_pushed]
-      		)
-      end
+    ORG_NAMES.each { |org_name|
+      organization = client.organization(org_name)
+      o = Org.create(
+        :name => organization[:attrs][:name],
+        :git_id => organization[:attrs][:id].to_i
+      )
+      repos = client.organization_repositories(org_name)
+      repos.each { |repo|
+        unless REPOS_TO_SKIP.include?(repo[:attrs][:name])
+        	Repo.create(
+            :git_id => repo[:attrs][:id].to_i,
+            :org_id => o.id,
+        		:name => repo[:attrs][:name],
+        		:full_name => repo[:attrs][:full_name],
+        		:fork => (repo[:attrs][:fork] == "true" ? true : false),
+        		:date_created => repo[:attrs][:date_created],
+        		:date_updated => repo[:attrs][:date_updated],
+        		:date_pushed => repo[:attrs][:date_pushed]
+        		)
+        end
+      }
     }
   end
 
@@ -189,6 +198,7 @@ class GithubLoader
     client = OctokitUtils.get_octokit_client
     start = Time.now           
     puts "Loading Users!"
+
     Repo.all().each {|repo|
       contributors = client.contributors(repo[:full_name])     
       contributors.each {|user| 
