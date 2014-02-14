@@ -9,11 +9,14 @@ class AnalyticUtils
     sql_stmt = "SELECT #{select_label_col}, #{select_data_col} FROM pull_requests pr " \
       "LEFT OUTER JOIN users u ON pr.user_id = u.id " \
       "LEFT OUTER JOIN companies c ON u.company_id = c.id " \
-      "LEFT OUTER JOIN repos r ON pr.repo_id = r.id "
+      "LEFT OUTER JOIN repos r ON pr.repo_id = r.id " \
+      "LEFT OUTER JOIN orgs o ON r.org_id = o.id "
+
+
 
     sql_stmt += where_clause_stmt(search_criteria)
 
-    sql_stmt += "GROUP BY #{group_by_label_col} ORDER_BY #{order_by_data_col} DESC" #ORDER BY COUNT(*) DESC" #
+    sql_stmt += "GROUP BY #{group_by_label_col} ORDER BY #{order_by_data_col} DESC"
 
     return ActiveRecord::Base.connection.exec_query(sql_stmt)
   end
@@ -24,7 +27,7 @@ class AnalyticUtils
 
     sql_stmt = "SELECT #{select_label_col}, #{select_data_col} FROM commits_users c_u LEFT OUTER JOIN commits pr " \
                "ON c_u.commit_id = pr.id LEFT OUTER JOIN users u ON c_u.user_id = u.id LEFT OUTER JOIN companies c " \
-               " ON c.id = u.company_id LEFT OUTER JOIN repos r ON pr.repo_id = r.id "
+               " ON c.id = u.company_id LEFT OUTER JOIN repos r ON pr.repo_id = r.id LEFT OUTER JOIN orgs o ON r.org_id = o.id "
 
     sql_stmt += where_clause_stmt(search_criteria)
 
@@ -39,11 +42,12 @@ class AnalyticUtils
     case metric_type
     when "prs"
     sql_stmt = "SELECT #{select_col}, pr.date_created FROM pull_requests pr LEFT OUTER JOIN users u  ON pr.user_id " \
-      " = u.id LEFT OUTER JOIN companies c ON u.company_id = c.id LEFT OUTER JOIN repos r ON pr.repo_id = r.id " 
+      " = u.id LEFT OUTER JOIN companies c ON u.company_id = c.id LEFT OUTER JOIN repos r ON pr.repo_id = r.id LEFT OUTER " \
+      " JOIN orgs o ON r.org_id = o.id " 
     when "commits"
     sql_stmt = "SELECT #{select_col}, pr.date_created FROM commits_users c_u LEFT OUTER JOIN commits pr " \
                "ON c_u.commit_id = pr.id LEFT OUTER JOIN users u ON c_u.user_id = u.id LEFT OUTER JOIN companies c " \
-               " ON c.id = u.company_id "  # This should have comm instead of pr, but the where_clause_stmt will break
+               " ON c.id = u.company_id LEFT OUTER JOIN repos r ON pr.repo_id = r.id LEFT OUTER JOIN orgs o ON r.org_id = o.id "  # This should have comm instead of pr, but the where_clause_stmt will break
     end
 
     sql_stmt += where_clause_stmt(search_criteria)
@@ -95,7 +99,8 @@ class AnalyticUtils
       "FROM pull_requests pr " \
       "LEFT OUTER JOIN users u ON pr.user_id = u.id " \
       "LEFT OUTER JOIN companies c ON u.company_id = c.id " \
-      "LEFT OUTER JOIN repos r ON pr.repo_id = r.id "
+      "LEFT OUTER JOIN repos r ON pr.repo_id = r.id " \
+      "LEFT OUTER JOIN orgs o ON r.org_id = o.id "
 
     sql_stmt += where_clause_stmt(search_criteria)
 
@@ -213,6 +218,9 @@ class AnalyticUtils
       where_stmt += "AND u.name = '#{search_criteria[:name]}' "
     end
 
+    #if search_criteria[:org] && search_criteria[:org] != ''
+
+    #end
     return where_stmt
   end
 

@@ -160,6 +160,14 @@
 <% if @last_updated %>
   <div style="float:right">Last Data Load: <%= @last_updated.load_start_time.strftime("%m/%d/%Y %I:%M%P") %></div>
 <% end %>
+<h2>Filters</h2>
+Organization:
+<select id="org_filter">
+    <option value="cloudfoundry">1</option>
+    <option value="cloudfoundry-attic">2</option>
+    <option value="cloudfoundry-incubator">3</option>
+    
+</select>
 
 <h2>Filters</h2>
 Metric:
