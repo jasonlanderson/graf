@@ -43,7 +43,7 @@ class DBUtils
     if get_current_db_type == RDMS::SQLITE
       return "julianday(IFNULL(#{date1}, date('now'))) - julianday(#{date2})"
     elsif get_current_db_type == RDMS::MYSQL
-      return "DATEDIFF(IFNULL(#{date1}, date('now')), #{date2})"
+      return "DATEDIFF(IFNULL(#{date1}, CURDATE()), #{date2})"
     else
       puts "ERROR: Unknown DB '#{get_current_db_type}'"
     end

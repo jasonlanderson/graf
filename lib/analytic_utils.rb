@@ -13,7 +13,7 @@ class AnalyticUtils
 
     sql_stmt += where_clause_stmt(search_criteria)
 
-    sql_stmt += "GROUP BY #{group_by_label_col} ORDER BY #{order_by_data_col} DESC"
+    sql_stmt += "GROUP BY #{group_by_label_col} ORDER_BY #{order_by_data_col} DESC" #ORDER BY COUNT(*) DESC" #
 
     return ActiveRecord::Base.connection.exec_query(sql_stmt)
   end

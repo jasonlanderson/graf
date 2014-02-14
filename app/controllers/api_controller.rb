@@ -41,6 +41,7 @@ class ApiController < ApplicationController
     case metric
     when 'prs', 'percent_merged', 'avg_days_open'
       # TODO: Might not be the best way to do this based on group by
+      puts "Average days #{DATA_MAPPING[metric][:sql_select]}"
       data = AnalyticUtils.get_pull_request_analytics(LABEL_MAPPING[group_by][:sql_select],
           DATA_MAPPING[metric][:sql_select],
           LABEL_MAPPING[group_by][:sql_group_by],

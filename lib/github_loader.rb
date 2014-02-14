@@ -6,6 +6,7 @@ class GithubLoader
   @@current_load = nil
 
   ORG_NAME = "cloudfoundry"
+  ORGS = {"cf" => ["cloudfoundry", "cloudfoundry-attic", "cloudfoundry-incubator"]}
   ORG_TO_COMPANY = {"vmware" => "VMware",
     "pivotal" => "Pivotal",
     "cloudfoundry" => "Pivotal",
@@ -13,6 +14,8 @@ class GithubLoader
     "Springsource" => "Pivotal",
     "pivotal-cf" => "Pivotal",
     "cfibmers" => "IBM"}
+
+  # Rackspace, VMware,   
   REPOS_TO_SKIP = ["em-posix-spawn"]
 
   def self.prep_github_load()
@@ -54,7 +57,7 @@ class GithubLoader
     else
       # Delta load
       load.log_msg("***Doing an delta load", LogLevel::INFO)
-      delta_load(load)
+      delta_load #(load)
     end
 
     finish_github_load(load)
@@ -128,7 +131,7 @@ class GithubLoader
             end
         }
 
-        commits = client.commits(repo[:full_name], {:headers => { "If-Modified-Since" => "Sun, 05 Jan 2014 15:31:30 GMT" }) # => last_modified
+        commits = client.commits(repo[:full_name]) #, {:headers => { "If-Modified-Since" => "Sun, 05 Jan 2014 15:31:30 GMT" }) # => last_modified
         commits.each { |commit|
             record = nil
             record = Commit.find_by(sha: commit[:sha])
@@ -236,14 +239,14 @@ class GithubLoader
 
     pull_requests = client.pulls(repo.full_name, state = "open")
     pull_requests.concat(client.pulls(repo.full_name, state = "closed"))
+    puts "PULLS #{pull_requests.length}"
     pull_requests.each { |pr|
-
       # Get user and insert if doesn't already exist
-      user = create_user_if_not_exist(pr[:attrs][:user])
+      user = create_user_if_not_exist(pr[:attrs][:user]) if pr[:attrs][:user]
 
       PullRequest.create(
         :repo_id => repo.id,
-        :user_id => user.id,
+        :user_id => (user.nil? ? nil : user.id),
         :git_id => pr[:attrs][:id].to_i,
         :pr_number => pr[:attrs][:number],
         :body => pr[:attrs][:body],
@@ -280,6 +283,7 @@ class GithubLoader
   end   
 
   def self.process_authors(c, email, names) 
+    client = OctokitUtils.get_octokit_client
     names.each do |name| 
         next if ((name == "unknown") || email.include?("none") || name.include?("jenkins") || name.include?("Bot") || email.include?("jenkins") || email.include?("-bot") || (email.length > 25) )
         start = Time.now        
@@ -453,7 +457,6 @@ class GithubLoader
     # For each organization
     ORG_TO_COMPANY.each { |org_name, company_name|
       company = Company.find_by(name: company_name, source: "org")
-
       orgMembers = client.organization_members(org_name)
       orgMembers.each { |member|
         user = User.find_by(login: member[:attrs][:login])
