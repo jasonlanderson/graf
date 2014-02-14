@@ -146,6 +146,7 @@ class AnalyticUtils
   def self.where_clause_stmt(search_criteria)
 
     # If there is no search criteria, just return
+    puts "SEARCH CRITERIA #{search_criteria}"
     return "" unless search_criteria
 
     where_stmt = " WHERE 1=1 "
@@ -218,9 +219,9 @@ class AnalyticUtils
       where_stmt += "AND u.name = '#{search_criteria[:name]}' "
     end
 
-    #if search_criteria[:org] && search_criteria[:org] != ''
-
-    #end
+    if search_criteria[:org] && search_criteria[:org] != ''
+      where_stmt += "AND o.id = '#{search_criteria[:org]}' "
+    end
     return where_stmt
   end
 

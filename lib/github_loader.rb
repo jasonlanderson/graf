@@ -6,7 +6,7 @@ class GithubLoader
   @@current_load = nil
 
   #ORG_NAMES = ["cloudfoundry", "cloudfoundry-attic", "cloudfoundry-incubator"]
-  ORG_NAMES = ["cloudfoundry", "cloudfoundry-incubator"]
+  ORG_NAMES = ["mongodb"] #["cloudfoundry", "cloudfoundry-incubator"]
   ORG_TO_COMPANY = {"vmware" => "VMware",
     "pivotal" => "Pivotal",
     "cloudfoundry" => "Pivotal",
@@ -71,7 +71,7 @@ class GithubLoader
     load_repos
 
     load_users
-    load_all_prs # TODO: This should also load associated commits
+    #load_all_prs # TODO: This should also load associated commits
     #load_prs_for_repo(Repo.find_by(name: "vmc"))
     
     com_start = Time.now

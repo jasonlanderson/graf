@@ -34,11 +34,15 @@
     }
 
     function filterUpdate() {
+
+      values = createSearchCriteriaJSON()
+      localStorage.setItem('vals', JSON.stringify(values));
+
       data = {
         metric: $("#metric_filter").val(),
         groupBy: $("#group_by_filter").val(),
         rollupVal: $("#rollup").val(),
-        searchCriteria: createSearchCriteriaJSON()
+        searchCriteria: values
       }
 
       restrictSelections();
@@ -143,6 +147,10 @@
         analyticsAJAX(data, 'csv', 'text', downloadCSV);
       });
 
+      // Load local storage
+      loadLocalStorage();
+
+
       // Load initial  chart
       filterUpdate();
 
@@ -160,12 +168,11 @@
 <% if @last_updated %>
   <div style="float:right">Last Data Load: <%= @last_updated.load_start_time.strftime("%m/%d/%Y %I:%M%P") %></div>
 <% end %>
-<h2>Filters</h2>
-Organization:
+<h2>Organization</h2>
 <select id="org_filter">
-    <option value="cloudfoundry">1</option>
-    <option value="cloudfoundry-attic">2</option>
-    <option value="cloudfoundry-incubator">3</option>
+    <option value="1" selected>cloudfoundry</option>
+    <option value="2">cloudfoundry-incubator</option>
+    <option value="3">cloudfoundry-attic</option>
     
 </select>
 

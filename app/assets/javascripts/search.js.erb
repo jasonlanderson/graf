@@ -42,6 +42,10 @@ function initializeSearchCriteria() {
     filterUpdate()
   });
 
+  $("#org_filter").change(function () {
+    filterUpdate()
+  });
+
   $("#start_date_filter").change(function () {
     filterUpdate()
   });
@@ -71,9 +75,18 @@ function initializeSearchCriteria() {
   });
 }
 
+function loadLocalStorage() {
+  // Load and parse local storage       
+
+  var values = window.localStorage.getItem('vals');
+      values = jQuery.parseJSON(values);
+      for (v in values){
+        $("#" + v + "_filter").val(values[v]);
+  }
+}
 
 function createSearchCriteriaJSON() {
-  return {
+  values = {
           month: $("#month_filter").val(),
           quarter: $("#quarter_filter").val(),
           year: $("#year_filter").val(),
@@ -85,7 +98,9 @@ function createSearchCriteriaJSON() {
           user: $("#user_filter").val(),
           name: $("#name_filter").val(),
           org: $("#org_filter").val()
-        }
+        };
+  
+  return values
 }
 
 function clearSearchCriteria() {

@@ -11,15 +11,23 @@
     // Initial Page Load Activities
     //
     $(document).ready(function () {
-      // Run the filter update on load to get the data
+       
+      // Load local values 
+      loadLocalStorage();
+      
+      // Run the filter update on load to get the data      
       filterUpdate();
     });
 
 
     function filterUpdate() {
+
+      values = createSearchCriteriaJSON()
+      localStorage.setItem('vals', JSON.stringify(values));
+
       data = {
         report: 'prs',
-        searchCriteria: createSearchCriteriaJSON()
+        searchCriteria: values
         // Add summary
       }
       // Make API calls to update the data
