@@ -15,7 +15,7 @@ class LoadRepoUsers < LoadStep
     puts "Start Step: #{name}"
 
     client = OctokitUtils.get_octokit_client
-    #@@current_load.log_msg("***Loading Users", LogLevel::INFO)
+    GithubLoad.log_current_msg("***Loading Users", LogLevel::INFO)
     
     # Look through the contributors first
     contributors = client.contributors(repo.full_name)     

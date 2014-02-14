@@ -1,5 +1,15 @@
 class GithubLoad < ActiveRecord::Base
 
+  @@current_load = nil
+
+  def self.log_current_msg(msg, log_level)
+    return @@current_load.log_msg(msg, log_level)
+  end
+
+  def self.set_current_load(current_load)
+    @@current_load = current_load
+  end
+
   def log_msg(msg, log_level, log_date = Time.now)
     load_msg = GithubLoadMsg.create(:github_load_id => id,
       :msg => msg,

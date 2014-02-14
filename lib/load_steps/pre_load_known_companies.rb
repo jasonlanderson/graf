@@ -10,13 +10,11 @@ class PreLoadKnownCompanies < LoadStep
   end
 
   def execute(*args)
-    #raise ArgumentError, "Too many arguments" if args.length > 2
-    #var = args[0]
     puts "Start Step: #{name}"
 
-    #@@current_load.log_msg("***Loading Companies", LogLevel::INFO)
+    GithubLoad.log_current_msg("***Loading Companies", LogLevel::INFO)
     Constants::ORG_TO_COMPANY.each { |org, company|
-      LoadHelpers.create_company_if_not_exist(company, "org")
+      LoadHelpers.create_company_if_not_exist(company)
     }
 
     puts "Finish Step: #{name}"    

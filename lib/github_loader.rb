@@ -4,8 +4,6 @@ require 'load_steps/initial_load'
 
 class GithubLoader
 
-  @@current_load = nil
-
   def self.prep_github_load()
     if GithubLoad.all.length == 0
       initial_load = true
@@ -35,27 +33,24 @@ class GithubLoader
   end
 
   def self.github_load(load = prep_github_load)
-    @@current_load = load
+    # Set the current load so that the rest of the load process can log
+    GithubLoad.set_current_load(load)
 
     # Determine load type
     if load.initial_load
       # Initial load
       load.log_msg("***Doing an initial load", LogLevel::INFO)
-      initial_load(load)
+      (InitialLoad.new).execute
     else
       # Delta load
       load.log_msg("***Doing an delta load", LogLevel::INFO)
-      delta_load #(load)
+      #(DeltaLoad.new).execute
     end
 
     finish_github_load(load)
   end
 
-  def self.initial_load(current_load)
-    (InitialLoad.new).execute
-  end
-
-  def self.delta_load #(current_load)
+  #def self.delta_load(current_load)
     # # Get last completed
     # puts "Begin Delta load"
     # last_completed = Time.new("2014", "01").utc # GithubLoad.last_completed
@@ -129,20 +124,5 @@ class GithubLoader
     #     }
         
     # }
-  end
-
-
-  # def self.load_all_commits()
-  #   @@current_load.log_msg("***Loading Commits", LogLevel::INFO)
-  #   total_repo_count = Repo.count
-  #   Repo.all().each_with_index { |repo, index|
-  #     @@current_load.log_msg("Loading Commits By Repo (#{index} / #{total_repo_count})", LogLevel::INFO)
-  #     load_commits_for_repo(repo)
-  #   }
-  # end
-
-   
-
-  
-
+  #end
 end

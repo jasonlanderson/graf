@@ -17,11 +17,12 @@ class LoadOrgRepos < LoadStep
     org = args[0]
     puts "Start Step: #{name}"
   
-    #@@current_load.log_msg("***Loading Repos", LogLevel::INFO)
+    GithubLoad.log_current_msg("***Loading Repos", LogLevel::INFO)
     client = OctokitUtils.get_octokit_client
     
     repos = client.organization_repositories(org.login)
-    repos.each { |repo|
+    total_repo_count = Repo.count
+    repos.each_with_index { |repo, index|
       unless Constants::REPOS_TO_SKIP.include?(repo[:attrs][:name])
         repo = Repo.create(
           :git_id => repo[:attrs][:id].to_i,
@@ -33,6 +34,7 @@ class LoadOrgRepos < LoadStep
           :date_updated => repo[:attrs][:date_updated],
           :date_pushed => repo[:attrs][:date_pushed]
         )
+        GithubLoad.log_current_msg("Loading Commits By Repo (#{index} / #{total_repo_count})", LogLevel::INFO)
 
         (LoadRepoUsers.new).execute(repo)
         (LoadRepoPullRequests.new).execute(repo)

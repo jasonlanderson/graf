@@ -4,7 +4,6 @@
   <thead>
     <tr>
       <th>Company Name</th>
-      <th>Company Src</th>
       <th>Git</th>
       <th>Login</th>
       <th>Name</th>
@@ -22,7 +21,6 @@
     <% @users.each do |user| %>
       <tr>
         <td><%= user.company ? user.company.name : "" %></td>
-        <td><%= user.company ? user.company.source : "" %></td>
         <td><%= user.git_id %></td>
         <td><%= user.login %></td>
         <td><%= user.name %></td>

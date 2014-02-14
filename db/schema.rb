@@ -31,7 +31,6 @@ ActiveRecord::Schema.define(version: 20140214172833) do
 
   create_table "companies", force: true do |t|
     t.string   "name"
-    t.string   "source"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

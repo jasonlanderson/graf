@@ -18,7 +18,7 @@ class LoadRepoPullRequests < LoadStep
     puts "---------"
     puts "--- Loading PRs for #{repo.full_name}"
     puts "---------"
-    #@@current_load.log_msg("Loading PRs for #{repo.full_name}", LogLevel::INFO)
+    GithubLoad.log_current_msg("Loading PRs for #{repo.full_name}", LogLevel::INFO)
 
     client = OctokitUtils.get_octokit_client
 

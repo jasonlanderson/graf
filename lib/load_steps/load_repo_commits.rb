@@ -18,7 +18,7 @@ class LoadRepoCommits < LoadStep
     puts "---------"
     puts "--- Loading Commits for #{repo.full_name}"
     puts "---------"
-    #@@current_load.log_msg("Loading Commits for #{repo.full_name}", LogLevel::INFO)
+    GithubLoad.log_current_msg("Loading Commits for #{repo.full_name}", LogLevel::INFO)
 
     client = OctokitUtils.get_octokit_client
     commits = client.commits(repo.full_name)

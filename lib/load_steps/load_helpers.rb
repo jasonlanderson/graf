@@ -11,7 +11,7 @@ class LoadHelpers
       puts "---------"
       puts "--- Creating User: #{user_login}"
       puts "---------"
-      #@@current_load.log_msg("Creating User: #{user_login}", LogLevel::INFO)
+      GithubLoad.log_current_msg("Creating User: #{user_login}", LogLevel::INFO)
 
       user_details = pr_user[:_rels][:self].get.data
       company_name = user_details[:attrs][:company]
@@ -29,9 +29,9 @@ class LoadHelpers
 
       company = nil
       if user_details[:attrs][:company] != "" && user_details[:attrs][:company] != nil
-        company = create_company_if_not_exist(company_name, "user")
+        company = create_company_if_not_exist(company_name)
       else
-        company = create_company_if_not_exist("Independent", "user")
+        company = create_company_if_not_exist("Independent")
       end
 
 
@@ -57,18 +57,17 @@ class LoadHelpers
     return user
   end
 
-  def self.create_company_if_not_exist(company_name, src)
-    company = Company.find_by(name: company_name, source: src)
+  def self.create_company_if_not_exist(company_name)
+    company = Company.find_by(name: company_name)
 
     unless company
       puts "---------"
       puts "--- Creating Company: #{company_name}"
       puts "---------"
-      #@@current_load.log_msg("Creating Company: #{company_name}", LogLevel::INFO)
+      GithubLoad.log_current_msg("Creating Company: #{company_name}", LogLevel::INFO)
 
       company = Company.create(
-        :name => company_name,
-        :source => src
+        :name => company_name
         )
     end
 

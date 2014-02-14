@@ -10,10 +10,7 @@ class LoadStep
   def execute(*args)
     #raise ArgumentError, "Too many arguments" if args.length > 2
     #var = args[0]
-    puts "Start Step: #{name}"
-
-
-    puts "Finish Step: #{name}"    
+    puts "***NEED TO SET STEP EXECUTE***"  
   end
 
   def revert
