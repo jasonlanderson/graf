@@ -15,6 +15,8 @@ LABEL_MAPPING = {
   "company"    => {sql_select: 'c.name', sql_group_by: 'c.name', hash_name: 'name'},
   "user"       => {sql_select: 'u.login', sql_group_by: 'u.login', hash_name: 'login'},
   "name"       => {sql_select: 'u.name', sql_group_by: 'u.name', hash_name: 'name'}
+  #"org"        => {sql_select: 'r.org', }
+
 }
 
 DATA_MAPPING = {
