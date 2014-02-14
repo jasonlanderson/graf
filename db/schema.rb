@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140113223804) do
+ActiveRecord::Schema.define(version: 20140214172833) do
 
   create_table "commits", force: true do |t|
     t.integer  "repo_id"
@@ -55,6 +55,15 @@ ActiveRecord::Schema.define(version: 20140113223804) do
     t.datetime "updated_at"
   end
 
+  create_table "orgs", force: true do |t|
+    t.integer  "git_id"
+    t.string   "name"
+    t.date     "date_created"
+    t.date     "date_updated"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "pull_requests", force: true do |t|
     t.integer  "repo_id"
     t.integer  "user_id"
@@ -75,6 +84,7 @@ ActiveRecord::Schema.define(version: 20140113223804) do
   add_index "pull_requests", ["user_id"], name: "index_pull_requests_on_user_id", using: :btree
 
   create_table "repos", force: true do |t|
+    t.integer  "org_id"
     t.integer  "git_id"
     t.string   "name"
     t.string   "full_name"
@@ -85,6 +95,8 @@ ActiveRecord::Schema.define(version: 20140113223804) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  add_index "repos", ["org_id"], name: "index_repos_on_org_id", using: :btree
 
   create_table "users", force: true do |t|
     t.integer  "company_id"

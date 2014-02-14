@@ -8,15 +8,15 @@ git commit -a -m "Initial Add"
 git remote add gerrit ssh://jason.anderson@gerrit.w3.bluemix.net:29418/graf
 git push gerrit master:refs/heads/master
 
-rails g scaffold Repo git_id:integer name:string full_name:string fork:boolean date_created:date date_updated:date date_pushed:date
+
+rails g scaffold Org git_id:integer name:string date_created:date date_updated:date
+rails g scaffold Repo org:references git_id:integer name:string full_name:string fork:boolean date_created:date date_updated:date date_pushed:date
 rails g scaffold PullRequest repo:references user:references git_id:integer pr_number:integer body:text title:string state:string date_created:date date_closed:date date_updated:date date_merged:date
 rails g scaffold User company:references git_id:integer login:string name:string location:string email:string date_created:date date_updated:date
 rails g scaffold Commit repo:references user:references sha:string message:string date_created:date created_at:datetime updated_at:datetime
 rails g scaffold Company name:string source:string
 rails g scaffold GithubLoad  load_start_time:datetime load_complete_time:datetime initial_load:boolean
 rails g scaffold GithubLoadMsg github_load:references msg:string log_level:integer log_date:datetime
-
-rails g scaffold Commit repo:references sha:string message:string date_created:date created_at:datetime updated_at:datetime
 
 ###
 # Tips
@@ -44,7 +44,9 @@ DROP TABLE pull_requests;
 DROP TABLE repos;
 DROP TABLE schema_migrations;
 DROP TABLE users;
-
+DROP TABLE orgs;
+DROP TABLE commits;
+DROP TABLE commits_users;
 
 
 ###

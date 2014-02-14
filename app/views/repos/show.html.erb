@@ -26,13 +26,18 @@
 </p>
 
 <p>
-  <strong>Date update:</strong>
+  <strong>Date updated:</strong>
   <%= @repo.date_updated %>
 </p>
 
 <p>
   <strong>Date pushed:</strong>
   <%= @repo.date_pushed %>
+</p>
+
+<p>
+  <strong>Org:</strong>
+  <%= @repo.org %>
 </p>
 
 <%= link_to 'Edit', edit_repo_path(@repo) %> |
