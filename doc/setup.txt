@@ -66,6 +66,8 @@ Now do another push and bind to the mysql database you created in the first push
 
 Your app should now be up and running.
 
+
+
 ###
 # Upgrading on BlueMix with DB Changes
 ###
@@ -78,6 +80,8 @@ cf push --command 'bundle exec rake db:create db:migrate' graf
 cf delete graf
 cf push graf
 cf push graf
+
+
 
 ###
 # Old Info
@@ -105,7 +109,7 @@ cf push --command 'bundle exec rails s'
 # Prod DB
 mysql -h 10.0.116.62 -u uJ4LJCgf7xsGT -P 3307 d6e8e1188b2124bc7b67fdefa63b8c980 -p pZDbbwCIZUacr
 
-Database Info: {"adapter"=>"mysql2", "database"=>"d25d324270a0f43749176e9cfa5a09ff5", "username"=>"ueZ1rpvq3cySy", "password"=>"pCDypZyO3azn8", "host"=>"10.0.116.121", "port"=>3307}
+Database Info: {"adapter"=>"mysql2", "database"=>"d25e275215552449dbabaff6f680e3740", "username"=>"uFxsEo3M8cv6X", "password"=>"pTgdSMT8iIGXu", "host"=>"10.0.116.121", "port"=>3307}
 
 # Stage DB
 graf-db-stage
