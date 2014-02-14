@@ -5,8 +5,8 @@ class GithubLoader
 
   @@current_load = nil
 
-  ORG_NAME = "cloudfoundry"
-  ORG_NAMES = ["cloudfoundry", "cloudfoundry-attic", "cloudfoundry-incubator"]
+  #ORG_NAMES = ["cloudfoundry", "cloudfoundry-attic", "cloudfoundry-incubator"]
+  ORG_NAMES = ["cloudfoundry", "cloudfoundry-incubator"]
   ORG_TO_COMPANY = {"vmware" => "VMware",
     "pivotal" => "Pivotal",
     "cloudfoundry" => "Pivotal",
