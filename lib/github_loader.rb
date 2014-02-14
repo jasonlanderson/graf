@@ -15,6 +15,15 @@ class GithubLoader
     "pivotal-cf" => "Pivotal",
     "cfibmers" => "IBM"}
 
+  INITIAL_LOAD = [
+    
+  ]
+
+  DELTA_LOAD = [
+
+
+  ]
+
   # Rackspace, VMware,   
   REPOS_TO_SKIP = ["em-posix-spawn"]
 
