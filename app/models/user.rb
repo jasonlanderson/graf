@@ -6,6 +6,13 @@ class User < ActiveRecord::Base
   end
 
   def to_json_with_company
-    return "{\"git_id\": \"#{git_id}\", \"login\": \"#{login}\", \"name\": \"#{name}\", \"location\": \"#{location}\", \"email\": \"#{email}\", \"date_created\": \"#{date_created}\", \"date_updated\": \"#{date_updated}\", \"company\": \"#{company.name}\"}"
+    return "{\"git_id\": \"#{git_id}\"," \
+      "\"login\": \"#{login}\"," \
+      "\"name\": \"#{name.to_s.gsub("\"","\\\"")}\"," \
+      "\"location\": \"#{location}\"," \
+      "\"email\": \"#{email}\"," \
+      "\"date_created\": \"#{date_created}\"," \
+      "\"date_updated\": \"#{date_updated}\"," \
+      "\"company\": \"#{company.name}\"}"
   end
 end
