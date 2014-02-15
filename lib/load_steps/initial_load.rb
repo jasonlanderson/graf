@@ -1,5 +1,6 @@
 require 'load_steps/load_step'
 require 'load_steps/pre_load_known_companies'
+require 'load_steps/pre_load_user_cache'
 require 'load_steps/load_orgs'
 require 'load_steps/post_fix_users_without_companies'
 require 'octokit_utils'
@@ -18,6 +19,7 @@ class InitialLoad < LoadStep
     # Pre-load
     #(PreLoadSeedData.new).execute
     (PreLoadKnownCompanies.new).execute
+    (PreLoadUserCache.new).execute
 
     # Load all orgs
     (LoadOrgs.new).execute

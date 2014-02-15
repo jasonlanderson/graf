@@ -1,0 +1,6 @@
+{"users": [
+<% @users.each_with_index { |user, index| %>
+  <%= index == 0 ? "" : "," %><br>
+  <%= user.to_json_with_company %>
+<% } %>
+]}

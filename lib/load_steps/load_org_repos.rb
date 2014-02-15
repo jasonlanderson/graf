@@ -21,7 +21,7 @@ class LoadOrgRepos < LoadStep
     client = OctokitUtils.get_octokit_client
     
     repos = client.organization_repositories(org.login)
-    total_repo_count = Repo.count
+    total_repo_count = repos.count
     repos.each_with_index { |repo, index|
       unless Constants::REPOS_TO_SKIP.include?(repo[:attrs][:name])
         repo = Repo.create(

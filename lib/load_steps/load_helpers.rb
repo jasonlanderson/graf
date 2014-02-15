@@ -44,14 +44,13 @@ class LoadHelpers
       user = User.create(
         :company => company,
         :git_id => user_details[:attrs][:id].to_i,
-        :login => login,
+        :login => (login ? login.downcase : nil),
         :name => name,
         :location => user_details[:attrs][:location],
         :email => user_details[:attrs][:email],
         :date_created => user_details[:attrs][:created_at],
         :date_updated => user_details[:attrs][:updated_at]
         )
-      user.login = user.login.downcase if user.login
     end
 
     return user
