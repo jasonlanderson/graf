@@ -12,6 +12,7 @@ class PostDeleteCompaniesWithoutUsers < LoadStep
     puts "Start Step: #{name}"
 
     puts "TODO: Implement Post Delete Companies Without Users"
+    #select c.name, count(*)  as mycount from users u  RIGHT OUTER JOIN companies c ON  u.company_id = c.id group by c.name 
 
     puts "Finish Step: #{name}"    
   end
