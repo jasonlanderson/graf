@@ -34,8 +34,19 @@ class LoadRepoCommits < LoadStep
         :date_created => commit[:attrs][:commit][:attrs][:author][:date]
       )
 
-      names = commit[:attrs][:commit][:attrs][:author][:name].gsub(" and ", "|").gsub(", ","|").gsub(" & ", '|').split('|')
-      LoadHelpers.process_authors(c, email, names)
+      if commit[:author]
+         user = User.find_by(login: commit[:author][:attrs][:login].downcase) if commit[:author][:attrs][:login]
+         if user
+           c.users << user
+         else
+           user_obj = client.user(commit[:author][:attrs][:login]) 
+           user = LoadHelpers.create_user_if_not_exist(user_obj)
+           c.users << user 
+         end
+      else
+         names = commit[:attrs][:commit][:attrs][:author][:name].gsub(" and ", "|").gsub(", ","|").gsub(" & ", '|').split('|')
+         LoadHelpers.process_authors(c, email, names)
+      end
     }
 
 

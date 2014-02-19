@@ -25,25 +25,6 @@ class InitialLoad < LoadStep
     # Post Load
     (PostFixUsersWithoutCompanies.new).execute
     #(PostDeleteCompaniesWithoutUsers.new).execute
-    
-
-
-    # load_org_companies
-
-    # load_repos
-
-    # load_users
-    # load_all_prs # TODO: This should also load associated commits
-    # #load_prs_for_repo(Repo.find_by(name: "vmc"))
-    
-    # #com_start = Time.now
-    # load_all_commits
-    # #current_load.log_msg("Total time to process commits is #{Time.now - com_start}", LogLevel::INFO)
-    # #current_load.log_msg("Total time to process everything is #{Time.now - full_start}", LogLevel::INFO)
-    # #load_commits_for_repo(Repo.find_by(name: "vmc"))
-
-    # fix_users_without_companies
-
 
 
 

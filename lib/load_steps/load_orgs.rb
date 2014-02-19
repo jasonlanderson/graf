@@ -16,7 +16,7 @@ class LoadOrgs < LoadStep
     # Load all orgs
     client = OctokitUtils.get_octokit_client
     Constants::ORG_NAMES.each { |org_name|
-      organization = client.organization(org_name)
+      organization = client.organization(org_name) || client.user(org_name)
       org = Org.create(
         :git_id => organization[:attrs][:id].to_i,
         :name => organization[:attrs][:name],

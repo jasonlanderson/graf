@@ -9,6 +9,7 @@ class ReportController < ApplicationController
     @pr_state_stats = AnalyticUtils.get_state_stats(@metric_data)
 
     @repos = Repo.order(:name)
+    @organizations = Org.order(:name)
     @companies = Company.order(:name).select('DISTINCT(name)')
     @users = User.order(:login)
     @names = User.order(:name)

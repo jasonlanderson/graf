@@ -16,6 +16,7 @@ class AnalyticsController < ApplicationController
     # @data_index_name = 'num_prs'
 
     @repos = Repo.order(:name)
+    @organizations = Org.order(:name)
     @companies = Company.order(:name).select('DISTINCT(name)')
     @users = User.order(:login).select('DISTINCT(login)')
     @names = User.order(:name).select('DISTINCT(name)')

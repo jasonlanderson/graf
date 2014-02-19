@@ -220,7 +220,7 @@ class AnalyticUtils
     end
 
     if search_criteria[:org] && search_criteria[:org] != ''
-      where_stmt += "AND o.id = '#{search_criteria[:org]}' "
+      where_stmt += "AND o.name = '#{search_criteria[:org]}' "
     end
     return where_stmt
   end

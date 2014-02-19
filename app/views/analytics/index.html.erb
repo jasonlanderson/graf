@@ -168,14 +168,20 @@
 <% if @last_updated %>
   <div style="float:right">Last Data Load: <%= @last_updated.load_start_time.strftime("%m/%d/%Y %I:%M%P") %></div>
 <% end %>
-<h2>Organization</h2>
-<select id="org_filter">
-    <option value="1" selected>cloudfoundry</option>
-    <option value="2">cloudfoundry-incubator</option>
-    <option value="3">cloudfoundry-attic</option>
-    
-</select>
 
+
+<h2>Organizations</h2>
+<div style="float:left">
+  <% @drop_down_id = "org_filter" %>
+  <% @drop_down_data = @organizations %>
+  <% @drop_down_data_index = "name" %>
+  <% @drop_down_empty_label = "All" %>
+  <% @drop_down_selected = nil %>
+  <% @drop_down_width = "500px" %>
+  <%= render 'shared/drop_down' %>          
+</div>
+
+<br><br>
 <h2>Filters</h2>
 Metric:
  <select id="metric_filter">

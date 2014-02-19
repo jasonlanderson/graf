@@ -20,7 +20,7 @@ class LoadOrgRepos < LoadStep
     GithubLoad.log_current_msg("***Loading Repos", LogLevel::INFO)
     client = OctokitUtils.get_octokit_client
     
-    repos = client.organization_repositories(org.login)
+    repos = client.user(org.login)[:rels][:repos].get.data #organization_repositories(org.login)
     total_repo_count = Repo.count
     repos.each_with_index { |repo, index|
       unless Constants::REPOS_TO_SKIP.include?(repo[:attrs][:name])
@@ -36,7 +36,7 @@ class LoadOrgRepos < LoadStep
         )
         GithubLoad.log_current_msg("Loading Commits By Repo (#{index} / #{total_repo_count})", LogLevel::INFO)
 
-        (LoadRepoUsers.new).execute(repo)
+        #(LoadRepoUsers.new).execute(repo)
         (LoadRepoPullRequests.new).execute(repo)
         (LoadRepoCommits.new).execute(repo)
       end

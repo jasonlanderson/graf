@@ -28,6 +28,8 @@ class PostFixUsersWithoutCompanies < LoadStep
       }
     }
 
+    LoadHelpers.override_user_companies # This doesn't seem like it's being called, why?
+
     puts "Finish Step: #{name}"    
   end
 
