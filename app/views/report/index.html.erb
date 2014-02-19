@@ -113,6 +113,19 @@
 <%###############%>
 <%= render 'shared/last_load' %>
 
+<h2>Organizations</h2>
+<div style="float:left">
+  <% @drop_down_id = "org_filter" %>
+  <% @drop_down_data = @organizations %>
+  <% @drop_down_data_index = "name" %>
+  <% @drop_down_empty_label = "All" %>
+  <% @drop_down_selected = nil %>
+  <% @drop_down_width = "500px" %>
+  <%= render 'shared/drop_down' %>          
+</div>
+
+<br><br>
+
 <%= render 'shared/search_criteria' %>
 <br>
 <hr>

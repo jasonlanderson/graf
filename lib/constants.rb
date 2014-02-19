@@ -19,7 +19,9 @@ module Constants
     "lift" => "Lift",
     "mongodb" => "MongoDB",
     "jenkinsci" => "Jenkins",
-    "github" => "Github"
+    "github" => "Github",
+    "rackerlabs" => "Rackspace",
+    "racker" => "Rackspace"
   }
   
 end

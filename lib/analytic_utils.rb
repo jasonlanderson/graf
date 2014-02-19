@@ -40,8 +40,8 @@ class AnalyticUtils
   def self.get_timestamps(metric_type, select_col, group_by_col, rollup, search_criteria = nil)
 
     case metric_type
-    when "prs"
-    sql_stmt = "SELECT #{select_col}, pr.date_created FROM pull_requests pr LEFT OUTER JOIN users u  ON pr.user_id " \
+    when "prs", "avg_days_open"
+    sql_stmt = "SELECT #{select_col}, pr.date_created, FROM pull_requests pr LEFT OUTER JOIN users u  ON pr.user_id " \
       " = u.id LEFT OUTER JOIN companies c ON u.company_id = c.id LEFT OUTER JOIN repos r ON pr.repo_id = r.id LEFT OUTER " \
       " JOIN orgs o ON r.org_id = o.id " 
     when "commits"
@@ -222,6 +222,7 @@ class AnalyticUtils
     if search_criteria[:org] && search_criteria[:org] != ''
       where_stmt += "AND o.login = '#{search_criteria[:org]}' "
     end
+
     return where_stmt
   end
 

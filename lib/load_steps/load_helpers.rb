@@ -152,7 +152,7 @@ class LoadHelpers
 
       company = Company.create(
         :name => company_name
-        )
+      )
 
     end
 
