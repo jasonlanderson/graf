@@ -17,8 +17,8 @@ class PreLoadKnownCompanies < LoadStep
       LoadHelpers.create_company_if_not_exist(company)
     }
 
-    LoadHelpers.load_users_from_json
-    LoadHelpers.create_stackalytics_companies
+    # LoadHelpers.load_users_from_json
+    # LoadHelpers.create_stackalytics_companies
 
     puts "Finish Step: #{name}"    
   end

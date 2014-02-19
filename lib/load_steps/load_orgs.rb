@@ -16,7 +16,11 @@ class LoadOrgs < LoadStep
     # Load all orgs
     client = OctokitUtils.get_octokit_client
     Constants::ORG_NAMES.each { |org_name|
-      organization = client.organization(org_name) || client.user(org_name)
+      GithubLoad.log_current_msg("Loading Organization '#{org_name}'", LogLevel::INFO)
+      org_load_time = Time.now
+      
+      organization = client.user(org_name)
+
       org = Org.create(
         :git_id => organization[:attrs][:id].to_i,
         :name => organization[:attrs][:name],
@@ -26,8 +30,10 @@ class LoadOrgs < LoadStep
       )
       
       (LoadOrgRepos.new).execute(org)
+      GithubLoad.log_current_msg("Organization '#{org.login}' took #{Time.now - org_load_time} to load", LogLevel::INFO)
     }
     
+
     puts "Finish Step: #{name}"    
   end
 

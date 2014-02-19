@@ -18,7 +18,7 @@ class InitialLoad < LoadStep
 
     # Pre-load
     (PreLoadKnownCompanies.new).execute
-    (PreLoadUserCache.new).execute
+    #(PreLoadUserCache.new).execute
 
     # Load all orgs
     (LoadOrgs.new).execute

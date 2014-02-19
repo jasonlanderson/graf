@@ -150,11 +150,8 @@
       // Load local storage
       loadLocalStorage();
 
-
-      // Load initial  chart
+      // Load initial chart
       filterUpdate();
-
-
     });
 
   </script>
@@ -165,20 +162,17 @@
 <%###############%>
 <%# Body Section %>
 <%###############%>
-<% if @last_updated %>
-  <div style="float:right">Last Data Load: <%= @last_updated.load_start_time.strftime("%m/%d/%Y %I:%M%P") %></div>
-<% end %>
-
+<%= render 'shared/last_load' %>
 
 <h2>Organizations</h2>
 <div style="float:left">
   <% @drop_down_id = "org_filter" %>
   <% @drop_down_data = @organizations %>
-  <% @drop_down_data_index = "name" %>
+  <% @drop_down_data_index = "login" %>
   <% @drop_down_empty_label = "All" %>
   <% @drop_down_selected = nil %>
   <% @drop_down_width = "500px" %>
-  <%= render 'shared/drop_down' %>          
+  <%= render 'shared/drop_down' %>
 </div>
 
 <br><br>

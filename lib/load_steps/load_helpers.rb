@@ -64,8 +64,7 @@ class LoadHelpers
     # These created records have no relation to github, need to fill in the blanks somehow?
 
     # Grab raw user mappings json from stackalytics website
-    url = "https://raw.github.com/stackforge/stackalytics/master/etc/default_data.json"
-    data = JSON.parse(`wget #{url} -O -`)
+    data = getStackalyticsJSON
 
     # Create an array containing all company domains. If a user has multiple emails registered, we see if any of the
     # emails match with one of these company domains
@@ -112,8 +111,7 @@ class LoadHelpers
 
   def self.create_stackalytics_companies
     # Grab raw user mappings json from stackalytics website
-    url = "https://raw.github.com/stackforge/stackalytics/master/etc/default_data.json"
-    data = JSON.parse(`wget #{url} -O -`)
+    data = getStackalyticsJSON
 
     # Iterate through each company, create record if they don't exist.
     data["companies"].each { |company|
@@ -125,8 +123,7 @@ class LoadHelpers
     # This function overrides a user's listed company if the user domain matches one of the companies associated domains
 
     # Grab raw user mappings json from stackalytics website
-    url = "https://raw.github.com/stackforge/stackalytics/master/etc/default_data.json"
-    data = JSON.parse(`wget #{url} -O -`)
+    data = getStackalyticsJSON
 
     # Each company has a set of domains associated with it. Here, we'll iterate through each domain, and user records 
     # that have a identical domain to the same company 
@@ -263,7 +260,7 @@ class LoadHelpers
       return search_results, num_results
   end
         
-  def self.search_name(name)    
+  def self.search_name(name)
       sleep(3.0) # Throttling
       puts "Searching by name for #{name}"
       puts "Throttling"
@@ -276,6 +273,10 @@ class LoadHelpers
         num_results = search_results[:attrs][:total_count]
       end
       return search_results, num_results
+  end
+
+  def self.getStackalyticsJSON()
+    return JSON.parse(HTTParty.get("http://raw.github.com/stackforge/stackalytics/master/etc/default_data.json"))
   end
 
 end

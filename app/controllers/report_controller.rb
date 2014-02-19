@@ -9,10 +9,11 @@ class ReportController < ApplicationController
     @pr_state_stats = AnalyticUtils.get_state_stats(@metric_data)
 
     @repos = Repo.order(:name)
-    @organizations = Org.order(:name)
+    @organizations = Org.order(:login).select('DISTINCT(login)')
     @companies = Company.order(:name).select('DISTINCT(name)')
     @users = User.order(:login)
     @names = User.order(:name)
+    @last_updated = GithubLoad.last
   end
   
 end

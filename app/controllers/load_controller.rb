@@ -64,6 +64,7 @@ class LoadController < ApplicationController
     PullRequest.delete_all
     Repo.delete_all
     User.delete_all
+    Org.delete_all
 
     render :text => "All Data Deleted"
   end

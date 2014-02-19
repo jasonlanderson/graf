@@ -172,8 +172,8 @@ class AnalyticUtils
       where_stmt += "AND #{DBUtils.get_year('pr.date_created')} = '#{search_criteria[:year]}' "
     end
 
-    if search_criteria[:start_date] && search_criteria[:start_date] != ''
-      start_date = search_criteria[:start_date]
+    if search_criteria[:startDate] && search_criteria[:startDate] != ''
+      start_date = search_criteria[:startDate]
 
       if start_date.include?("/")
         start_date = DateUtils.human_slash_date_format_to_db_format(start_date)
@@ -182,8 +182,8 @@ class AnalyticUtils
       where_stmt += "AND pr.date_created >= '#{start_date}' "
     end
 
-    if search_criteria[:end_date] && search_criteria[:end_date] != ''
-      end_date = search_criteria[:end_date]
+    if search_criteria[:endDate] && search_criteria[:endDate] != ''
+      end_date = search_criteria[:endDate]
       
       if end_date.include?("/")
         end_date = DateUtils.human_slash_date_format_to_db_format(end_date)
@@ -220,7 +220,7 @@ class AnalyticUtils
     end
 
     if search_criteria[:org] && search_criteria[:org] != ''
-      where_stmt += "AND o.name = '#{search_criteria[:org]}' "
+      where_stmt += "AND o.login = '#{search_criteria[:org]}' "
     end
     return where_stmt
   end
