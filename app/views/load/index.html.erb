@@ -185,6 +185,7 @@
   <%  if @running_msgs 
         @running_msgs.each do |msg| %>
           <div <%= msg.log_level == 1 ? raw("style='color:red'") : "" %>><%= "#{msg.log_date}: #{msg.msg}" %></div>
+          <%# I18n.localize(msg.log_date, :format => '%m/%d/%Y %I:%M%P') %>
   <%    end
       end %>
 </div>
