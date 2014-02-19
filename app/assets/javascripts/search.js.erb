@@ -76,12 +76,11 @@ function initializeSearchCriteria() {
 }
 
 function loadLocalStorage() {
-  // Load and parse local storage       
-
+  // Load and parse local storage
   var values = window.localStorage.getItem('vals');
-      values = jQuery.parseJSON(values);
-      for (v in values){
-        $("#" + v + "_filter").val(values[v]);
+  values = jQuery.parseJSON(values);
+  for (v in values){
+    $("#" + toUnderscore(v) + "_filter").val(values[v]);
   }
 }
 

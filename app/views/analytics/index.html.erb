@@ -91,7 +91,6 @@
     }
 
     function downloadCSV(result){
-      //alert("RESULT!");
       console.log(result);
       
       var CSV = result;
@@ -249,6 +248,7 @@ Pull Requests Sorted By Company
 <a href="#" class="tooltip"> <%= image_tag "tooltip.gif" %> <span style="font-size: 15px;">  
 This table displays the amount of pull requests submitted by each contributer.
 </span></a>
+<button onclick="window.location = '/report'">Drill Down</button>
 <button id="download">Download to CSV</button>
 
 <div id="table_container"><%= image_tag "spinner.gif" %></div>
