@@ -23,9 +23,10 @@ module Constants
   CHART_COLORS = ['#B82E2E', '#2EB82E', '#C75000', '#6629A3', '#2966A3', '#649ED8'];
 
   ORG_NAMES = [ {"name" => "cloudfoundry", "type" => "org"}, 
-                {"name" => "cloudfoundry-attic", "type" => "user"} ]
-                # {"name" => "cloudfoundry-incubator", "type" => "org"},
-                # {"name" => "cloudfoundry-community", "type" => "org"},
+                {"name" => "cloudfoundry-attic", "type" => "user"},
+                {"name" => "cloudfoundry-community", "type" => "org"},
+                {"name" => "cloudfoundry-incubator", "type" => "org"}]
+                #,
                 # {"name" => "mongodb", "type" => "org"},
                 # {"name" => "openstack", "type" => "org"},
                 # {"name" => "openstack-infra", "type" => "org"}]
@@ -48,7 +49,8 @@ module Constants
     "jenkinsci" => "Jenkins",
     "github" => "Github",
     "rackerlabs" => "Rackspace",
-    "racker" => "Rackspace"
+    "racker" => "Rackspace",
+    "cloudfoundry-community" => "Pivotal"
   }
   
 end
