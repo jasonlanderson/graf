@@ -58,9 +58,9 @@ ActiveRecord::Schema.define(version: 20140220183115) do
     t.integer  "git_id"
     t.string   "login"
     t.string   "name"
+    t.string   "source"
     t.date     "date_created"
     t.date     "date_updated"
-    t.string   "source"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
