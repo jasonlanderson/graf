@@ -24,7 +24,6 @@ class LoadRepoPullRequests < LoadStep
 
     pull_requests = client.pulls(repo.full_name, state = "open")
     pull_requests.concat(client.pulls(repo.full_name, state = "closed"))
-    puts "PULLS #{pull_requests.length}"
     pull_requests.each { |pr|
       # Get user and insert if doesn't already exist
       user = LoadHelpers.create_user_if_not_exist(pr[:attrs][:user]) if pr[:attrs][:user]

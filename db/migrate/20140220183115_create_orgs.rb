@@ -4,9 +4,9 @@ class CreateOrgs < ActiveRecord::Migration
       t.integer :git_id
       t.string :login
       t.string :name
+      t.string :source
       t.date :date_created
       t.date :date_updated
-      t.string :source
 
       t.timestamps
     end

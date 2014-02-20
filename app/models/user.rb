@@ -8,7 +8,7 @@ class User < ActiveRecord::Base
   def to_json_with_company
     return "{\"git_id\": \"#{git_id}\"," \
       "\"login\": \"#{login}\"," \
-      "\"name\": \"#{name.to_s.gsub("\"","\\\"")}\"," \
+      "\"name\": \"#{name.nil? ? name : name.to_s.gsub("\"","\\\"")}\"," \
       "\"location\": \"#{location}\"," \
       "\"email\": \"#{email}\"," \
       "\"date_created\": \"#{date_created}\"," \
