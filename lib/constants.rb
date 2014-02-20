@@ -22,7 +22,9 @@ module Constants
 
   CHART_COLORS = ['#B82E2E', '#2EB82E', '#C75000', '#6629A3', '#2966A3', '#649ED8'];
 
-  ORG_NAMES = [ "cloudfoundry-incubator" ] #["openstack", "openstack-infra", "cloudfoundry", "cloudfoundry-incubator", "cloudfoundry-community", "cloudfoundry-attic", "mongodb"]
+  #ORG_NAMES = [ "cloudfoundry-incubator" ] #["openstack", "openstack-infra", "cloudfoundry", "cloudfoundry-incubator", "cloudfoundry-community", "cloudfoundry-attic", "mongodb"]
+  ORG_NAMES = [ "cloudfoundry-incubator", "openstack", "openstack-infra", "cloudfoundry", "cloudfoundry-incubator", "cloudfoundry-community", "cloudfoundry-attic", "mongodb"]
+
 
   # rackspace, vmware, foursquare, 10gen, lift, mongodb, jenkinsci, github
   REPOS_TO_SKIP = ["em-posix-spawn"]
