@@ -69,6 +69,6 @@ class OrgsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def org_params
-      params.require(:org).permit(:git_id, :name, :date_created, :date_updated)
+      params.require(:org).permit(:git_id, :login, :name, :date_created, :date_updated, :source)
     end
 end

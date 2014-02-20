@@ -6,6 +6,11 @@
 </p>
 
 <p>
+  <strong>Login:</strong>
+  <%= @org.login %>
+</p>
+
+<p>
   <strong>Name:</strong>
   <%= @org.name %>
 </p>
@@ -18,6 +23,11 @@
 <p>
   <strong>Date updated:</strong>
   <%= @org.date_updated %>
+</p>
+
+<p>
+  <strong>Source:</strong>
+  <%= @org.source %>
 </p>
 
 <%= link_to 'Edit', edit_org_path(@org) %> |

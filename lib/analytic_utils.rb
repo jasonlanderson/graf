@@ -40,8 +40,8 @@ class AnalyticUtils
   def self.get_timestamps(metric_type, select_col, group_by_col, rollup, search_criteria = nil)
 
     case metric_type
-    when "prs", "avg_days_open"
-    sql_stmt = "SELECT #{select_col}, pr.date_created, FROM pull_requests pr LEFT OUTER JOIN users u  ON pr.user_id " \
+    when "prs"
+    sql_stmt = "SELECT #{select_col}, pr.date_created FROM pull_requests pr LEFT OUTER JOIN users u  ON pr.user_id " \
       " = u.id LEFT OUTER JOIN companies c ON u.company_id = c.id LEFT OUTER JOIN repos r ON pr.repo_id = r.id LEFT OUTER " \
       " JOIN orgs o ON r.org_id = o.id " 
     when "commits"
@@ -172,8 +172,8 @@ class AnalyticUtils
       where_stmt += "AND #{DBUtils.get_year('pr.date_created')} = '#{search_criteria[:year]}' "
     end
 
-    if search_criteria[:startDate] && search_criteria[:startDate] != ''
-      start_date = search_criteria[:startDate]
+    if search_criteria[:start_date] && search_criteria[:start_date] != ''
+      start_date = search_criteria[:start_date]
 
       if start_date.include?("/")
         start_date = DateUtils.human_slash_date_format_to_db_format(start_date)
@@ -182,8 +182,8 @@ class AnalyticUtils
       where_stmt += "AND pr.date_created >= '#{start_date}' "
     end
 
-    if search_criteria[:endDate] && search_criteria[:endDate] != ''
-      end_date = search_criteria[:endDate]
+    if search_criteria[:end_date] && search_criteria[:end_date] != ''
+      end_date = search_criteria[:end_date]
       
       if end_date.include?("/")
         end_date = DateUtils.human_slash_date_format_to_db_format(end_date)
@@ -220,9 +220,8 @@ class AnalyticUtils
     end
 
     if search_criteria[:org] && search_criteria[:org] != ''
-      where_stmt += "AND o.login = '#{search_criteria[:org]}' "
+      where_stmt += "AND o.name = '#{search_criteria[:org]}' "
     end
-
     return where_stmt
   end
 
