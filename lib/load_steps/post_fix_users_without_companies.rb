@@ -28,9 +28,7 @@ class PostFixUsersWithoutCompanies < LoadStep
       }
     }
 
-    LoadHelpers.override_user_companies
-
-    puts "Finish Step: #{name}"    
+    puts "Finish Step: #{name}"
   end
 
   def revert

@@ -57,90 +57,6 @@ class LoadHelpers
     return user
   end
 
-
-  def self.load_users_from_json
-    # This function creates user records based on the stackalytics json file. 
-    # To improve performance, this function should probably be executed before openstack repos are analyzed
-    # These created records have no relation to github, need to fill in the blanks somehow?
-
-    # Grab raw user mappings json from stackalytics website
-    data = getStackalyticsJSON
-
-    # Create an array containing all company domains. If a user has multiple emails registered, we see if any of the
-    # emails match with one of these company domains
-    all_domains = []
-    data["companies"].each { |company|
-        all_domains += company["domains"]
-    }
-    all_domains.delete("")
-
-    # Iterate through users
-    data["users"].each { |user|
-        company = nil
-        email = nil
-
-        # Register company if it doesn't exist in our db
-        company = Company.find_by(name: user["companies"][0]["company_name"])
-        if !company
-          company = create_company_if_not_exist(user["companies"][0]["company_name"])
-        end
-
-        # Some users have multiple emails, try to make sure we get one that maps to a company domain
-        user["emails"].each{ |e|
-            email = e if all_domains.include?(e.split("@")[1])
-        }
-
-        # See if user is already stored in database
-        u = User.find_by(email: email) || User.find_by(name: user["user_name"])
-
-        # If so, update user's company
-        if u
-          u.company_id = company.id
-          u.save
-        # Otherwise, create record for user  
-        else
-          User.create(
-              :company => company,
-              :name    => user["user_name"],
-              :email   => email ? email : user["emails"][-1] # Note that many users have multiple emails, will just store the first one for now
-          )   
-        end
-    }
-  end
-
-
-  def self.create_stackalytics_companies
-    # Grab raw user mappings json from stackalytics website
-    data = getStackalyticsJSON
-
-    # Iterate through each company, create record if they don't exist.
-    data["companies"].each { |company|
-      create_company_if_not_exist(company["company_name"])
-    }
-  end
-
-  def self.override_user_companies
-    # This function overrides a user's listed company if the user domain matches one of the companies associated domains
-
-    # Grab raw user mappings json from stackalytics website
-    data = getStackalyticsJSON
-
-    # Each company has a set of domains associated with it. Here, we'll iterate through each domain, and user records 
-    # that have a identical domain to the same company 
-    data["companies"].each { |company|
-      company["domains"].each { |domain|
-          users = User.where("email like ?", "%#{domain}%")
-          match = Company.find_by(name: company["company_name"])
-          users.each { |user|
-              if !user.company_id || user.company_id == '22' # If user has no affiliated company or is independent
-                  user.company_id = match.id
-                  user.save
-              end
-          }
-      }
-    } 
-  end
-
   def self.create_company_if_not_exist(company_name)
     company = Company.find_by(name: company_name)
 
@@ -153,7 +69,6 @@ class LoadHelpers
       company = Company.create(
         :name => company_name
       )
-
     end
 
     return company
@@ -275,7 +190,7 @@ class LoadHelpers
       return search_results, num_results
   end
 
-  def self.getStackalyticsJSON()
+  def self.get_stackalytics_JSON()
     return JSON.parse(HTTParty.get("http://raw.github.com/stackforge/stackalytics/master/etc/default_data.json"))
   end
 

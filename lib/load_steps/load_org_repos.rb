@@ -36,9 +36,8 @@ class LoadOrgRepos < LoadStep
         )
         GithubLoad.log_current_msg("Loading Commits By Repo (#{index+1} / #{total_repo_count})", LogLevel::INFO)
 
-        (LoadRepoUsers.new).execute(repo)
-        (LoadRepoPullRequests.new).execute(repo)
-        (LoadRepoCommits.new).execute(repo)
+        execute_load_steps(Constants::LOAD_STEPS_REPO, repo)
+
       end
     }
 

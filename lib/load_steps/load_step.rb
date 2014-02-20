@@ -17,9 +17,9 @@ class LoadStep
 
   end
 
-  def execute_load_steps(steps)
+  def execute_load_steps(steps, *args)
     steps.each { |step|
-      step.execute
+      step.execute(*args)
     }
   end
 end
