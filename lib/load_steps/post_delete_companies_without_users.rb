@@ -11,8 +11,7 @@ class PostDeleteCompaniesWithoutUsers < LoadStep
   def execute(*args)
     puts "Start Step: #{name}"
 
-    companies = Company.where("NOT EXISTS (SELECT * FROM users where companies.id = users.company_id)")
-
+    Company.where("NOT EXISTS (SELECT * FROM users where companies.id = users.company_id)").destroy_all
 
     puts "Finish Step: #{name}"    
   end
