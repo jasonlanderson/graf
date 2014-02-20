@@ -20,7 +20,12 @@ class LoadOrgRepos < LoadStep
     GithubLoad.log_current_msg("***Loading Repos", LogLevel::INFO)
     client = OctokitUtils.get_octokit_client
     
-    repos = client.user(org.login)[:rels][:repos].get.data #organization_repositories(org.login)
+    if org.source == "org"
+        repos = client.organization_repositories(org.login)
+    elsif org.source == "user"
+        repos = client.user(org.login)[:rels][:repos].get.data #organization_repositories(org.login)
+    end
+        
     total_repo_count = repos.count
     repos.each_with_index { |repo, index|
       unless Constants::REPOS_TO_SKIP.include?(repo[:attrs][:name])

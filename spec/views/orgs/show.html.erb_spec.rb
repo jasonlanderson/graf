@@ -4,7 +4,9 @@ describe "orgs/show" do
   before(:each) do
     @org = assign(:org, stub_model(Org,
       :git_id => 1,
-      :name => "Name"
+      :login => "Login",
+      :name => "Name",
+      :source => "Source"
     ))
   end
 
@@ -12,6 +14,8 @@ describe "orgs/show" do
     render
     # Run the generator again with the --webrat flag if you want to use webrat matchers
     rendered.should match(/1/)
+    rendered.should match(/Login/)
     rendered.should match(/Name/)
+    rendered.should match(/Source/)
   end
 end

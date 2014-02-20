@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140214172833) do
+ActiveRecord::Schema.define(version: 20140220183115) do
 
   create_table "commits", force: true do |t|
     t.integer  "repo_id"
@@ -56,10 +56,11 @@ ActiveRecord::Schema.define(version: 20140214172833) do
 
   create_table "orgs", force: true do |t|
     t.integer  "git_id"
-    t.string   "name"
     t.string   "login"
+    t.string   "name"
     t.date     "date_created"
     t.date     "date_updated"
+    t.string   "source"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
