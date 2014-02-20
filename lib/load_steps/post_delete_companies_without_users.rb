@@ -11,8 +11,8 @@ class PostDeleteCompaniesWithoutUsers < LoadStep
   def execute(*args)
     puts "Start Step: #{name}"
 
-    puts "TODO: Implement Post Delete Companies Without Users"
-    #select c.name, count(*)  as mycount from users u  RIGHT OUTER JOIN companies c ON  u.company_id = c.id group by c.name 
+    companies = Company.where("NOT EXISTS (SELECT * FROM users where companies.id = users.company_id)")
+
 
     puts "Finish Step: #{name}"    
   end
