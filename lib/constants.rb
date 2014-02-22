@@ -8,7 +8,7 @@ class Constants
 
   LOAD_STEPS_INITIAL = [
     #PreLoadUserCache.new,
-    PreLoadStackalytics.new,
+    #PreLoadStackalytics.new,
     LoadOrgs.new,
     PostFixUsersWithoutCompanies.new,
     PostDeleteCompaniesWithoutUsers.new
@@ -42,7 +42,7 @@ class Constants
       return @@org_to_company_mapping
     end
 
-    @@org_to_company_mapping = JSON.parse(File.read('config/graf/org_to_company_mapping.json'))
+    @@org_to_company_mapping = JSON.parse(File.read('config/graf/org_to_company_mapping.json'))["mapping"]
     return @@org_to_company_mapping
   end
 
@@ -51,7 +51,7 @@ class Constants
       return @@orgs
     end
 
-    @@orgs = JSON.parse(File.read('config/graf/orgs.json'))
+    @@orgs = JSON.parse(File.read('config/graf/orgs.json'))["orgs"]
     return @@orgs
   end
 
