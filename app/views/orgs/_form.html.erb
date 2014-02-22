@@ -24,16 +24,16 @@
     <%= f.text_field :name %>
   </div>
   <div class="field">
+    <%= f.label :type %><br>
+    <%= f.text_field :type %>
+  </div>
+  <div class="field">
     <%= f.label :date_created %><br>
     <%= f.date_select :date_created %>
   </div>
   <div class="field">
     <%= f.label :date_updated %><br>
     <%= f.date_select :date_updated %>
-  </div>
-  <div class="field">
-    <%= f.label :source %><br>
-    <%= f.text_field :source %>
   </div>
   <div class="actions">
     <%= f.submit %>

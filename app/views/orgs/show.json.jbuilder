@@ -1,1 +1,1 @@
-json.extract! @org, :id, :git_id, :login, :name, :date_created, :date_updated, :source, :created_at, :updated_at
+json.extract! @org, :id, :git_id, :login, :name, :type, :date_created, :date_updated, :created_at, :updated_at

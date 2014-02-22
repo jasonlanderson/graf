@@ -16,6 +16,11 @@
 </p>
 
 <p>
+  <strong>Type:</strong>
+  <%= @org.type %>
+</p>
+
+<p>
   <strong>Date created:</strong>
   <%= @org.date_created %>
 </p>
@@ -23,11 +28,6 @@
 <p>
   <strong>Date updated:</strong>
   <%= @org.date_updated %>
-</p>
-
-<p>
-  <strong>Source:</strong>
-  <%= @org.source %>
 </p>
 
 <%= link_to 'Edit', edit_org_path(@org) %> |

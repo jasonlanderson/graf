@@ -6,7 +6,7 @@ describe "orgs/new" do
       :git_id => 1,
       :login => "MyString",
       :name => "MyString",
-      :source => "MyString"
+      :type => ""
     ).as_new_record)
   end
 
@@ -18,7 +18,7 @@ describe "orgs/new" do
       assert_select "input#org_git_id[name=?]", "org[git_id]"
       assert_select "input#org_login[name=?]", "org[login]"
       assert_select "input#org_name[name=?]", "org[name]"
-      assert_select "input#org_source[name=?]", "org[source]"
+      assert_select "input#org_type[name=?]", "org[type]"
     end
   end
 end
