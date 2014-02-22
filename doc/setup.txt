@@ -113,11 +113,7 @@ cf push --command 'bundle exec rails s'
 # Prod DB
 mysql -h 10.0.116.62 -u uJ4LJCgf7xsGT -P 3307 d6e8e1188b2124bc7b67fdefa63b8c980 -p pZDbbwCIZUacr
 
-Database Info: {"adapter"=>"mysql2", "database"=>"d25e275215552449dbabaff6f680e3740", "username"=>"uFxsEo3M8cv6X", "password"=>"pTgdSMT8iIGXu", "host"=>"10.0.116.121", "port"=>3307}
-
-# Stage DB
-graf-db-stage
-mysql -h 10.0.116.62 -P 3307 -u uA2DrUi8T2BtH d2d8439399b664d0b8d8bc4340ef481c7 -p pOFN7NXyRv8WH
+Database Info: {"adapter"=>"mysql2", "database"=>"d9b9ad402669f49d6ba41eb2ef5b2bf7d", "username"=>"uoJ4utEemoCR9", "password"=>"pNDyvlj4I88rs", "host"=>"10.0.116.121", "port"=>3307}
 
 
 

@@ -1,5 +1,5 @@
 <% require 'constants' %>
-CHART_COLORS = <%= Constants::CHART_COLORS.to_json %>;
+CHART_COLORS = <%= Constants.get_chart_colors.to_json %>;
 
 ANALYTICS_TABLE_OPTIONS = {
   "sScrollY": "350px",

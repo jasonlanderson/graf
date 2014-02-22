@@ -15,7 +15,7 @@ class LoadOrgs < LoadStep
 
     # Load all orgs
     client = OctokitUtils.get_octokit_client
-    Constants::ORG_NAMES.each { |org_hash|
+    Constants.get_orgs.each { |org_hash|
       GithubLoad.log_current_msg("Loading Organization '#{org_hash["name"]}'", LogLevel::INFO)
       org_load_time = Time.now
       
