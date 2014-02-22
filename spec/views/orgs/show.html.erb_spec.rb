@@ -6,7 +6,7 @@ describe "orgs/show" do
       :git_id => 1,
       :login => "Login",
       :name => "Name",
-      :type => "Type"
+      :org_type => "Org Type"
     ))
   end
 
@@ -16,6 +16,6 @@ describe "orgs/show" do
     rendered.should match(/1/)
     rendered.should match(/Login/)
     rendered.should match(/Name/)
-    rendered.should match(/Type/)
+    rendered.should match(/Org Type/)
   end
 end

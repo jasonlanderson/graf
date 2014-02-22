@@ -4,7 +4,7 @@ class CreateOrgs < ActiveRecord::Migration
       t.integer :git_id
       t.string :login
       t.string :name
-      t.string :type
+      t.string :org_type
       t.date :date_created
       t.date :date_updated
 
