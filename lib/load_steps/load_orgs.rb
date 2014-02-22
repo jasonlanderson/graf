@@ -27,10 +27,10 @@ class LoadOrgs < LoadStep
         :login => organization[:attrs][:login],
         :date_created => organization[:attrs][:date_created],
         :date_updated => organization[:attrs][:date_updated],
-        :source => org_hash["type"]
+        :org_type => org_hash["org_type"]
       )
       
-      (LoadOrgRepos.new).execute(org)
+      (LoadOrgRepos.new).execute(org, org_hash["repos_to_skip"])
       GithubLoad.log_current_msg("Organization '#{org.login}' took #{Time.now - org_load_time} to load", LogLevel::INFO)
     }
     

@@ -13,22 +13,22 @@ class LoadOrgRepos < LoadStep
   end
 
   def execute(*args)
-    raise ArgumentError, "Too many arguments" if args.length > 1
     org = args[0]
+    repos_to_skip = args[1]
     puts "Start Step: #{name}"
   
     GithubLoad.log_current_msg("***Loading Repos", LogLevel::INFO)
     client = OctokitUtils.get_octokit_client
     
-    if org.source == "org"
+    if org.org_type == "org"
         repos = client.organization_repositories(org.login)
-    elsif org.source == "user"
+    elsif org.org_type == "user"
         repos = client.user(org.login)[:rels][:repos].get.data #organization_repositories(org.login)
     end
         
     total_repo_count = repos.count
     repos.each_with_index { |repo, index|
-      unless Constants::REPOS_TO_SKIP.include?(repo[:attrs][:name])
+      unless repos_to_skip.include?(repo[:attrs][:name])
         repo = Repo.create(
           :git_id => repo[:attrs][:id].to_i,
           :org_id => org.id,

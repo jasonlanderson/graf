@@ -10,10 +10,8 @@ class LoadRepoPullRequests < LoadStep
   end
 
   def execute(*args)
-    raise ArgumentError, "Too many arguments" if args.length > 1
     repo = args[0]
     puts "Start Step: #{name}"
-
 
     puts "---------"
     puts "--- Loading PRs for #{repo.full_name}"
@@ -42,8 +40,6 @@ class LoadRepoPullRequests < LoadStep
         :state => (pr[:attrs][:merged_at].nil? ? pr[:attrs][:state] : "merged")
         )
     }
-
-
 
     puts "Finish Step: #{name}" 
   end

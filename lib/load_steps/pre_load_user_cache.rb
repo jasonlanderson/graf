@@ -20,9 +20,6 @@ class PreLoadUserCache < LoadStep
       next if index == 0
       company = LoadHelpers.create_company_if_not_exist(company)
 
-      puts u
-      puts u["git_id"].to_i
-
       user = User.create(
         :company_id => company.id,
         :git_id => u["git_id"].to_i,

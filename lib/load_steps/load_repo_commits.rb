@@ -10,7 +10,6 @@ class LoadRepoCommits < LoadStep
   end
 
   def execute(*args)
-    raise ArgumentError, "Too many arguments" if args.length > 1
     repo = args[0]
     puts "Start Step: #{name}"
 
