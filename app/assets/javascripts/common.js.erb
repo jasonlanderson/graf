@@ -5,3 +5,8 @@ function toDash(input){
 function toUnderscore(input){
   return input.replace(/([A-Z])/g, function($1){return "_"+$1.toLowerCase();});
 };
+
+function utcToLocal(input){
+  return new Date("2012-11-29 17:00:34 UTC")
+};
+

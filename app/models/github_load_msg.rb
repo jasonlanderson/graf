@@ -13,4 +13,24 @@ class GithubLoadMsg < ActiveRecord::Base
   def to_s
     return "GithubLoadMsg=[#{msg}]"
   end
+
+  def to_json_with_log_date_formatted
+    return "{\"id\": \"#{id}\"," \
+      "\"log_level\": \"#{log_level}\"," \
+      "\"msg\": \"#{msg}\"," \
+      "\"log_date\": \"#{log_date}\"," \
+      "\"log_date_formatted\": \"#{log_date.localtime.strftime("%m/%d/%Y %H:%M:%S")}\"," \
+      "\"github_load_id\": \"#{github_load_id}\"}"
+  end
+
+  def self.message_array_to_json_formatted(messages)
+    toReturn = '['
+    messages.each_with_index { |message, index|
+      unless index == 0
+        toReturn += ','
+      end
+      toReturn += message.to_json_with_log_date_formatted
+    }
+    return toReturn + ']'
+  end
 end

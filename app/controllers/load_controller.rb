@@ -15,7 +15,8 @@ class LoadController < ApplicationController
     completed = load.load_complete_time ? 'true' : 'false'
     
     # Send back the JSON object
-    render :json => "{\"completed\": \"#{completed}\", \"messages\": #{messages.to_json}}"
+   
+    render :json => "{\"completed\": \"#{completed}\", \"messages\": #{GithubLoadMsg.message_array_to_json_formatted(messages)}}"
   end
 
   def start_load
