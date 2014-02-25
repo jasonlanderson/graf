@@ -7,23 +7,36 @@ require "csv"
 require 'json'
 
 LABEL_MAPPING = {
-  "month"      => {sql_select: "#{DBUtils.get_month_by_name('pr.date_created')} month", sql_group_by: 'month', hash_name: 'month'},
-  "quarter"    => {sql_select: "#{DBUtils.get_quarter_by_name('pr.date_created')} quarter", sql_group_by: 'quarter', hash_name: 'quarter'},  
-  "year"       => {sql_select: "#{DBUtils.get_year('pr.date_created')} year", sql_group_by: 'year', hash_name: 'year'},
-  "repository" => {sql_select: 'r.name', sql_group_by: 'r.name', hash_name: 'name'},
-  "state"      => {sql_select: "#{DBUtils.get_state_select('pr.state', 'pr.date_merged')} state", sql_group_by: 'state', hash_name: 'state'},
-  "company"    => {sql_select: 'c.name', sql_group_by: 'c.name', hash_name: 'name'},
-  "user"       => {sql_select: 'u.login', sql_group_by: 'u.login', hash_name: 'login'},
-  "name"       => {sql_select: 'u.name', sql_group_by: 'u.name', hash_name: 'name'},
-  "timestamp"  => {sql_select: "UNIX_TIMESTAMP(STR_TO_DATE(DATE_FORMAT(pr.date_created, '01-%m-%Y'),'%d-%m-%Y')) epoch_timestamp", sql_group_by: 'epoch_timestamp', hash_name: 'timestamp'}
-  #"org"        => {sql_select: 'r.org', }
+  "month"      => {sql_select: "#{DBUtils.get_month_by_name('pr.date_created')} month", alias: 'month'},
+  "quarter"    => {sql_select: "#{DBUtils.get_quarter_by_name('pr.date_created')} quarter", alias: 'quarter'},  
+  "year"       => {sql_select: "#{DBUtils.get_year('pr.date_created')} year", alias: 'year'},
+  "repository" => {sql_select: 'r.name repo_name', alias: 'repo_name'},
+  "state"      => {sql_select: "#{DBUtils.get_state_select('pr.state', 'pr.date_merged')} state", alias: 'state'},
+  "company"    => {sql_select: 'c.name company_name', alias: 'company_name'},
+  "user"       => {sql_select: 'u.login user_login', alias: 'user_login'},
+  "name"       => {sql_select: 'u.name user_name', alias: 'user_name'},
+  "timestamp"  => {sql_select: "UNIX_TIMESTAMP(STR_TO_DATE(DATE_FORMAT(pr.date_created, '01-%m-%Y'),'%d-%m-%Y')) epoch_timestamp", alias: 'epoch_timestamp'}
 }
 
 DATA_MAPPING = {
-  "prs"            => {sql_select: "COUNT(*) num_prs", hash_name: 'num_prs'},
-  "avg_days_open"  => {sql_select: "IFNULL(ROUND(AVG(#{DBUtils.get_date_difference('pr.date_closed','pr.date_created')}), 1), 0)  avg_days_open", hash_name: 'avg_days_open'},
-  "percent_merged" => {sql_select: "SUM( CASE WHEN pr.date_merged IS NOT NULL THEN 1 ELSE 0 END) /  (COUNT(*) * 0.01) percent_merged", hash_name: 'percent_merged'},
-  "commits"        => {sql_select: "COUNT(*) num_commits", hash_name: 'num_commits'}
+  "prs"            => {base_metric: "prs", sql_select: "COUNT(*) num_prs", alias: 'num_prs'},
+  "avg_days_open"  => {base_metric: "prs", sql_select: "IFNULL(ROUND(AVG(#{DBUtils.get_date_difference('pr.date_closed','pr.date_created')}), 1), 0)  avg_days_open", alias: 'avg_days_open'},
+  "percent_merged" => {base_metric: "prs", sql_select: "SUM( CASE WHEN pr.date_merged IS NOT NULL THEN 1 ELSE 0 END) /  (COUNT(*) * 0.01) percent_merged", alias: 'percent_merged'},
+  "commits"        => {base_metric: "commits", sql_select: "COUNT(*) num_commits", alias: 'num_commits'}
+}
+
+BASE_METRIC_TABLES = {
+  "prs" => "pull_requests pr " \
+          "LEFT OUTER JOIN users u ON pr.user_id = u.id " \
+          "LEFT OUTER JOIN companies c ON u.company_id = c.id " \
+          "LEFT OUTER JOIN repos r ON pr.repo_id = r.id " \
+          "LEFT OUTER JOIN orgs o ON r.org_id = o.id ",
+  "commits" => "commits_users c_u " \
+               "LEFT OUTER JOIN commits pr ON c_u.commit_id = pr.id " \
+               "LEFT OUTER JOIN users u ON c_u.user_id = u.id " \
+               "LEFT OUTER JOIN companies c ON c.id = u.company_id " \
+               "LEFT OUTER JOIN repos r ON pr.repo_id = r.id " \
+               "LEFT OUTER JOIN orgs o ON r.org_id = o.id "
 }
 
 ROLLUP_METHODS = {
@@ -42,44 +55,31 @@ class ApiController < ApplicationController
     rollup_count = params[:rollupVal].to_i if params[:rollupVal]
     search_criteria = params[:searchCriteria]
 
-
-
     select_columns = [ LABEL_MAPPING[group_by][:sql_select] ]
-    group_by_columns = [ LABEL_MAPPING[group_by][:sql_group_by] ]
+    group_by_columns = [ LABEL_MAPPING[group_by][:alias] ]
 
-
-
+    # If we're doing the line format add timestamp on as another group on
     if format == "line"
       select_columns << LABEL_MAPPING["timestamp"][:sql_select]
-      group_by_columns << LABEL_MAPPING["timestamp"][:sql_group_by]
+      group_by_columns << LABEL_MAPPING["timestamp"][:alias]
       puts "APPENDING COLUMNS #{select_columns}"
     end
+    
     ###
     # Get the data
     ###
-    case metric
-    when 'prs', 'percent_merged', 'avg_days_open'
-      # TODO: Might not be the best way to do this based on group by
-      puts "Average days #{DATA_MAPPING[metric][:sql_select]}"
-      puts "SELECT COLUMNS #{select_columns.class}, #{select_columns}"
-      data = AnalyticUtils.get_pull_request_analytics(select_columns,
-          DATA_MAPPING[metric][:sql_select],
-          group_by_columns,
-          DATA_MAPPING[metric][:hash_name],
-          ROLLUP_METHODS["top_metric_vals"],
-          rollup_count,
-          search_criteria
-        )
-    when 'commits'
-      data = AnalyticUtils.get_commit_analytics(select_columns,
-          DATA_MAPPING[metric][:sql_select],
-          group_by_columns,
-          DATA_MAPPING[metric][:hash_name],
-          search_criteria
-        )
-    else
-      render :text => "Error: Unknown Metric '#{metric}'"
-    end
+    puts "Average days #{DATA_MAPPING[metric][:sql_select]}"
+    puts "SELECT COLUMNS #{select_columns.class}, #{select_columns}"
+    data = AnalyticUtils.get_analytics_data(
+        select_columns,
+        DATA_MAPPING[metric][:sql_select],
+        BASE_METRIC_TABLES[DATA_MAPPING[metric][:base_metric]],
+        group_by_columns,
+        DATA_MAPPING[metric][:alias],
+        ROLLUP_METHODS["top_metric_vals"],
+        rollup_count,
+        search_criteria
+      )
 
     ###
     # Rollup data if needed
@@ -94,8 +94,8 @@ class ApiController < ApplicationController
       end
 
       data = AnalyticUtils.top_x_with_rollup(data,
-        LABEL_MAPPING[group_by][:hash_name],
-        DATA_MAPPING[metric][:hash_name],
+        LABEL_MAPPING[group_by][:alias],
+        DATA_MAPPING[metric][:alias],
         rollup.to_i,
         'others',
         rollup_method
@@ -108,24 +108,26 @@ class ApiController < ApplicationController
     ###
     case format
     when 'pie'
-      prs_data_pie_str = JavascriptUtils.get_pull_request_stats(data, LABEL_MAPPING[group_by][:hash_name], DATA_MAPPING[metric][:hash_name])
+      prs_data_pie_str = JavascriptUtils.get_pull_request_stats(data, LABEL_MAPPING[group_by][:alias], DATA_MAPPING[metric][:alias])
       #puts prs_data_pie_str
       render :json => prs_data_pie_str
     when 'bar'
       # TODO: Fix this as needed
-      prs_data_pie_str = JavascriptUtils.get_pull_request_stats(data, LABEL_MAPPING[group_by][:hash_name], DATA_MAPPING[metric][:hash_name])
+      prs_data_pie_str = JavascriptUtils.get_pull_request_stats(data, LABEL_MAPPING[group_by][:alias], DATA_MAPPING[metric][:alias])
       render :json => prs_data_pie_str
     when 'line'
+      line_graph = JavascriptUtils.get_flot_line_chart_json(data, LABEL_MAPPING[group_by][:alias], DATA_MAPPING[metric][:alias])
+      render :json => "{\"response\": #{}}"
       # TODO: Need to add a javascript utils function to do this
       # line_graph = AnalyticUtils.get_timestamps(metric, LABEL_MAPPING[group_by][:sql_select],
-      #           LABEL_MAPPING[group_by][:hash_name],
+      #           LABEL_MAPPING[group_by][:alias],
       #           rollup_count,
       #           search_criteria)
-      # render :json => "{\"response\": #{line_graph}}"
+      # 
     when 'table'
       @table_handle = "metric_table"
       @table_data = data
-      @label_header = LABEL_MAPPING[group_by][:hash_name].titleize
+      @label_header = LABEL_MAPPING[group_by][:alias].titleize
       if metric == "commits"
         @data_header = "Commits"
       elsif metric == "prs"
@@ -135,34 +137,18 @@ class ApiController < ApplicationController
       elsif metric == "percent_merged"
         @data_header ="Percentage"
       end          
-      @label_index_name = LABEL_MAPPING[group_by][:hash_name]
-      @data_index_name = DATA_MAPPING[metric][:hash_name]
+      @label_index_name = LABEL_MAPPING[group_by][:alias]
+      @data_index_name = DATA_MAPPING[metric][:alias]
       render :partial => "shared/hash_as_table"
     when 'csv'
       #puts "PARAMS #{params}"
       #puts "REQUEST #{request.inspect.to_s}"
-      if params[:action] == "analytics_data"
-      table = JavascriptUtils.get_pull_request_stats(data, LABEL_MAPPING[group_by][:hash_name], DATA_MAPPING[metric][:hash_name])
-      #puts "TABLE #{table.to_s}" 
 
-      #puts "TABLE_CLASS #{table.class}"
-      
-      # elsif params[:action] == "report_data"
-      # table = AnalyticUtils.get_pull_request_data(params[:searchCriteria]) 
-      # puts "TABLE_CLASS #{table.class}"
-      # puts "TABLE #{table}"
-      # puts "RESPONSE {\"response\": #{table.to_json}}" 
-      # table = "{\"response\": #{table.to_json}}" #.to_s
-      # puts "TABLE #{table}"
-      end
-      json = JSON.parse(table)
-      csv_string = to_analytics_csv(json)
-      #render :text => csv_string
+      csv_string = to_analytics_csv(data, LABEL_MAPPING[group_by][:alias], DATA_MAPPING[metric][:alias])
       send_data csv_string,
         :type => 'text/csv; charset=iso-8859-1; header=present',
         :disposition => "attachment; filename=users.csv",
-        :x_sendfile=>true   
-      
+        :x_sendfile=>true
     else
       render :text => "Error: Unknown Format '#{format}'"
     end
@@ -191,12 +177,12 @@ class ApiController < ApplicationController
     end
   end
 
-  def to_analytics_csv(data)
+  def to_analytics_csv(data, label_index, val_index)
     #puts "CSV #{data}"
     csv_string = CSV.generate do |csv|
       csv << ["Name", "Contributions"]
-      Hash[data]["response"].each do |user|
-        csv << [user["label"], user["data"]]
+      data.each do |user|
+        csv << [user[label_index], user[val_index]]
       end
     end
     return csv_string    

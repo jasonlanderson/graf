@@ -41,16 +41,18 @@
       data = {
         metric: $("#metric_filter").val(),
         groupBy: $("#group_by_filter").val(),
-        rollupVal: $("#rollup").val(),
         searchCriteria: values
       }
 
-      restrictSelections();
       // Restrict state filter and state Group By option
+      restrictSelections();
 
-      // Make API calls to update the data
-      analyticsAJAX(data, $("#view_type").val(), 'json', updateChartCallback);
+      // Make API calls to update the data in table
       analyticsAJAX(data, 'table', 'text', updateTableCallback);     
+
+      // Update Chart
+      data.rollupVal = $("#rollup").val()
+      analyticsAJAX(data, $("#view_type").val(), 'json', updateChartCallback);
 
       // Update the titles
       $("#chart_title").html($("#metric_filter option:selected").text() +  " Grouped By " + $("#group_by_filter option:selected").text());
