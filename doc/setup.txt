@@ -10,8 +10,7 @@ git push gerrit master:refs/heads/master
 
 
 # octkit has a type field for user or org
-rails g scaffold Org git_id:integer name:string date_created:date date_updated:date
-
+rails g scaffold Org git_id:integer login:string name:string org_type:string date_created:date date_updated:date
 rails g scaffold Repo org:references git_id:integer name:string full_name:string fork:boolean date_created:date date_updated:date date_pushed:date
 rails g scaffold PullRequest repo:references user:references git_id:integer pr_number:integer body:text title:string state:string date_created:date date_closed:date date_updated:date date_merged:date
 rails g scaffold User company:references git_id:integer login:string name:string location:string email:string date_created:date date_updated:date
@@ -113,11 +112,6 @@ cf push --command 'bundle exec rails s'
 # Prod DB
 mysql -h 10.0.116.62 -u uJ4LJCgf7xsGT -P 3307 d6e8e1188b2124bc7b67fdefa63b8c980 -p pZDbbwCIZUacr
 
-Database Info: {"adapter"=>"mysql2", "database"=>"d25e275215552449dbabaff6f680e3740", "username"=>"uFxsEo3M8cv6X", "password"=>"pTgdSMT8iIGXu", "host"=>"10.0.116.121", "port"=>3307}
-
-# Stage DB
-graf-db-stage
-mysql -h 10.0.116.62 -P 3307 -u uA2DrUi8T2BtH d2d8439399b664d0b8d8bc4340ef481c7 -p pOFN7NXyRv8WH
-
+Database Info: {"adapter"=>"mysql2", "database"=>"de58858440fc54e69a1d4b18eb2ee7f46", "username"=>"u6caODtfdIwkB", "password"=>"pho7PtwjYjWzm", "host"=>"10.0.116.121", "port"=>3307}
 
 

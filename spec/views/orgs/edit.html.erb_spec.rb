@@ -6,7 +6,7 @@ describe "orgs/edit" do
       :git_id => 1,
       :login => "MyString",
       :name => "MyString",
-      :source => "MyString"
+      :org_type => "MyString"
     ))
   end
 
@@ -18,7 +18,7 @@ describe "orgs/edit" do
       assert_select "input#org_git_id[name=?]", "org[git_id]"
       assert_select "input#org_login[name=?]", "org[login]"
       assert_select "input#org_name[name=?]", "org[name]"
-      assert_select "input#org_source[name=?]", "org[source]"
+      assert_select "input#org_org_type[name=?]", "org[org_type]"
     end
   end
 end

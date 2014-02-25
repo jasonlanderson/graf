@@ -14,9 +14,9 @@ LABEL_MAPPING = {
   "state"      => {sql_select: "#{DBUtils.get_state_select('pr.state', 'pr.date_merged')} state", sql_group_by: 'state', hash_name: 'state'},
   "company"    => {sql_select: 'c.name', sql_group_by: 'c.name', hash_name: 'name'},
   "user"       => {sql_select: 'u.login', sql_group_by: 'u.login', hash_name: 'login'},
-  "name"       => {sql_select: 'u.name', sql_group_by: 'u.name', hash_name: 'name'}
+  "name"       => {sql_select: 'u.name', sql_group_by: 'u.name', hash_name: 'name'},
+  "timestamp"  => {sql_select: "UNIX_TIMESTAMP(STR_TO_DATE(DATE_FORMAT(pr.date_created, '01-%m-%Y'),'%d-%m-%Y')) epoch_timestamp", sql_group_by: 'epoch_timestamp', hash_name: 'timestamp'}
   #"org"        => {sql_select: 'r.org', }
-
 }
 
 DATA_MAPPING = {
@@ -26,17 +26,34 @@ DATA_MAPPING = {
   "commits"        => {sql_select: "COUNT(*) num_commits", hash_name: 'num_commits'}
 }
 
+ROLLUP_METHODS = {
+  "top_pr_contributors"   => {},
+  "top_metric_vals" => {metric_related: true, sort_order: "DESC"},
+  "lowest_metric_vals"  => {metric_related: true, sort_order: "ASC"}
+}
+
 class ApiController < ApplicationController
+
 
   def analytics_data
     metric = params[:metric]
     format = params[:format]
     group_by = params[:groupBy]
-    rollup = params[:rollupVal]
+    rollup_count = params[:rollupVal].to_i if params[:rollupVal]
     search_criteria = params[:searchCriteria]
 
-    puts "LABEL MAPPING #{LABEL_MAPPING[group_by][:sql_group_by]}"
 
+
+    select_columns = [ LABEL_MAPPING[group_by][:sql_select] ]
+    group_by_columns = [ LABEL_MAPPING[group_by][:sql_group_by] ]
+
+
+
+    if format == "line"
+      select_columns << LABEL_MAPPING["timestamp"][:sql_select]
+      group_by_columns << LABEL_MAPPING["timestamp"][:sql_group_by]
+      puts "APPENDING COLUMNS #{select_columns}"
+    end
     ###
     # Get the data
     ###
@@ -44,16 +61,19 @@ class ApiController < ApplicationController
     when 'prs', 'percent_merged', 'avg_days_open'
       # TODO: Might not be the best way to do this based on group by
       puts "Average days #{DATA_MAPPING[metric][:sql_select]}"
-      data = AnalyticUtils.get_pull_request_analytics(LABEL_MAPPING[group_by][:sql_select],
+      puts "SELECT COLUMNS #{select_columns.class}, #{select_columns}"
+      data = AnalyticUtils.get_pull_request_analytics(select_columns,
           DATA_MAPPING[metric][:sql_select],
-          LABEL_MAPPING[group_by][:sql_group_by],
+          group_by_columns,
           DATA_MAPPING[metric][:hash_name],
+          ROLLUP_METHODS["top_metric_vals"],
+          rollup_count,
           search_criteria
         )
     when 'commits'
-      data = AnalyticUtils.get_commit_analytics(LABEL_MAPPING[group_by][:sql_select],
+      data = AnalyticUtils.get_commit_analytics(select_columns,
           DATA_MAPPING[metric][:sql_select],
-          LABEL_MAPPING[group_by][:sql_group_by],
+          group_by_columns,
           DATA_MAPPING[metric][:hash_name],
           search_criteria
         )
@@ -64,6 +84,7 @@ class ApiController < ApplicationController
     ###
     # Rollup data if needed
     ###
+=begin
     case format
      when 'pie', 'bar'
       # When this is an avg, we need to roll up with avg
@@ -80,6 +101,7 @@ class ApiController < ApplicationController
         rollup_method
       )
     end
+=end
 
     ###
     # Do the formatting
@@ -94,12 +116,12 @@ class ApiController < ApplicationController
       prs_data_pie_str = JavascriptUtils.get_pull_request_stats(data, LABEL_MAPPING[group_by][:hash_name], DATA_MAPPING[metric][:hash_name])
       render :json => prs_data_pie_str
     when 'line'
-      # TODO: Need to change this so that the data is only pulled once up above (maybe with adding another group by)
-      line_graph = AnalyticUtils.get_timestamps(metric, LABEL_MAPPING[group_by][:sql_select],
-                LABEL_MAPPING[group_by][:hash_name],
-                rollup,
-                search_criteria)
-       render :json => "{\"response\": #{line_graph}}"
+      # TODO: Need to add a javascript utils function to do this
+      # line_graph = AnalyticUtils.get_timestamps(metric, LABEL_MAPPING[group_by][:sql_select],
+      #           LABEL_MAPPING[group_by][:hash_name],
+      #           rollup_count,
+      #           search_criteria)
+      # render :json => "{\"response\": #{line_graph}}"
     when 'table'
       @table_handle = "metric_table"
       @table_data = data

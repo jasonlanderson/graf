@@ -4,53 +4,66 @@ require 'load_steps/load_orgs'
 require 'load_steps/post_fix_users_without_companies'
 require 'load_steps/post_delete_companies_without_users'
 
-module Constants
+class Constants
 
   LOAD_STEPS_INITIAL = [
-      #PreLoadUserCache.new,
-      PreLoadStackalytics.new,
-      LoadOrgs.new,
-      PostFixUsersWithoutCompanies.new,
-      PostDeleteCompaniesWithoutUsers.new
-    ]
+    #PreLoadUserCache.new,
+    #PreLoadStackalytics.new,
+    LoadOrgs.new,
+    PostFixUsersWithoutCompanies.new,
+    PostDeleteCompaniesWithoutUsers.new
+  ]
 
   LOAD_STEPS_REPO = [
-      LoadRepoUsers.new,
-      LoadRepoPullRequests.new,
-      LoadRepoCommits.new
-    ]
+    LoadRepoUsers.new,
+    LoadRepoPullRequests.new,
+    LoadRepoCommits.new
+  ]
 
-  CHART_COLORS = ['#B82E2E', '#2EB82E', '#C75000', '#6629A3', '#2966A3', '#649ED8'];
+  @@settings = nil
+  @@org_to_company_mapping = nil
+  @@orgs = nil
+  @@company_names = nil
 
-  ORG_NAMES = [ {"name" => "cloudfoundry", "type" => "org"}, 
-                {"name" => "cloudfoundry-attic", "type" => "user"},
-                {"name" => "cloudfoundry-community", "type" => "org"},
-                {"name" => "cloudfoundry-incubator", "type" => "org"}]
-                #,
-                # {"name" => "mongodb", "type" => "org"},
-                # {"name" => "openstack", "type" => "org"},
-                # {"name" => "openstack-infra", "type" => "org"}]
+  def self.get_settings
+    if @@settings
+      return @@settings
+    end
 
-  # rackspace, vmware, foursquare, 10gen, lift, mongodb, jenkinsci, github
-  REPOS_TO_SKIP = ["em-posix-spawn"]
+    @@settings = JSON.parse(File.read('config/graf/settings.json'))
+    return @@settings
+  end
 
-  ORG_TO_COMPANY = {"vmware" => "VMware",
-    "pivotal" => "Pivotal",
-    "cloudfoundry" => "Pivotal",
-    "pivotallabs" => "Pivotal",
-    "Springsource" => "Pivotal",
-    "pivotal-cf" => "Pivotal",
-    "cfibmers" => "IBM",
-    "rackspace" => "Rackspace",
-    "foursquare" => "Foursquare",
-    "10gen" => "MongoDB",
-    "lift" => "Lift",
-    "mongodb" => "MongoDB",
-    "jenkinsci" => "Jenkins",
-    "github" => "Github",
-    "rackerlabs" => "Rackspace",
-    "racker" => "Rackspace",
-    "cloudfoundry-community" => "Pivotal"
-  }
-  
+  def self.get_chart_colors
+    get_settings["chart_colors"]
+  end
+
+  def self.get_org_to_company_mapping
+    if @@org_to_company_mapping
+      return @@org_to_company_mapping
+    end
+
+    @@org_to_company_mapping = JSON.parse(File.read('config/graf/org_to_company_mapping.json'))["mapping"]
+    return @@org_to_company_mapping
+  end
+
+  def self.get_orgs
+    if @@orgs
+      return @@orgs
+    end
+
+    @@orgs = JSON.parse(File.read('config/graf/orgs.json'))["orgs"]
+    return @@orgs
+  end
+
+  def self.merge_companies
+    if @@company_names
+      return @@company_names
+    end
+
+    @@company_names = JSON.parse(File.read('config/graf/merge_companies.json'))["companies"]
+    return @@company_names
+  end
+
+
 end

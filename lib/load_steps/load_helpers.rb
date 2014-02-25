@@ -3,6 +3,19 @@ require 'log_level'
 require 'json'
 
 class LoadHelpers
+
+  def self.merge(name)
+    Constants.merge_companies.each { |set|
+        set["companies"].each { |company|
+          company["alias"].each { |mapping|
+            if company_name.downcase.include?(mapping)
+              company_name = company["name"]
+            end
+          }
+        }
+      }
+  end
+
   def self.create_user_if_not_exist(pr_user)
     user_login = (pr_user[:attrs][:login] || pr_user[:attrs][:items][0][:attrs][:login])
     user = User.find_by(login: user_login) 
@@ -13,8 +26,15 @@ class LoadHelpers
       puts "---------"
       GithubLoad.log_current_msg("Creating User: #{user_login}", LogLevel::INFO)
 
+      # Can we use nil, "" in the same way?
       user_details = pr_user[:_rels][:self].get.data
       company_name = user_details[:attrs][:company]
+
+
+      
+
+
+#=begin      
       if ((company_name.nil?) or (company_name.downcase.include? "available") or (company_name.downcase.include? "independent") or (company_name.downcase.include? "freelance") or (company_name.strip.length == 0) or company_name.nil?)
           company_name = "Independent"
       elsif (company_name.downcase.include? "vmware")
@@ -30,7 +50,7 @@ class LoadHelpers
       elsif (company_name.downcase.include? "10gen")
           company_name = "MongoDB"
       end
-
+#=end
       company = nil
       if user_details[:attrs][:company] != "" && user_details[:attrs][:company] != nil
         company = create_company_if_not_exist(company_name)

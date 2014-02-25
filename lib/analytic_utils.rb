@@ -3,20 +3,30 @@ require "rollup_methods"
 
 class AnalyticUtils
   # TODO: Change to use parameterized queries
-  def self.get_pull_request_analytics(select_label_col, select_data_col, group_by_label_col,
-    order_by_data_col, search_criteria = nil)
-
-    sql_stmt = "SELECT #{select_label_col}, #{select_data_col} FROM pull_requests pr " \
+  def self.get_pull_request_analytics(select_label_cols, select_data_col, group_by_label_cols,
+    data_col_alias, rollup_method, rollup_count, search_criteria = nil)
+    labels = select_label_cols.join(", ")
+    sql_stmt = "SELECT #{labels}, #{select_data_col} FROM pull_requests pr " \
       "LEFT OUTER JOIN users u ON pr.user_id = u.id " \
       "LEFT OUTER JOIN companies c ON u.company_id = c.id " \
       "LEFT OUTER JOIN repos r ON pr.repo_id = r.id " \
       "LEFT OUTER JOIN orgs o ON r.org_id = o.id "
 
-
-
     sql_stmt += where_clause_stmt(search_criteria)
 
-    sql_stmt += "GROUP BY #{group_by_label_col} ORDER BY #{order_by_data_col} DESC"
+    sql_stmt += "GROUP BY #{group_by_label_cols.join(", ")} "
+    puts "ROLLUP_METHOD #{rollup_method}"
+    if rollup_method[:metric_related]
+      sql_stmt += "ORDER BY #{data_col_alias} #{rollup_method[:sort_order]} "
+    else
+      nil
+    end
+
+    if rollup_count && rollup_count > 0
+      sql_stmt += "LIMIT #{rollup_count} "
+    end
+
+
 
     return ActiveRecord::Base.connection.exec_query(sql_stmt)
   end
@@ -48,11 +58,19 @@ class AnalyticUtils
     sql_stmt = "SELECT #{select_col}, pr.date_created FROM commits_users c_u LEFT OUTER JOIN commits pr " \
                "ON c_u.commit_id = pr.id LEFT OUTER JOIN users u ON c_u.user_id = u.id LEFT OUTER JOIN companies c " \
                " ON c.id = u.company_id LEFT OUTER JOIN repos r ON pr.repo_id = r.id LEFT OUTER JOIN orgs o ON r.org_id = o.id "  # This should have comm instead of pr, but the where_clause_stmt will break
+    when "avg_days_open"
+    sql_stmt = "SELECT #{select_col}, UNIX_TIMESTAMP(STR_TO_DATE(DATE_FORMAT(pr.date_created, '01-%m-%Y'),'%d-%m-%Y')) " \
+               "epoch_timestamp, COUNT(*) num_prs FROM pull_requests pr LEFT OUTER JOIN users u ON pr.user_id = u.id " \
+               "LEFT OUTER JOIN companies c ON u.company_id = c.id LEFT OUTER JOIN repos r ON pr.repo_id = r.id LEFT OUTER " \
+               "JOIN orgs o ON r.org_id = o.id WHERE 1=1 GROUP BY #{select_col}, epoch_timestamp ORDER BY #{select_col}, epoch_timestamp DESC"
     end
 
-    sql_stmt += where_clause_stmt(search_criteria)
+    unless metric_type == "avg_days_open"      
+      sql_stmt += where_clause_stmt(search_criteria) #, metric_type)
+    end
 
-    query = ActiveRecord::Base.connection.exec_query(sql_stmt)  
+    query = ActiveRecord::Base.connection.exec_query(sql_stmt) 
+    puts "#QUERY FOR #{metric_type} #{query.inspect}" 
     pr_dates_by_group = Hash.new
 
     # Loop through each record to create a hash of companies mapping to array of PR create dates
@@ -143,7 +161,7 @@ class AnalyticUtils
     return result
   end
 
-  def self.where_clause_stmt(search_criteria)
+  def self.where_clause_stmt(search_criteria, metric = nil)
 
     # If there is no search criteria, just return
     puts "SEARCH CRITERIA #{search_criteria}"

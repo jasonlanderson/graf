@@ -6,9 +6,9 @@
       <th>Git</th>
       <th>Login</th>
       <th>Name</th>
+      <th>Org type</th>
       <th>Date created</th>
       <th>Date updated</th>
-      <th>Source</th>
       <th></th>
       <th></th>
       <th></th>
@@ -21,9 +21,9 @@
         <td><%= org.git_id %></td>
         <td><%= org.login %></td>
         <td><%= org.name %></td>
+        <td><%= org.org_type %></td>
         <td><%= org.date_created %></td>
         <td><%= org.date_updated %></td>
-        <td><%= org.source %></td>
         <td><%= link_to 'Show', org %></td>
         <td><%= link_to 'Edit', edit_org_path(org) %></td>
         <td><%= link_to 'Destroy', org, method: :delete, data: { confirm: 'Are you sure?' } %></td>

@@ -1,0 +1,40 @@
+{
+  "mapping": [
+    {
+      "company": "VMware",
+      "orgs": ["vmware"]
+    },
+    {
+      "company": "Pivotal",
+      "orgs": ["pivotal", "cloudfoundry", "pivotallabs", "Springsource", "pivotal-cf"]
+    },
+    {
+      "company": "IBM",
+      "orgs": ["cfibmers"]
+    },
+    {
+      "company": "Rackspace",
+      "orgs": ["rackspace", "rackerlabs", "racker"]
+    },
+    {
+      "company": "Foursquare",
+      "orgs": ["foursquare"]
+    },
+    {
+      "company": "MongoDB",
+      "orgs": ["10gen", "mongodb"]
+    },
+    {
+      "company": "Lift",
+      "orgs": ["lift"]
+    },
+    {
+      "company": "Jenkins",
+      "orgs": ["jenkinsci"]
+    },
+    {
+      "company": "Github",
+      "orgs": ["github"]
+    }
+  ]
+}
