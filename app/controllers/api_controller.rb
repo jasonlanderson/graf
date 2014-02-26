@@ -116,8 +116,9 @@ class ApiController < ApplicationController
       prs_data_pie_str = JavascriptUtils.get_pull_request_stats(data, LABEL_MAPPING[group_by][:alias], DATA_MAPPING[metric][:alias])
       render :json => prs_data_pie_str
     when 'line'
+      puts "LINE JSON #{data}"
       line_graph = JavascriptUtils.get_flot_line_chart_json(data, LABEL_MAPPING[group_by][:alias], DATA_MAPPING[metric][:alias])
-      render :json => "{\"response\": #{}}"
+      render :json => "{\"response\": #{line_graph}}"
       # TODO: Need to add a javascript utils function to do this
       # line_graph = AnalyticUtils.get_timestamps(metric, LABEL_MAPPING[group_by][:sql_select],
       #           LABEL_MAPPING[group_by][:alias],
