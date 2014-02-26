@@ -10,7 +10,6 @@ class AnalyticUtils
     select_label_cols = label_columns.map {|column| "#{column[:sql_select]} #{column[:alias]}"}
     group_by_label_cols = label_columns.map {|column| column[:alias]}
     select_data_col = "#{data_column[:sql_select]} #{data_column[:alias]}"
-    
 
     # BASE QUERY
     base_query = "SELECT #{select_label_cols.join(", ")}, #{select_data_col} FROM #{metric_tables}"
