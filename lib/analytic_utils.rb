@@ -14,7 +14,7 @@ class AnalyticUtils
     # BASE QUERY
     base_query = "SELECT #{select_label_cols.join(", ")}, #{select_data_col} FROM #{metric_tables}"
 
-    # If rolling up with multiple group bys, then add in the join
+    # If rolling up with multiple group bys, then add in the inner join
     # This can't be done in conjunction with show_rollup_remainder
     if rollup_count && label_columns.count > 1
       base_query += "INNER JOIN (SELECT #{select_label_cols[0]}, #{select_data_col} " \

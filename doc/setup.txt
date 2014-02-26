@@ -5,8 +5,12 @@ rails new graf
 cd graf
 git add .
 git commit -a -m "Initial Add"
-git remote add gerrit ssh://jason.anderson@gerrit.w3.bluemix.net:29418/graf
-git push gerrit master:refs/heads/master
+
+git remote remove gerrit
+git remote remove origin
+git remote add origin ssh://git@github.rtp.raleigh.ibm.com/anderslj-us/graf.git
+git fetch
+git branch --set-upstream-to=origin/master master
 
 
 # octkit has a type field for user or org
