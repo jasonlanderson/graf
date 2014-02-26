@@ -27,9 +27,9 @@ class JavascriptUtils
       #dataset = [["independent", "1301630400000", 22], ["IBM", "1304722400000", 4], ["IBM", "1304222400000", 8] ]
       dataset.each{ |rec|
         # Create key in hash for contributor if it doesn't exist. Set the key's value as an empty array
-        if current_hash.nil? || current_hash["label"] != rec["label_index"]
+        if current_hash.nil? || current_hash["label"] != rec[label_index]
           response << current_hash if !current_hash.nil?          
-          current_hash = {"label" => rec["label_index"], "data"  => []}
+          current_hash = {"label" => rec[label_index], "data"  => []}
         end
         current_hash["data"] << [rec[time_index], rec[val_index]]
         # if !response.include?(rec[0]) #.has_key?(rec[0])
@@ -40,7 +40,7 @@ class JavascriptUtils
         # end
         # 
       }
-      response << current_hash if !current_hash.nil?         
+      response << current_hash if !current_hash.nil? 
       return response.to_json
   end
 
