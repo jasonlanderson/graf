@@ -20,6 +20,7 @@ class AnalyticUtils
     if rollup_count && label_columns.count > 1
       base_query += "INNER JOIN (SELECT #{select_label_cols[0]}, #{select_data_col} " \
         "FROM #{metric_tables} " \
+        "WHERE #{label_columns[0][:sql_select]} IS NOT NULL " \
         "GROUP BY #{label_columns[0][:alias]} " \
         "ORDER BY #{data_column[:alias]} #{rollup_method[:sort_order]} " \
         "LIMIT #{rollup_count} ) " \
@@ -40,7 +41,7 @@ class AnalyticUtils
       base_query += "LIMIT #{rollup_count} "
       top_x_query = base_query
       # TODO: Change SUM to other rollup_aggregation_method
-      others_query = "(SELECT 'others' as #{label_columns[0][:alias]}, SUM(#{data_column[:alias]}) FROM (#{base_query}, 18446744073709551615) others_tbl)"
+      others_query = "(SELECT 'others' as #{label_columns[0][:alias]}, SUM(#{data_column[:alias]}) #{data_column[:alias]} FROM (#{base_query}, 18446744073709551615) others_tbl HAVING #{data_column[:alias]} IS NOT NULL)"
       sql_stmt = "(#{top_x_query}) UNION (#{others_query})"
     else
       sql_stmt = base_query
