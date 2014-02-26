@@ -2,38 +2,49 @@ require "db_utils"
 require "rollup_methods"
 
 class AnalyticUtils
+
   # TODO: Change to use parameterized queries
-  def self.get_analytics_data(select_label_cols, select_data_col, metric_tables, group_by_label_cols,
-    data_col_alias, rollup_method, rollup_count, search_criteria = nil)
+  # NOTE: You cannot have multiple group_by's and also have show_rollup_remainder = true
+  def self.get_analytics_data(label_columns, select_data_col, metric_tables,
+    data_col_alias, rollup_method, rollup_count, show_rollup_remainder, search_criteria = nil)
 
-    # Is this a rollup query?
-    if rollup_count && rollup_count > 0
+    select_label_cols = label_columns.map {|column| "#{column[:sql_select]} #{column[:alias]}"}
+    group_by_label_cols = label_columns.map {|column| column[:alias]}
 
-      # BASE QUERY
-      base_query = "SELECT #{select_label_cols.join(", ")}, #{select_data_col} FROM #{metric_tables}"
-      base_query += where_clause_stmt(search_criteria)
-      base_query += "GROUP BY #{group_by_label_cols.join(", ")} "
+    # BASE QUERY
+    base_query = "SELECT #{select_label_cols.join(", ")}, #{select_data_col} FROM #{metric_tables}"
+
+    # If rolling up with multiple group bys, then add in the join
+    # This can't be done in conjunction with show_rollup_remainder
+    if rollup_count && label_columns.count > 1
+      base_query += "INNER JOIN (SELECT #{select_label_cols[0]}, #{select_data_col} " \
+        "FROM #{metric_tables} " \
+        "GROUP BY #{label_columns[0][:alias]} " \
+        "ORDER BY #{data_col_alias} #{rollup_method[:sort_order]} " \
+        "LIMIT #{rollup_count} ) " \
+        "rollup_val_tbl ON rollup_val_tbl.#{label_columns[0][:alias]} = #{label_columns[0][:sql_select]} "
+    end
+
+    base_query += where_clause_stmt(search_criteria)
+    base_query += "GROUP BY #{group_by_label_cols.join(", ")} "
+
+    # If rolling up with multiple group bys then order by group bys
+    if rollup_count && label_columns.count > 1
+      base_query += "ORDER BY #{group_by_label_cols.join(", ")} "
+    else
       base_query += "ORDER BY #{data_col_alias} #{rollup_method[:sort_order]} "
+    end
+
+    if rollup_count && show_rollup_remainder
       base_query += "LIMIT #{rollup_count} "
-
       top_x_query = base_query
-
       others_query = "(SELECT 'others' as company_name, SUM(num_prs) FROM (#{base_query}, 18446744073709551615) others_tbl)"
-
-      # if rollup_method[:metric_related]
-      #   sql_stmt += "ORDER BY #{data_col_alias} #{rollup_method[:sort_order]} "
-      # else
-      #   # TODO
-      #   nil
-      # end
-
       sql_stmt = "(#{top_x_query}) UNION (#{others_query})"
     else
-      sql_stmt = "SELECT #{select_label_cols.join(", ")}, #{select_data_col} FROM #{metric_tables}"
-      sql_stmt += where_clause_stmt(search_criteria)
-      sql_stmt += "GROUP BY #{group_by_label_cols.join(", ")} "
-      sql_stmt += "ORDER BY #{data_col_alias} DESC "
+      sql_stmt = base_query
     end
+
+    # TODO: rollup_method[:metric_related]
 
     return ActiveRecord::Base.connection.exec_query(sql_stmt)
   end

@@ -37,6 +37,7 @@
 
       values = createSearchCriteriaJSON()
       localStorage.setItem('vals', JSON.stringify(values));
+      viewType = $("#view_type").val();
 
       data = {
         metric: $("#metric_filter").val(),
@@ -51,8 +52,11 @@
       analyticsAJAX(data, 'table', 'text', updateTableCallback);     
 
       // Update Chart
-      data.rollupVal = $("#rollup").val()
-      analyticsAJAX(data, $("#view_type").val(), 'json', updateChartCallback);
+      data.rollupVal = $("#rollup").val();
+      if (viewType == "pie" || viewType == "bar") {
+        data.showRollupRemainder = "true";
+      }
+      analyticsAJAX(data, viewType, 'json', updateChartCallback);
 
       // Update the titles
       $("#chart_title").html($("#metric_filter option:selected").text() +  " Grouped By " + $("#group_by_filter option:selected").text());

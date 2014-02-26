@@ -7,15 +7,15 @@ require "csv"
 require 'json'
 
 LABEL_MAPPING = {
-  "month"      => {sql_select: "#{DBUtils.get_month_by_name('pr.date_created')} month", alias: 'month'},
-  "quarter"    => {sql_select: "#{DBUtils.get_quarter_by_name('pr.date_created')} quarter", alias: 'quarter'},  
-  "year"       => {sql_select: "#{DBUtils.get_year('pr.date_created')} year", alias: 'year'},
-  "repository" => {sql_select: 'r.name repo_name', alias: 'repo_name'},
-  "state"      => {sql_select: "#{DBUtils.get_state_select('pr.state', 'pr.date_merged')} state", alias: 'state'},
-  "company"    => {sql_select: 'c.name company_name', alias: 'company_name'},
-  "user"       => {sql_select: 'u.login user_login', alias: 'user_login'},
-  "name"       => {sql_select: 'u.name user_name', alias: 'user_name'},
-  "timestamp"  => {sql_select: "UNIX_TIMESTAMP(STR_TO_DATE(DATE_FORMAT(pr.date_created, '01-%m-%Y'),'%d-%m-%Y')) epoch_timestamp", alias: 'epoch_timestamp'}
+  "month"      => {sql_select: "#{DBUtils.get_month_by_name('pr.date_created')}", alias: 'month'},
+  "quarter"    => {sql_select: "#{DBUtils.get_quarter_by_name('pr.date_created')}", alias: 'quarter'},  
+  "year"       => {sql_select: "#{DBUtils.get_year('pr.date_created')}", alias: 'year'},
+  "repository" => {sql_select: 'r.name', alias: 'repo_name'},
+  "state"      => {sql_select: "#{DBUtils.get_state_select('pr.state', 'pr.date_merged')}", alias: 'state'},
+  "company"    => {sql_select: 'c.name', alias: 'company_name'},
+  "user"       => {sql_select: 'u.login', alias: 'user_login'},
+  "name"       => {sql_select: 'u.name', alias: 'user_name'},
+  "timestamp"  => {sql_select: "UNIX_TIMESTAMP(STR_TO_DATE(DATE_FORMAT(pr.date_created, '01-%m-%Y'),'%d-%m-%Y'))", alias: 'epoch_timestamp'}
 }
 
 DATA_MAPPING = {
@@ -53,31 +53,29 @@ class ApiController < ApplicationController
     format = params[:format]
     group_by = params[:groupBy]
     rollup_count = params[:rollupVal].to_i if params[:rollupVal]
+    show_rollup_remainder = true if params[:showRollupRemainder] == "true"
     search_criteria = params[:searchCriteria]
 
-    select_columns = [ LABEL_MAPPING[group_by][:sql_select] ]
-    group_by_columns = [ LABEL_MAPPING[group_by][:alias] ]
+    label_columns = [ LABEL_MAPPING[group_by] ]
 
     # If we're doing the line format add timestamp on as another group on
     if format == "line"
-      select_columns << LABEL_MAPPING["timestamp"][:sql_select]
-      group_by_columns << LABEL_MAPPING["timestamp"][:alias]
-      puts "APPENDING COLUMNS #{select_columns}"
+      label_columns << LABEL_MAPPING["timestamp"]
     end
     
     ###
     # Get the data
     ###
     puts "Average days #{DATA_MAPPING[metric][:sql_select]}"
-    puts "SELECT COLUMNS #{select_columns.class}, #{select_columns}"
+
     data = AnalyticUtils.get_analytics_data(
-        select_columns,
+        label_columns,
         DATA_MAPPING[metric][:sql_select],
         BASE_METRIC_TABLES[DATA_MAPPING[metric][:base_metric]],
-        group_by_columns,
         DATA_MAPPING[metric][:alias],
         ROLLUP_METHODS["top_metric_vals"],
         rollup_count,
+        show_rollup_remainder,
         search_criteria
       )
 
