@@ -19,10 +19,10 @@ LABEL_MAPPING = {
 }
 
 DATA_MAPPING = {
-  "prs"            => {base_metric: "prs", sql_select: "COUNT(*) num_prs", alias: 'num_prs'},
-  "avg_days_open"  => {base_metric: "prs", sql_select: "IFNULL(ROUND(AVG(#{DBUtils.get_date_difference('pr.date_closed','pr.date_created')}), 1), 0)  avg_days_open", alias: 'avg_days_open'},
-  "percent_merged" => {base_metric: "prs", sql_select: "SUM( CASE WHEN pr.date_merged IS NOT NULL THEN 1 ELSE 0 END) /  (COUNT(*) * 0.01) percent_merged", alias: 'percent_merged'},
-  "commits"        => {base_metric: "commits", sql_select: "COUNT(*) num_commits", alias: 'num_commits'}
+  "prs"            => {base_metric: "prs", sql_select: "COUNT(*)", alias: 'num_prs'},
+  "avg_days_open"  => {base_metric: "prs", sql_select: "IFNULL(ROUND(AVG(#{DBUtils.get_date_difference('pr.date_closed','pr.date_created')}), 1), 0) ", alias: 'avg_days_open'},
+  "percent_merged" => {base_metric: "prs", sql_select: "SUM( CASE WHEN pr.date_merged IS NOT NULL THEN 1 ELSE 0 END) /  (COUNT(*) * 0.01)", alias: 'percent_merged'},
+  "commits"        => {base_metric: "commits", sql_select: "COUNT(*)", alias: 'num_commits'}
 }
 
 BASE_METRIC_TABLES = {
@@ -66,13 +66,10 @@ class ApiController < ApplicationController
     ###
     # Get the data
     ###
-    puts "Average days #{DATA_MAPPING[metric][:sql_select]}"
-
     data = AnalyticUtils.get_analytics_data(
         label_columns,
-        DATA_MAPPING[metric][:sql_select],
+        DATA_MAPPING[metric],
         BASE_METRIC_TABLES[DATA_MAPPING[metric][:base_metric]],
-        DATA_MAPPING[metric][:alias],
         ROLLUP_METHODS["top_metric_vals"],
         rollup_count,
         show_rollup_remainder,

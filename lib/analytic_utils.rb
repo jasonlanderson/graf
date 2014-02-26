@@ -5,11 +5,12 @@ class AnalyticUtils
 
   # TODO: Change to use parameterized queries
   # NOTE: You cannot have multiple group_by's and also have show_rollup_remainder = true
-  def self.get_analytics_data(label_columns, select_data_col, metric_tables,
-    data_col_alias, rollup_method, rollup_count, show_rollup_remainder, search_criteria = nil)
+  def self.get_analytics_data(label_columns, data_column, metric_tables, rollup_method, rollup_count, show_rollup_remainder, search_criteria = nil)
 
     select_label_cols = label_columns.map {|column| "#{column[:sql_select]} #{column[:alias]}"}
     group_by_label_cols = label_columns.map {|column| column[:alias]}
+    select_data_col = "#{data_column[:sql_select]} #{data_column[:alias]}"
+    
 
     # BASE QUERY
     base_query = "SELECT #{select_label_cols.join(", ")}, #{select_data_col} FROM #{metric_tables}"
@@ -38,7 +39,8 @@ class AnalyticUtils
     if rollup_count && show_rollup_remainder
       base_query += "LIMIT #{rollup_count} "
       top_x_query = base_query
-      others_query = "(SELECT 'others' as company_name, SUM(num_prs) FROM (#{base_query}, 18446744073709551615) others_tbl)"
+      # TODO: Change SUM to other rollup_aggregation_method
+      others_query = "(SELECT 'others' as label_columns[0][:alias], SUM(#{data_column[:alias]}) FROM (#{base_query}, 18446744073709551615) others_tbl)"
       sql_stmt = "(#{top_x_query}) UNION (#{others_query})"
     else
       sql_stmt = base_query
@@ -48,69 +50,6 @@ class AnalyticUtils
 
     return ActiveRecord::Base.connection.exec_query(sql_stmt)
   end
-
-  # TODO: Likely can get rid of this once single query is complete
-  # def self.get_timestamps(metric_type, select_col, group_by_col, rollup, search_criteria = nil)
-  #   case metric_type
-  #   when "prs"
-  #   sql_stmt = "SELECT #{select_col}, pr.date_created FROM pull_requests pr LEFT OUTER JOIN users u  ON pr.user_id " \
-  #     " = u.id LEFT OUTER JOIN companies c ON u.company_id = c.id LEFT OUTER JOIN repos r ON pr.repo_id = r.id LEFT OUTER " \
-  #     " JOIN orgs o ON r.org_id = o.id " 
-  #   when "commits"
-  #   sql_stmt = "SELECT #{select_col}, pr.date_created FROM commits_users c_u LEFT OUTER JOIN commits pr " \
-  #              "ON c_u.commit_id = pr.id LEFT OUTER JOIN users u ON c_u.user_id = u.id LEFT OUTER JOIN companies c " \
-  #              " ON c.id = u.company_id LEFT OUTER JOIN repos r ON pr.repo_id = r.id LEFT OUTER JOIN orgs o ON r.org_id = o.id "  # This should have comm instead of pr, but the where_clause_stmt will break
-  #   when "avg_days_open"
-  #   sql_stmt = "SELECT #{select_col}, UNIX_TIMESTAMP(STR_TO_DATE(DATE_FORMAT(pr.date_created, '01-%m-%Y'),'%d-%m-%Y')) " \
-  #              "epoch_timestamp, COUNT(*) num_prs FROM pull_requests pr LEFT OUTER JOIN users u ON pr.user_id = u.id " \
-  #              "LEFT OUTER JOIN companies c ON u.company_id = c.id LEFT OUTER JOIN repos r ON pr.repo_id = r.id LEFT OUTER " \
-  #              "JOIN orgs o ON r.org_id = o.id WHERE 1=1 GROUP BY #{select_col}, epoch_timestamp ORDER BY #{select_col}, epoch_timestamp DESC"
-  #   end
-
-  #   unless metric_type == "avg_days_open"      
-  #     sql_stmt += where_clause_stmt(search_criteria) #, metric_type)
-  #   end
-
-  #   query = ActiveRecord::Base.connection.exec_query(sql_stmt) 
-  #   puts "#QUERY FOR #{metric_type} #{query.inspect}" 
-  #   pr_dates_by_group = Hash.new
-
-  #   # Loop through each record to create a hash of companies mapping to array of PR create dates
-  #   query.each do |record|
-  #     key = record[group_by_col].to_s
-  #     if !pr_dates_by_group.has_key?(key)
-  #       pr_dates_by_group[key] ||= []
-  #     end
-  #     pr_dates_by_group[key] << record['date_created']
-  #   end
-
-  #   # Get the top companies
-  #   top_group_bys = Hash[pr_dates_by_group.sort_by {|x, y| y.length }.reverse[0..(rollup.to_i - 1)]]
-
-  #   json_dataset = "["
-  #   top_group_bys.each do |group_by_val, pr_date_created_arr|
-  #     data = Hash.new(0)
-  #     #y.inject(data) { |h,e| h[e] += 1; h }.select { |k,v| v > 1 }.inject({}) { |r, e| r[e.first] = e.last; r }
-  #     pr_date_created_arr.each do |formatted_date|
-  #       date_obj = Date.parse(formatted_date.to_s)
-  #       timestamp =  Time.new(date_obj.year, date_obj.month)  # Converts 2013-13-09 to 1357027200
-  #       data[timestamp] += 1
-  #     end
-  #     timestamp_contrib = []
-  #     data.each { |timestamp, contribs| timestamp_contrib << ( Array [ (timestamp.to_i * 1000).to_s , contribs]) }
-  #     timestamp_contrib =  timestamp_contrib.sort_by {|x, y| x}
-
-  #     if json_dataset != "["
-  #       json_dataset += ","
-  #     end
-  #     json_dataset += "  { \"label\": \"#{group_by_val}\", \"data\" : #{timestamp_contrib} }"
-  #   end
-
-  #   json_dataset += "]" 
-
-  #   return json_dataset
-
-  # end
 
   def self.get_pull_request_data(search_criteria = nil)
 
