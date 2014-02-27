@@ -7,46 +7,115 @@ require "csv"
 require 'json'
 
 LABEL_MAPPING = {
-  "month"      => {sql_select: "#{DBUtils.get_month_by_name('pr.date_created')}", alias: 'month'},
-  "quarter"    => {sql_select: "#{DBUtils.get_quarter_by_name('pr.date_created')}", alias: 'quarter'},  
-  "year"       => {sql_select: "#{DBUtils.get_year('pr.date_created')}", alias: 'year'},
-  "repository" => {sql_select: 'r.name', alias: 'repo_name'},
-  "state"      => {sql_select: "#{DBUtils.get_state_select('pr.state', 'pr.date_merged')}", alias: 'state'},
-  "company"    => {sql_select: 'c.name', alias: 'company_name'},
-  "user"       => {sql_select: 'u.login', alias: 'user_login'},
-  "name"       => {sql_select: 'u.name', alias: 'user_name'},
-  "timestamp"  => {sql_select: "UNIX_TIMESTAMP(STR_TO_DATE(DATE_FORMAT(pr.date_created, '01-%m-%Y'),'%d-%m-%Y'))", alias: 'epoch_timestamp'}
+  'month' => {
+    sql_select: "#{DBUtils.get_month_by_name_with_number_prefix('pr.date_created')}",
+    alias: 'month',
+    sort_by: 'group_by'
+  },
+  'quarter' => {
+    sql_select: "#{DBUtils.get_quarter_by_name('pr.date_created')}",
+    alias: 'quarter',
+    sort_by: 'group_by'
+  },  
+  'year' => {
+    sql_select: "#{DBUtils.get_year('pr.date_created')}",
+    alias: 'year',
+    sort_by: 'group_by'
+  },
+  'repository' => {
+    sql_select: 'r.name',
+    alias: 'repo_name',
+    sort_by: 'metric'
+  },
+  'state' => {
+    sql_select: "#{DBUtils.get_state_select('pr.state', 'pr.date_merged')}",
+    alias: 'state',
+    sort_by: 'metric'
+  },
+  'company' => {
+    sql_select: 'c.name',
+    alias: 'company_name',
+    sort_by: 'metric'
+  },
+  'user' => {
+    sql_select: 'u.login',
+    alias: 'user_login',
+    sort_by: 'metric'
+  },
+  'name' => {
+    sql_select: 'u.name',
+    alias: 'user_name',
+    sort_by: 'metric'
+  },
+  'timestamp' => {
+    sql_select: "UNIX_TIMESTAMP(STR_TO_DATE(DATE_FORMAT(pr.date_created, '01-%m-%Y'),'%d-%m-%Y'))",
+    alias: 'epoch_timestamp',
+    sort_by: 'group_by'
+  }
 }
 
-DATA_MAPPING = {
-  "prs"            => {base_metric: "prs", sql_select: "COUNT(*)", alias: 'num_prs'},
-  "avg_days_open"  => {base_metric: "prs", sql_select: "IFNULL(ROUND(AVG(#{DBUtils.get_date_difference('pr.date_closed','pr.date_created')}), 1), 0) ", alias: 'avg_days_open'},
-  "percent_merged" => {base_metric: "prs", sql_select: "SUM( CASE WHEN pr.date_merged IS NOT NULL THEN 1 ELSE 0 END) /  (COUNT(*) * 0.01)", alias: 'percent_merged'},
-  "commits"        => {base_metric: "commits", sql_select: "COUNT(*)", alias: 'num_commits'}
+METRIC_DETAILS = {
+  'prs' => {
+    base_metric: "prs",
+    sql_select: "COUNT(*)",
+    alias: 'num_prs',
+    aggregation_method: 'SUM',
+    rollup_method: 'top_metric_vals'
+  },
+  'avg_days_open' => {
+    base_metric: "prs",
+    sql_select: "IFNULL(ROUND(AVG(#{DBUtils.get_date_difference('pr.date_closed','pr.date_created')}), 1), 0) ",
+    alias: 'avg_days_open',
+    aggregation_method: 'AVG',
+    rollup_method: 'top_pr_contributors'
+  },
+  'percent_merged' => {
+    base_metric: "prs",
+    sql_select: "SUM( CASE WHEN pr.date_merged IS NOT NULL THEN 1 ELSE 0 END) /  (COUNT(*) * 0.01)",
+    alias: 'percent_merged',
+    aggregation_method: 'AVG',
+    rollup_method: 'top_pr_contributors'
+  },
+  'commits' => {
+    base_metric: "commits",
+    sql_select: "COUNT(*)",
+    alias: 'num_commits',
+    aggregation_method: 'SUM',
+    rollup_method: 'top_metric_vals'
+  }
 }
 
 BASE_METRIC_TABLES = {
-  "prs" => "pull_requests pr " \
-          "LEFT OUTER JOIN users u ON pr.user_id = u.id " \
-          "LEFT OUTER JOIN companies c ON u.company_id = c.id " \
-          "LEFT OUTER JOIN repos r ON pr.repo_id = r.id " \
-          "LEFT OUTER JOIN orgs o ON r.org_id = o.id ",
-  "commits" => "commits_users c_u " \
-               "LEFT OUTER JOIN commits pr ON c_u.commit_id = pr.id " \
-               "LEFT OUTER JOIN users u ON c_u.user_id = u.id " \
-               "LEFT OUTER JOIN companies c ON c.id = u.company_id " \
-               "LEFT OUTER JOIN repos r ON pr.repo_id = r.id " \
-               "LEFT OUTER JOIN orgs o ON r.org_id = o.id "
+  'prs' => "pull_requests pr " \
+    "LEFT OUTER JOIN users u ON pr.user_id = u.id " \
+    "LEFT OUTER JOIN companies c ON u.company_id = c.id " \
+    "LEFT OUTER JOIN repos r ON pr.repo_id = r.id " \
+    "LEFT OUTER JOIN orgs o ON r.org_id = o.id ",
+  'commits' => "commits_users c_u " \
+   "LEFT OUTER JOIN commits pr ON c_u.commit_id = pr.id " \
+   "LEFT OUTER JOIN users u ON c_u.user_id = u.id " \
+   "LEFT OUTER JOIN companies c ON c.id = u.company_id " \
+   "LEFT OUTER JOIN repos r ON pr.repo_id = r.id " \
+   "LEFT OUTER JOIN orgs o ON r.org_id = o.id "
 }
 
+# An empty rollup metric implies that the current metric is to be used
 ROLLUP_METHODS = {
-  "top_pr_contributors"   => {},
-  "top_metric_vals" => {metric_related: true, sort_order: "DESC"},
-  "lowest_metric_vals"  => {metric_related: true, sort_order: "ASC"}
+  'top_pr_contributors' => {
+    rollup_metric: METRIC_DETAILS['prs'],
+    sort_order: 'DESC'
+  },
+  'top_metric_vals' => {
+    rollup_metric: nil,
+    sort_order: 'DESC'
+  },
+  'lowest_metric_vals' => {
+    rollup_metric: nil,
+    sort_order: 'ASC'
+  }
 }
 
 class ApiController < ApplicationController
-
 
   def analytics_data
     metric = params[:metric]
@@ -55,12 +124,14 @@ class ApiController < ApplicationController
     rollup_count = params[:rollupVal].to_i if params[:rollupVal]
     show_rollup_remainder = true if params[:showRollupRemainder] == "true"
     search_criteria = params[:searchCriteria]
+    order_via_group_bys = false
 
     label_columns = [ LABEL_MAPPING[group_by] ]
 
     # If we're doing the line format add timestamp on as another group on
     if format == "line"
       label_columns << LABEL_MAPPING["timestamp"]
+      order_via_group_bys = true
     end
     
     ###
@@ -68,51 +139,50 @@ class ApiController < ApplicationController
     ###
     data = AnalyticUtils.get_analytics_data(
         label_columns,
-        DATA_MAPPING[metric],
-        BASE_METRIC_TABLES[DATA_MAPPING[metric][:base_metric]],
-        ROLLUP_METHODS["top_metric_vals"],
+        METRIC_DETAILS[metric],
+        BASE_METRIC_TABLES[METRIC_DETAILS[metric][:base_metric]],
+        ROLLUP_METHODS[METRIC_DETAILS[metric][:rollup_method]],
         rollup_count,
         show_rollup_remainder,
+        order_via_group_bys,
         search_criteria
       )
 
     ###
     # Rollup data if needed
     ###
-=begin
-    case format
-     when 'pie', 'bar'
-      # When this is an avg, we need to roll up with avg
-      rollup_method = ROLLUP_METHOD::SUM
-      if metric == 'avg_days_open' || metric == 'percent_merged'
-        rollup_method = ROLLUP_METHOD::AVG
-      end
+    # case format
+    #  when 'pie', 'bar'
+    #   # When this is an avg, we need to roll up with avg
+    #   rollup_method = ROLLUP_METHOD::SUM
+    #   if metric == 'avg_days_open' || metric == 'percent_merged'
+    #     rollup_method = ROLLUP_METHOD::AVG
+    #   end
 
-      data = AnalyticUtils.top_x_with_rollup(data,
-        LABEL_MAPPING[group_by][:alias],
-        DATA_MAPPING[metric][:alias],
-        rollup.to_i,
-        'others',
-        rollup_method
-      )
-    end
-=end
+    #   data = AnalyticUtils.top_x_with_rollup(data,
+    #     LABEL_MAPPING[group_by][:alias],
+    #     METRIC_DETAILS[metric][:alias],
+    #     rollup.to_i,
+    #     'others',
+    #     rollup_method
+    #   )
+    # end
 
     ###
     # Do the formatting
     ###
     case format
     when 'pie'
-      prs_data_pie_str = JavascriptUtils.get_pull_request_stats(data, LABEL_MAPPING[group_by][:alias], DATA_MAPPING[metric][:alias])
+      prs_data_pie_str = JavascriptUtils.get_pull_request_stats(data, LABEL_MAPPING[group_by][:alias], METRIC_DETAILS[metric][:alias])
       #puts prs_data_pie_str
       render :json => prs_data_pie_str
     when 'bar'
       # TODO: Fix this as needed
-      prs_data_pie_str = JavascriptUtils.get_pull_request_stats(data, LABEL_MAPPING[group_by][:alias], DATA_MAPPING[metric][:alias])
+      prs_data_pie_str = JavascriptUtils.get_pull_request_stats(data, LABEL_MAPPING[group_by][:alias], METRIC_DETAILS[metric][:alias])
       render :json => prs_data_pie_str
     when 'line'
       puts "LINE JSON #{data}"
-      line_graph = JavascriptUtils.get_flot_line_chart_json(data, LABEL_MAPPING[group_by][:alias], LABEL_MAPPING["timestamp"][:alias], DATA_MAPPING[metric][:alias])
+      line_graph = JavascriptUtils.get_flot_line_chart_json(data, LABEL_MAPPING[group_by][:alias], LABEL_MAPPING["timestamp"][:alias], METRIC_DETAILS[metric][:alias])
       render :json => "{\"response\": #{line_graph}}"
       # TODO: Need to add a javascript utils function to do this
       # line_graph = AnalyticUtils.get_timestamps(metric, LABEL_MAPPING[group_by][:sql_select],
@@ -134,13 +204,13 @@ class ApiController < ApplicationController
         @data_header ="Percentage"
       end          
       @label_index_name = LABEL_MAPPING[group_by][:alias]
-      @data_index_name = DATA_MAPPING[metric][:alias]
+      @data_index_name = METRIC_DETAILS[metric][:alias]
       render :partial => "shared/hash_as_table"
     when 'csv'
       #puts "PARAMS #{params}"
       #puts "REQUEST #{request.inspect.to_s}"
 
-      csv_string = to_analytics_csv(data, LABEL_MAPPING[group_by][:alias], DATA_MAPPING[metric][:alias])
+      csv_string = to_analytics_csv(data, LABEL_MAPPING[group_by][:alias], METRIC_DETAILS[metric][:alias])
       send_data csv_string,
         :type => 'text/csv; charset=iso-8859-1; header=present',
         :disposition => "attachment; filename=users.csv",

@@ -59,6 +59,14 @@ class DBUtils
     end
   end
 
+  def self.get_month_by_name_with_number_prefix(date)
+    if get_current_db_type == RDMS::MYSQL
+      return "DATE_FORMAT(#{date},'%m-%M')"
+    else
+      puts "ERROR: Unknown DB '#{get_current_db_type}'"
+    end
+  end
+
   def self.get_quarter_by_name(date)
     if get_current_db_type == RDMS::SQLITE
         return "case strftime('%m', #{date}) when '01' then 'Q1' when '02' then 'Q1' when '03' then 'Q1' when '04' then 'Q2' when '05' then 'Q2' when '06' then 'Q2' when '07' then 'Q3' when '08' then 'Q3' when '09' then 'Q3' when '10' then 'Q4' when '11' then 'Q4' when '12' then 'Q4' else '' end"
