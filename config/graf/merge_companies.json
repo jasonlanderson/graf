@@ -2,7 +2,7 @@
   "companies": [
     {
       "name": "Independent",
-      "includes": ["available", "independent", "freelance", "", nil]
+      "includes": ["available", "independent", "freelance"]
     },
     {
      "name": "VMware",

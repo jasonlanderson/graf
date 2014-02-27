@@ -111,11 +111,11 @@ class AnalyticUtils
 
     where_stmt = " WHERE 1=1 "
 
-    if search_criteria[:month] && search_criteria[:month] != ''
+    if search_criteria[:month] && search_criteria[:month].join != ''
       where_stmt += "AND #{DBUtils.get_month('pr.date_created')} = '#{search_criteria[:month]}' "
     end
 
-    if search_criteria[:quarter] && search_criteria[:quarter] != ''
+    if search_criteria[:quarter] && search_criteria[:quarter].join != ''
       case search_criteria[:quarter]
       when "q1"
         where_stmt += "AND #{DBUtils.get_month('pr.date_created')} IN ('01', '02', '03') "
@@ -128,7 +128,7 @@ class AnalyticUtils
       end
     end
 
-    if search_criteria[:year] && search_criteria[:year] != ''
+    if search_criteria[:year] && search_criteria[:year].join != ''
       where_stmt += "AND #{DBUtils.get_year('pr.date_created')} = '#{search_criteria[:year]}' "
     end
 
@@ -152,8 +152,8 @@ class AnalyticUtils
       where_stmt += "AND pr.date_created <= '#{end_date}'  "
     end
 
-    if search_criteria[:repo] && search_criteria[:repo] != ''
-      where_stmt += "AND r.name = '#{search_criteria[:repo]}' "
+    if search_criteria[:repo] && search_criteria[:repo].join != ''
+      where_stmt += "AND r.name IN ('#{search_criteria[:repo].join("', '")}') "
     end
 
     if search_criteria[:state]
@@ -167,20 +167,21 @@ class AnalyticUtils
       end
     end
 
-    if search_criteria[:company] && search_criteria[:company] != ''
-      where_stmt += "AND c.name = '#{search_criteria[:company]}' "
+    if search_criteria[:company] && search_criteria[:company].length > 0
+      where_stmt += "AND c.name IN ('#{(search_criteria[:company]).join("', '")}') "
     end
 
-    if search_criteria[:user] && search_criteria[:user] != ''
-      where_stmt += "AND u.login = '#{search_criteria[:user]}' "
+
+    if search_criteria[:user] && search_criteria[:user].join != ''
+      where_stmt += "AND u.login IN ('#{(search_criteria[:user]).join("', '")}') "
     end
 
-    if search_criteria[:name] && search_criteria[:name] != ''
-      where_stmt += "AND u.name = '#{search_criteria[:name]}' "
+    if search_criteria[:name] && search_criteria[:name].join != ''
+      where_stmt += "AND u.name IN ('#{(search_criteria[:name]).join("', '")}') "
     end
 
-    if search_criteria[:org] && search_criteria[:org] != ''
-      where_stmt += "AND o.login = '#{search_criteria[:org]}' "
+    if search_criteria[:org] && search_criteria[:org].join != ''
+      where_stmt += "AND o.login IN ('#{(search_criteria[:org]).join("', '")}') "
     end
     return where_stmt
   end

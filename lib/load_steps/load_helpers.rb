@@ -4,16 +4,17 @@ require 'json'
 
 class LoadHelpers
 
-  def self.merge(name)
+  def merge(name)
     Constants.merge_companies.each { |set|
         set["companies"].each { |company|
           company["alias"].each { |mapping|
             if company_name.downcase.include?(mapping)
-              company_name = company["name"]
+	      return company["name"]
             end
           }
         }
       }
+      return company_name
   end
 
   def self.create_user_if_not_exist(pr_user)
@@ -28,11 +29,7 @@ class LoadHelpers
 
       # Can we use nil, "" in the same way?
       user_details = pr_user[:_rels][:self].get.data
-      company_name = user_details[:attrs][:company]
-
-
-      
-
+      company_name = merge(user_details[:attrs][:company])
 
 #=begin      
       if ((company_name.nil?) or (company_name.downcase.include? "available") or (company_name.downcase.include? "independent") or (company_name.downcase.include? "freelance") or (company_name.strip.length == 0) or company_name.nil?)

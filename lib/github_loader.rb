@@ -1,7 +1,8 @@
 require 'octokit_utils'
 require 'log_level'
 require 'load_steps/initial_load'
-require 'load_helpers'
+require 'load_steps/load_helpers'
+
 
 class GithubLoader
 
@@ -61,32 +62,35 @@ class GithubLoader
   def self.delta_load(current_load)
     # Get last completed
     puts "Begin Delta load"
-    last_completed = Time.new("2014", "01").utc # GithubLoad.last_completed
+    #last_completed = Time.new("2014", "01").utc # GithubLoad.last_completed
+    last_completed = GithubLoad.last_completed[:load_complete_time]
+    parsed_date = "#{last_completed.year}-#{last_completed.month}-#{last_completed.day}"
     client = OctokitUtils.get_octokit_client
     # TODO: Create delta load code
 
 
     Repo.all().each {|repo|
         # Load PRs for each repo
-        pulls = client.search_issues("cloudfoundry/bosh", :headers => { "type" => "pr", "updated" => "2014-02-01"})[:items]
+        pulls = client.search_issues(repo.full_name, :headers => { "type" => "pr", "updated" => parsed_date})[:items]
         #pulls = client.pulls(repo[:full_name], "closed") + client.pulls(repo[:full_name], "open") # Doesn't seem to pick up "If-Modified-Since" error
+        if pulls
         pulls.each { |pull|
             user = nil
             record = nil
 
             # Check to see if given PR is already in our DB.
-            record = PullRequest.find_by(git_id: pull[:id])
+            record = PullRequest.find_by(git_id: pull[:id].to_i)
             date_merged = client.pull(repo.full_name, pull[:number])[:date_merged]
 
             # If we have a record of current pull request already, update all dynamic fields
-            if record and (last_completed < pull[:updated_at]) 
+            if record #and (last_completed < pull[:updated_at]) 
               puts "Updating PR #{pull[:number]} from #{repo[:full_name]}"
               record.state = (date_merged.nil? ? pull[:state] : "merged")
               record.date_merged = date_merged
               record.date_updated = Time.now.utc #
               record.date_closed = pull[:date_closed] 
-              # Are there any other fields that may change?
               record.save
+              # Are there any other fields that may change?
 
             # If the PR is new, and not in our DB, create a record for it
             elsif !record
@@ -103,17 +107,18 @@ class GithubLoader
                 :date_closed => pull[:closed_at],
                 :date_updated => Time.now.utc,
                 :date_merged => date_merged,
-                :state => (date_merged.nil? ? pull[:state] : "merged"),
-                :org => repo.org
+                :state => (date_merged.nil? ? pull[:state] : "merged")
               )
             end
         }
-
-        commits = client.commits(repo[:full_name], {:headers => { "If-Modified-Since" => "Sun, 05 Jan 2014 15:31:30 GMT" }})
+        end
+        
+        commits = client.commits(repo[:full_name], :since => parsed_date)
+        if commits
         commits.each { |commit|
             record = nil
             record = Commit.find_by(sha: commit[:sha])
-            if record and (last_completed < pull[:updated_at]) 
+            if record #and (last_completed < pull[:updated_at]) 
                   record.message = commit[:message] 
                   record.save                
             elsif !record
@@ -127,11 +132,12 @@ class GithubLoader
                     )
 
                   names = commit[:attrs][:commit][:attrs][:author][:name].gsub(" and ", "|").gsub(", ","|").gsub(" & ", '|').split('|')
-                  process_authors(c, email, names)
+                  LoadHelpers.process_authors(c, email, names)
 
             end
 
         }
+        end   
     }
     last_completed = Time.now.utc
   end

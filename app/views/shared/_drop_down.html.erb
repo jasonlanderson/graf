@@ -1,5 +1,7 @@
 <select id="<%= @drop_down_id %>"
   <%= @drop_down_width ? raw("style='width: #{@drop_down_width};'") : ""  %>
+  class="multiselect" multiple="multiple" 
+  
 >
 
   <% if @drop_down_empty_label %>
