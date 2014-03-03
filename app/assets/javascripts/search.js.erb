@@ -84,23 +84,50 @@ function loadLocalStorage() {
   }
 }
 
+function sanitizeSearchValue(input) {
+  if (input == null) {
+    var arr = new Array();
+    arr[0] = ""
+    return arr
+  }
+  else {
+    return input  
+  }
+}
+
 function createSearchCriteriaJSON() {
-  values = {
-          month: $("#month_filter").val(),
-          quarter: $("#quarter_filter").val(),
-          year: $("#year_filter").val(),
-          start_date: $("#start_date_filter").val(),
-          end_date: $("#end_date_filter").val(),
-          repo: $("#repo_filter").val(),
-          state: $("#state_filter").val(),
-          company: $("#company_filter").val(),
-          user: $("#user_filter").val(),
-          name: $("#name_filter").val(),
-          org: $("#org_filter").val()
-        };
+  console.log("MONTH" + $("#month_filter").val())
+  console.log("CLEAN MONTH" + sanitizeSearchValue($("#month_filter").val()))
   
+  values = {
+          month: sanitizeSearchValue($("#month_filter").val()),
+          quarter: sanitizeSearchValue($("#quarter_filter").val()),
+          year: sanitizeSearchValue($("#year_filter").val()),
+          start_date: ($("#start_date_filter").val()),
+          end_date: ($("#end_date_filter").val()),
+          repo: sanitizeSearchValue($("#repo_filter").val()),
+          state: sanitizeSearchValue($("#state_filter").val()),
+          company: sanitizeSearchValue($("#company_filter").val()),
+          user: sanitizeSearchValue($("#user_filter").val()),
+          name: sanitizeSearchValue($("#name_filter").val()),
+          org: sanitizeSearchValue($("#org_filter").val())
+        };
+  //console.log("Values");      
+  //console.log(values);
+  // for (i in values) {
+  //   id = "#" + i + "_filter";
+  //   console.log($(id).val())
+  //   console.log(typeof $(id).val())
+  //   if ( typeof $(id).val() == null) {      
+  //     $(id).val("");
+  //   }
+  console.log("Values");      
+  console.log(values);
+  //}
+
   return values
 }
+
 
 function clearSearchCriteria() {
   whereDropDownIds = ["month_filter", 

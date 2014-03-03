@@ -158,33 +158,62 @@ class AnalyticUtils
     return result
   end
 
+  def self.clean()
+
+  end
+
   def self.where_clause_stmt(search_criteria, metric = nil)
 
     # If there is no search criteria, just return
     puts "SEARCH CRITERIA #{search_criteria}"
     return "" unless search_criteria
-
+    puts "SEARCH CRITERIA CLASS #{search_criteria.class}"
     where_stmt = " WHERE 1=1 "
 
+    #ActionController::Parameters.permit_all_parameters = true
+
+    # When clicking on the "Uncheck All" button, 
+    # search_criteria.each do |filter|
+    #   puts "FILTER ARRAY #{filter}, VALUE #{filter[1]} , CLASS #{filter[1].class}"
+    #   val = filter[1]
+    #   #filter[1].is_a?(String) ?  :
+    #   #filter.map! {|x| y.is_a?(String) ? Array[y] : y  ; puts y }
+    #   if val.is_a?(String) #&& filter[1].strip.length == 0) #== "String"        
+    #     filter.pop
+    #     filter.push(Array[val])
+    #   end
+    #   puts "#{filter}"
+    # end
+
+    # puts "_________________________________"
+    # search_criteria.each { |filter|
+    #   puts "MODIFIED FILTER ARRAY #{filter}, VALUE #{filter[1]} , CLASS #{filter[1].class}"
+    # }
+
+
     if search_criteria[:month] && search_criteria[:month].join != ''
-      where_stmt += "AND #{DBUtils.get_month('pr.date_created')} = '#{search_criteria[:month]}' "
+      where_stmt += "AND #{DBUtils.get_month('pr.date_created')} IN ('#{search_criteria[:month].join("', '")}') "
     end
 
     if search_criteria[:quarter] && search_criteria[:quarter].join != ''
-      case search_criteria[:quarter]
-      when "q1"
-        where_stmt += "AND #{DBUtils.get_month('pr.date_created')} IN ('01', '02', '03') "
-      when "q2"
-        where_stmt += "AND #{DBUtils.get_month('pr.date_created')} IN ('04', '05', '06') "
-      when "q3"
-        where_stmt += "AND #{DBUtils.get_month('pr.date_created')} IN ('07', '08', '09') "
-      when "q4"
-        where_stmt += "AND #{DBUtils.get_month('pr.date_created')} IN ('10', '11', '12') "
-      end
+      where_stmt += "AND #{DBUtils.get_month('pr.date_created')} IN ("
+      search_criteria[:quarter].each {|quarter|
+        case quarter
+          when "q1"
+            where_stmt += "'01', '02', '03',"
+          when "q2"
+            where_stmt += "'04', '05', '06',"
+          when "q3"
+            where_stmt += "'07', '08', '09',"
+          when "q4"
+            where_stmt += "'10', '11', '12',"
+        end
+      }
+      where_stmt = where_stmt.chop + ")"
     end
 
     if search_criteria[:year] && search_criteria[:year].join != ''
-      where_stmt += "AND #{DBUtils.get_year('pr.date_created')} = '#{search_criteria[:year]}' "
+      where_stmt += "AND #{DBUtils.get_year('pr.date_created')} IN ('#{search_criteria[:year].join("', '")}') "
     end
 
     if search_criteria[:start_date] && search_criteria[:start_date] != ''
@@ -212,17 +241,20 @@ class AnalyticUtils
     end
 
     if search_criteria[:state]
-      if search_criteria[:state] == 'open'
-        where_stmt += "AND pr.state = 'open' "
-      elsif search_criteria[:state] == 'merged'
-        where_stmt += "AND pr.date_merged IS NOT NULL "
-      elsif search_criteria[:state] == 'closed'
-        # Not including merged prs
-        where_stmt += "AND pr.state = 'closed' AND pr.date_merged IS NULL "
-      end
+      search_criteria[:state].each {|state|
+        if state == 'open'
+          where_stmt += "AND pr.state = 'open' "
+        elsif state == 'merged'
+          where_stmt += "AND pr.date_merged IS NOT NULL "
+        elsif state == 'closed'
+          # Not including merged prs
+          where_stmt += "AND pr.state = 'closed' AND pr.date_merged IS NULL "
+        end
+      }
     end
 
-    if search_criteria[:company] && search_criteria[:company].length > 0
+    # TODO, See if 
+    if search_criteria[:company] && search_criteria[:company].join != ''
       where_stmt += "AND c.name IN ('#{(search_criteria[:company]).join("', '")}') "
     end
 
@@ -231,6 +263,7 @@ class AnalyticUtils
       where_stmt += "AND u.login IN ('#{(search_criteria[:user]).join("', '")}') "
     end
 
+    #search_criteria[:name] = [search_criteria[:name]] if search_criteria[:name].class == "String"
     if search_criteria[:name] && search_criteria[:name].join != ''
       where_stmt += "AND u.name IN ('#{(search_criteria[:name]).join("', '")}') "
     end

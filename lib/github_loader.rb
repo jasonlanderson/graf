@@ -71,10 +71,11 @@ class GithubLoader
 
     Repo.all().each {|repo|
         # Load PRs for each repo
-        pulls = client.search_issues(repo.full_name, :headers => { "type" => "pr", "updated" => parsed_date})[:items]
+        pulls = JSON.parse(HTTParty.get("https://api.github.com/search/issues?q=repo:#{repo[:full_name]}+type:pr+updated:%3E#{parsed_date}", :headers => {"User-Agent" => "kkbankol"} ).body)["items"]
         #pulls = client.pulls(repo[:full_name], "closed") + client.pulls(repo[:full_name], "open") # Doesn't seem to pick up "If-Modified-Since" error
         if pulls
-        pulls.each { |pull|
+        pulls.each { |p|
+            pull = p.with_indifferent_access
             user = nil
             record = nil
 

@@ -2,78 +2,60 @@
   "companies": [
     {
       "name": "Independent",
-      "includes": ["available", "independent", "freelance"]
+      "alias": ["available", "independent", "freelance"]
     },
     {
      "name": "VMware",
-     "includes": "vmware"
+     "alias": ["vmware"]
     },
     {
      "name": "Pivotal",
-     "includes": ["pivotal", "springsource", "cloudfoundry", "cloud foundry"]
+     "alias": ["pivotal", "springsource", "cloudfoundry", "cloud foundry"]
     },
     {
      "name": "Rbcon",
-     "includes": ["rbcon"]
+     "alias": ["rbcon"]
     },
     {
      "name": "IBM",
-     "includes": ["ibm"]
+     "alias": ["ibm"]
     },
     {
      "name": "Rbcon",
-     "includes": ["mongo", "10gen"]
+     "alias": ["mongo", "10gen"]
     },
     {
      "name": "Apcera",
-     "includes": ["apcera"]
+     "alias": ["apcera"]
     },
     {
      "name": "Avarteq GmbH",
-     "includes": ["avarteq"]
+     "alias": ["avarteq"]
     },
     {
      "name": "CoreOS",
-     "includes": ["coreos"]
+     "alias": ["coreos"]
     },
     {
      "name": "eBay Inc.",
-     "includes": ["ebay"]
+     "alias": ["ebay"]
     },
     {
      "name": "EMC Corporation",
-     "includes": ["emc"]
+     "alias": ["emc"]
     },
     {
      "name": "GitHub",
-     "includes": ["github"]
+     "alias": ["github"]
     },
     {
      "name": "NTT Laboratory",
-     "includes": ["ntt"]
+     "alias": ["ntt"]
     },
     {
      "name": "Rakuten, Inc.",
-     "includes": ["rakuten"]
-    },
-    {
-     "name": "Rakuten, Inc.",
-     "includes": ["rakuten"]
-    },
-    {
-     "name": "Rakuten, Inc.",
-     "includes": ["rakuten"]
-    },
-    {
-     "name": "Rakuten, Inc.",
-     "includes": ["rakuten"]
-    },
-    {
-     "name": "Rakuten, Inc.",
-     "includes": ["rakuten"]
+     "alias": ["rakuten"]
     }
-
-
 
   ]
 }

@@ -4,9 +4,7 @@
   
 >
 
-  <% if @drop_down_empty_label %>
-    <option value=""><%= @drop_down_empty_label %></option>
-  <% end %>
+
   <% @drop_down_data.each {|entry| 
   	if entry[@drop_down_data_index]
   	%>

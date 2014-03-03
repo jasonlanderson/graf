@@ -13,7 +13,6 @@
  *= require jquery.ui.core
  *= require jquery.ui.theme
  *= require jquery.multiselect
- *= require jquery.multiselect.filter
  *= require jquery.ui.all
  *= require_tree .
  */

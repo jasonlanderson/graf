@@ -1,24 +1,33 @@
 require 'octokit_utils'
 require 'log_level'
 require 'json'
+require 'constants'
 
 class LoadHelpers
 
-  def merge(name)
-    Constants.merge_companies.each { |set|
-        set["companies"].each { |company|
+  def self.merge(company_name)
+    Constants.merge_companies.each { |company|
+        #set["companies"].each { |company|
           company["alias"].each { |mapping|
-            if company_name.downcase.include?(mapping)
-	      return company["name"]
+            if company_name.nil? || company_name.strip.length == 0
+               return "Independent"
+            elsif company_name.downcase.include?(mapping)
+               puts "Overriding user-defined company name"
+	             return company["name"]
             end
           }
-        }
+        #}
       }
       return company_name
   end
 
   def self.create_user_if_not_exist(pr_user)
-    user_login = (pr_user[:attrs][:login] || pr_user[:attrs][:items][0][:attrs][:login])
+    client = OctokitUtils.get_octokit_client
+    if pr_user[:attrs]
+      user_login = (pr_user[:attrs][:login] || pr_user[:attrs][:items][0][:attrs][:login]) 
+    else
+      user_login = pr_user[:login]
+    end
     user = User.find_by(login: user_login) 
 
     unless (user and user.git_id)
@@ -26,7 +35,7 @@ class LoadHelpers
       puts "--- Creating User: #{user_login}"
       puts "---------"
       GithubLoad.log_current_msg("Creating User: #{user_login}", LogLevel::INFO)
-
+      pr_user = client.user(user_login) if !pr_user[:_rels]
       # Can we use nil, "" in the same way?
       user_details = pr_user[:_rels][:self].get.data
       company_name = merge(user_details[:attrs][:company])
