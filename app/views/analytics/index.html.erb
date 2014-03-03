@@ -55,9 +55,6 @@
 
       // Update Chart
       data.rollupVal = $("#rollup").val();
-      if (viewType == "pie" || viewType == "bar") {
-        data.showRollupRemainder = "true";
-      }
       analyticsAJAX(data, viewType, 'json', updateChartCallback);
 
       // Update the titles

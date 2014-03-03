@@ -122,11 +122,16 @@ class ApiController < ApplicationController
     format = params[:format]
     group_by = params[:groupBy]
     rollup_count = params[:rollupVal].to_i if params[:rollupVal]
-    show_rollup_remainder = true if params[:showRollupRemainder] == "true"
     search_criteria = params[:searchCriteria]
     order_via_group_bys = false
+    rollup_method_name = METRIC_DETAILS[metric][:rollup_method]
 
-    label_columns = [ LABEL_MAPPING[group_by] ]
+    show_rollup_remainder = false
+    if (format == "pie" || format == "bar") && rollup_method_name == 'top_metric_vals'
+      show_rollup_remainder = true
+    end
+
+    label_columns = [ [group_by] ]
 
     # If we're doing the line format add timestamp on as another group on
     if format == "line"
@@ -141,7 +146,7 @@ class ApiController < ApplicationController
         label_columns,
         METRIC_DETAILS[metric],
         BASE_METRIC_TABLES[METRIC_DETAILS[metric][:base_metric]],
-        ROLLUP_METHODS[METRIC_DETAILS[metric][:rollup_method]],
+        ROLLUP_METHODS[rollup_method_name],
         rollup_count,
         show_rollup_remainder,
         order_via_group_bys,
@@ -149,47 +154,20 @@ class ApiController < ApplicationController
       )
 
     ###
-    # Rollup data if needed
-    ###
-    # case format
-    #  when 'pie', 'bar'
-    #   # When this is an avg, we need to roll up with avg
-    #   rollup_method = ROLLUP_METHOD::SUM
-    #   if metric == 'avg_days_open' || metric == 'percent_merged'
-    #     rollup_method = ROLLUP_METHOD::AVG
-    #   end
-
-    #   data = AnalyticUtils.top_x_with_rollup(data,
-    #     LABEL_MAPPING[group_by][:alias],
-    #     METRIC_DETAILS[metric][:alias],
-    #     rollup.to_i,
-    #     'others',
-    #     rollup_method
-    #   )
-    # end
-
-    ###
     # Do the formatting
     ###
     case format
     when 'pie'
       prs_data_pie_str = JavascriptUtils.get_pull_request_stats(data, LABEL_MAPPING[group_by][:alias], METRIC_DETAILS[metric][:alias])
-      #puts prs_data_pie_str
       render :json => prs_data_pie_str
     when 'bar'
-      # TODO: Fix this as needed
+      # TODO: Change this to format the data on the server side and then send over the data
       prs_data_pie_str = JavascriptUtils.get_pull_request_stats(data, LABEL_MAPPING[group_by][:alias], METRIC_DETAILS[metric][:alias])
       render :json => prs_data_pie_str
     when 'line'
       puts "LINE JSON #{data}"
       line_graph = JavascriptUtils.get_flot_line_chart_json(data, LABEL_MAPPING[group_by][:alias], LABEL_MAPPING["timestamp"][:alias], METRIC_DETAILS[metric][:alias])
       render :json => "{\"response\": #{line_graph}}"
-      # TODO: Need to add a javascript utils function to do this
-      # line_graph = AnalyticUtils.get_timestamps(metric, LABEL_MAPPING[group_by][:sql_select],
-      #           LABEL_MAPPING[group_by][:alias],
-      #           rollup_count,
-      #           search_criteria)
-      # 
     when 'table'
       @table_handle = "metric_table"
       @table_data = data
@@ -207,9 +185,6 @@ class ApiController < ApplicationController
       @data_index_name = METRIC_DETAILS[metric][:alias]
       render :partial => "shared/hash_as_table"
     when 'csv'
-      #puts "PARAMS #{params}"
-      #puts "REQUEST #{request.inspect.to_s}"
-
       csv_string = to_analytics_csv(data, LABEL_MAPPING[group_by][:alias], METRIC_DETAILS[metric][:alias])
       send_data csv_string,
         :type => 'text/csv; charset=iso-8859-1; header=present',
@@ -221,7 +196,6 @@ class ApiController < ApplicationController
   end
 
   def report_data
-    #puts "PARAMS #{params}"
     report = params[:report]
     search_criteria = params[:searchCriteria]
     data = AnalyticUtils.get_pull_request_data(search_criteria)
@@ -244,7 +218,6 @@ class ApiController < ApplicationController
   end
 
   def to_analytics_csv(data, label_index, val_index)
-    #puts "CSV #{data}"
     csv_string = CSV.generate do |csv|
       csv << ["Name", "Contributions"]
       data.each do |user|
@@ -256,12 +229,9 @@ class ApiController < ApplicationController
 
 
   def to_report_csv(data)
-    #puts "CSV #{data}"
     csv_string = CSV.generate do |csv|
       csv << ["Number", "Title", "Body", "State", "Days Open", "User", "Company", "Repo", "Created", "Closed", "Merged"]
-      #csv << ["Name", "Contributions"]
       Hash[data]["response"].each do |user|
-        #csv << [user["label"], user["data"]]
         csv << [user["pr_number"], user["title"], user["body"], user["state"], user["days_open"], user["user_name"], user["company"], user["repo_name"], user["date_created"], user["date_closed"], user["date_merged"]] 
       end
     end
