@@ -7,15 +7,15 @@ class AnalyticUtils
   # NOTE: You cannot have multiple group_by's and also have show_rollup_remainder = true
   #
   # Table of possible analytics queries
-  # ------------------------------------------------------------------------------------------
-  # | Rollup | # of Group Bys | Show Remainder |                   Result                    |
-  # ------------------------------------------------------------------------------------------
-  # |    N   |       -        |       -        | No Limits needed                            |
-  # |    Y   |      0-1       |       N        | Simple single limit case                    |
-  # |    Y   |      2+        |       N        | Cannot use limit so need to use inner query |
-  # |    Y   |      0-1       |       Y        | Have to use two limit queries               |
-  # |    Y   |      2+        |       Y        | NOT SUPPORTED                               |
-  # ------------------------------------------------------------------------------------------
+  # -------------------------------------------------------------------------
+  # | Rollup | Show Remainder |                   Result                    |
+  # -------------------------------------------------------------------------
+  # |    N   |       -        | No Limits needed                            |
+  # |    Y   |       N        | Simple single limit case                    |
+  # |    Y   |       N        | Cannot use limit so need to use inner query |
+  # |    Y   |       Y        | Have to use two limit queries               |
+  # |    Y   |       Y        | NOT SUPPORTED                               |
+  # -------------------------------------------------------------------------
   def self.get_analytics_data(label_columns, data_column, metric_tables,
                               rollup_method, rollup_count, show_rollup_remainder,
                               order_via_group_bys, search_criteria = nil)
@@ -62,6 +62,7 @@ class AnalyticUtils
 
     # If rolling up with multiple group bys or if label should sort by group_by then order by group bys
     if order_via_group_bys || label_columns[0][:sort_by] == 'group_by'
+      # TODO: Month is in here but not cronological
       group_by_order_str = group_by_label_cols.join(" #{rollup_method[:sort_order]}, ")
       sql_stmt += "ORDER BY #{group_by_order_str} #{rollup_method[:sort_order]} "
     else
