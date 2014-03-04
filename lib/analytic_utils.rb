@@ -60,7 +60,7 @@ class AnalyticUtils
 
     if !rollup_count.nil?
       sql_stmt += inner_join_rollup(label_columns, data_column, metric_tables,
-                    rollup_method, rollup_count, inner_limit_top)
+                    rollup_method, rollup_count, search_criteria, inner_limit_top)
     end
 
     sql_stmt += where_clause_stmt(search_criteria)
@@ -73,7 +73,7 @@ class AnalyticUtils
   end
 
   def self.inner_join_rollup(label_columns, data_column, metric_tables,
-    rollup_method, rollup_count, inner_limit_top)
+    rollup_method, rollup_count, search_criteria, inner_limit_top)
 
     inner_join = "INNER JOIN (SELECT #{label_columns[0][:sql_select]} #{label_columns[0][:alias]}, "
     metric_sql_select = data_column[:sql_select]
@@ -87,8 +87,9 @@ class AnalyticUtils
 
     inner_join += "#{metric_sql_select} #{metric_sql_alias} "
 
-    inner_join += "FROM #{metric_tables} " \
-      "WHERE #{label_columns[0][:sql_select]} IS NOT NULL " \
+    inner_join += "FROM #{metric_tables} "
+    inner_join += where_clause_stmt(search_criteria)
+    inner_join += " AND #{label_columns[0][:sql_select]} IS NOT NULL " \
       "GROUP BY #{label_columns[0][:alias]} " \
       "#{order_by} "
 
@@ -142,40 +143,6 @@ class AnalyticUtils
     return ActiveRecord::Base.connection.exec_query(sql_stmt)
   end
 
-  # Input array must be [{label_index_name => label, data_index_name => data}]
-  # def self.top_x_with_rollup(input_array, label_index_name, data_index_name, top_x_count, rollup_name, rollup_method)
-  #   if top_x_count < 0
-  #     top_x_count = 0
-  #   end
-
-  #   if top_x_count >= input_array.count
-  #     return input_array
-  #   end
-
-  #   # Sort the array
-  #   sorted_array = input_array.sort_by {|x| x[data_index_name] }.reverse
-
-  #   # Calculate the remaining
-  #   rollup_val = 0
-  #   if rollup_method == ROLLUP_METHOD::SUM
-  #     sorted_array[top_x_count..sorted_array.count].each {|x| rollup_val += x[data_index_name] }
-  #   elsif rollup_method == ROLLUP_METHOD::AVG
-  #     sorted_array[top_x_count..sorted_array.count].each {|x| rollup_val += x[data_index_name] }
-  #     rollup_val = rollup_val / (sorted_array.count - top_x_count)
-  #   else
-  #     puts "ERROR: Unknown Rollup Method '#{rollup_method}'"
-  #   end
-    
-  #   # Remove non-top
-  #   result = sorted_array[0...top_x_count]
-
-  #   # Add rollup record
-  #   # Add the numbers for mysql
-  #   result << {label_index_name => rollup_name, data_index_name => rollup_val}
-
-  #   return result
-  # end
-
   def self.clean()
 
   end
@@ -227,7 +194,7 @@ class AnalyticUtils
             where_stmt += "'10', '11', '12',"
         end
       }
-      where_stmt = where_stmt.chop + ")"
+      where_stmt = where_stmt.chop + ") "
     end
 
     if search_criteria[:year] && search_criteria[:year].join != ''

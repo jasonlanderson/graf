@@ -10,47 +10,56 @@ LABEL_MAPPING = {
   'month' => {
     sql_select: "#{DBUtils.get_month_by_name_with_number_prefix('pr.date_created')}",
     alias: 'month',
-    sort_by: 'group_by'
+    sort_by: 'group_by',
+    time_based: true
   },
   'quarter' => {
     sql_select: "#{DBUtils.get_quarter_by_name('pr.date_created')}",
     alias: 'quarter',
-    sort_by: 'group_by'
+    sort_by: 'group_by',
+    time_based: true
   },  
   'year' => {
     sql_select: "#{DBUtils.get_year('pr.date_created')}",
     alias: 'year',
-    sort_by: 'group_by'
+    sort_by: 'group_by',
+    time_based: true
   },
   'repository' => {
     sql_select: 'r.name',
     alias: 'repo_name',
-    sort_by: 'metric'
+    sort_by: 'metric',
+    time_based: false
   },
   'state' => {
     sql_select: "#{DBUtils.get_state_select('pr.state', 'pr.date_merged')}",
     alias: 'state',
-    sort_by: 'metric'
+    sort_by: 'metric',
+    time_based: false
   },
   'company' => {
     sql_select: 'c.name',
     alias: 'company_name',
-    sort_by: 'metric'
+    sort_by: 'metric',
+    time_based: false
   },
   'user' => {
     sql_select: 'u.login',
     alias: 'user_login',
-    sort_by: 'metric'
+    sort_by: 'metric',
+    time_based: false
   },
   'name' => {
     sql_select: 'u.name',
     alias: 'user_name',
-    sort_by: 'metric'
+    sort_by: 'metric',
+    time_based: false
   },
   'timestamp' => {
     sql_select: "UNIX_TIMESTAMP(STR_TO_DATE(DATE_FORMAT(pr.date_created, '01-%m-%Y'),'%d-%m-%Y'))",
     alias: 'epoch_timestamp',
-    sort_by: 'group_by'
+    sort_by: 'group_by',
+    time_based: false
   }
 }
 
