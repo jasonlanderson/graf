@@ -96,8 +96,6 @@ function sanitizeSearchValue(input) {
 }
 
 function createSearchCriteriaJSON() {
-  console.log("MONTH" + $("#month_filter").val())
-  console.log("CLEAN MONTH" + sanitizeSearchValue($("#month_filter").val()))
   
   values = {
           month: sanitizeSearchValue($("#month_filter").val()),
@@ -121,8 +119,6 @@ function createSearchCriteriaJSON() {
   //   if ( typeof $(id).val() == null) {      
   //     $(id).val("");
   //   }
-  console.log("Values");      
-  console.log(values);
   //}
 
   return values

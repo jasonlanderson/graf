@@ -10,7 +10,7 @@ development:
   # timeout: 5000
   adapter: mysql2
   encoding: utf8 
-  database: graf_db
+  database: graf_db_cf
   pool: 10 
   username: graf_user 
   password: time4fun 

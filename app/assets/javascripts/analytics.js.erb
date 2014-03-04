@@ -54,11 +54,12 @@ LINE_OPTIONS = {
     }
   },
   xaxis: {
-    //tickDecimals: 0
     mode: "time",
-    minTickSize: [1, "month"],
-    //min: (new Date("2010/01/01")).getTime(),
-    //max: (new Date("2014/01/02")).getTime()
+    min: (new Date("2010/01/01")).getTime(),
+    max: (new Date("2014/01/02")).getTime(),
+    tickSize: [1, "month"],
+    monthNames: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+            
   },
   legend: {
     position: "nw",
@@ -67,6 +68,7 @@ LINE_OPTIONS = {
   yaxis: {
     minTickSize: 5
   }
+
 };
 LINE_OPTIONS.colors = CHART_COLORS;
 

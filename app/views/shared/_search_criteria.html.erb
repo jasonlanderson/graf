@@ -140,7 +140,7 @@ initializeSearchCriteria();
 
     // Clear all the dropdowns
     for ( id in whereDropDownIds ) {
-      $("#" + whereDropDownIds[id]).multiselect({selectedList: 4 }).multiselectfilter();
+      $("#" + whereDropDownIds[id]).multiselect({selectedList: 4 , noneSelectedText: "All"}).multiselectfilter();
     }
 
 
