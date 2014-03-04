@@ -121,7 +121,7 @@ class ApiController < ApplicationController
     metric = params[:metric]
     format = params[:format]
     group_by = params[:groupBy]
-    rollup_count = params[:rollupVal].to_i if params[:rollupVal]
+    rollup_count = params[:rollupCount].to_i if params[:rollupCount]
     search_criteria = params[:searchCriteria]
     order_via_group_bys = false
     rollup_method_name = METRIC_DETAILS[metric][:rollup_method]
@@ -131,7 +131,7 @@ class ApiController < ApplicationController
       show_rollup_remainder = true
     end
 
-    label_columns = [ [group_by] ]
+    label_columns = [ LABEL_MAPPING[group_by] ]
 
     # If we're doing the line format add timestamp on as another group on
     if format == "line"

@@ -48,6 +48,7 @@ class AnalyticUtils
   def self.get_base_analytics_data(label_columns, data_column, metric_tables,
                               rollup_method, rollup_count, show_rollup_remainder,
                               order_via_group_bys, search_criteria, inner_limit_top )
+    puts "---BASE: #{label_columns}"
     select_label_cols = label_columns.map {|column| "#{column[:sql_select]} #{column[:alias]}"}
     sql_stmt = "SELECT #{select_label_cols.join(", ")}, #{data_column[:sql_select]} #{data_column[:alias]} "
 
