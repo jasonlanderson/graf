@@ -32,67 +32,65 @@ class AnalyticUtils
                             order_via_group_bys, search_criteria, false) 
 
       # TODO: Change SUM to other rollup_aggregation_method
-      others_query = "(SELECT 'others' as #{label_columns[0][:alias]}, " \
-        "SUM(#{data_column[:alias]}) #{data_column[:alias]} " \
+      others_query = "SELECT 'others' as #{label_columns[0][:alias]}, " \
+        "#{data_column[:aggregation_method]}(#{data_column[:alias]}) #{data_column[:alias]}, " \
+        "2 as ordering " \
         "FROM (#{base_others_query}) others_tbl " \
-        "HAVING #{data_column[:alias]} IS NOT NULL) "
-      sql_stmt = "(#{top_x_query}) UNION (#{others_query})"
-    end
+        "HAVING #{data_column[:alias]} IS NOT NULL "
 
+      sql_stmt = "(#{top_x_query}) UNION (#{others_query}) "
+      sql_stmt += order_by_rollup(label_columns, data_column, rollup_method, order_via_group_bys, true)
+    end
+  
     return ActiveRecord::Base.connection.exec_query(sql_stmt)
   end
 
   def self.get_base_analytics_data(label_columns, data_column, metric_tables,
                               rollup_method, rollup_count, show_rollup_remainder,
                               order_via_group_bys, search_criteria, inner_limit_top )
+    puts "---BASE: #{label_columns}"
     select_label_cols = label_columns.map {|column| "#{column[:sql_select]} #{column[:alias]}"}
-    group_by_label_cols = label_columns.map {|column| column[:alias]}
-    select_data_col = "#{data_column[:sql_select]} #{data_column[:alias]}"
+    sql_stmt = "SELECT #{select_label_cols.join(", ")}, #{data_column[:sql_select]} #{data_column[:alias]} "
 
-    sql_stmt = "SELECT #{select_label_cols.join(", ")}, #{select_data_col} FROM #{metric_tables}"
+    if inner_limit_top
+      sql_stmt += ", 1 as ordering "
+    end
+
+    sql_stmt += "FROM #{metric_tables}"
 
     if !rollup_count.nil?
-      sql_stmt += inner_join_rollup(select_label_cols, select_data_col,
-                    label_columns, data_column, metric_tables,
+      sql_stmt += inner_join_rollup(label_columns, data_column, metric_tables,
                     rollup_method, rollup_count, inner_limit_top)
     end
 
     sql_stmt += where_clause_stmt(search_criteria)
+    group_by_label_cols = label_columns.map {|column| column[:alias]}
     sql_stmt += "GROUP BY #{group_by_label_cols.join(", ")} "
 
-    # If rolling up with multiple group bys or if label should sort by group_by then order by group bys
-    if order_via_group_bys || label_columns[0][:sort_by] == 'group_by'
-      # TODO: Month is in here but not cronological
-      group_by_order_str = group_by_label_cols.join(" #{rollup_method[:sort_order]}, ")
-      sql_stmt += "ORDER BY #{group_by_order_str} #{rollup_method[:sort_order]} "
-    else
-      sql_stmt += "ORDER BY #{data_column[:alias]} #{rollup_method[:sort_order]} "
-    end
+    sql_stmt += order_by_rollup(label_columns, data_column, rollup_method, order_via_group_bys)
 
     return sql_stmt
   end
 
-  def self.inner_join_rollup(select_label_cols, select_data_col,
-    label_columns, data_column, metric_tables,
+  def self.inner_join_rollup(label_columns, data_column, metric_tables,
     rollup_method, rollup_count, inner_limit_top)
 
-    inner_join = "INNER JOIN (SELECT #{select_label_cols[0]}, "
-    
-    if rollup_method[:rollup_by]
-      inner_join += "#{rollup_method[:rollup_by][:sql_select]} #{rollup_method[:rollup_by][:alias]} "
-    else
-      inner_join += "#{select_data_col} "
+    inner_join = "INNER JOIN (SELECT #{label_columns[0][:sql_select]} #{label_columns[0][:alias]}, "
+    metric_sql_select = data_column[:sql_select]
+    metric_sql_alias = data_column[:alias]
+    order_by = "ORDER BY #{data_column[:alias]} #{rollup_method[:sort_order]} "
+    if rollup_method[:rollup_metric]
+      metric_sql_select = rollup_method[:rollup_metric][:sql_select]
+      metric_sql_alias = rollup_method[:rollup_metric][:alias]
+      order_by = "ORDER BY #{rollup_method[:rollup_metric][:alias]} #{rollup_method[:sort_order]} "
     end
+
+    inner_join += "#{metric_sql_select} #{metric_sql_alias} "
 
     inner_join += "FROM #{metric_tables} " \
       "WHERE #{label_columns[0][:sql_select]} IS NOT NULL " \
-      "GROUP BY #{label_columns[0][:alias]} "
-
-    if rollup_method[:rollup_by]
-      inner_join += "ORDER BY #{rollup_method[:rollup_by][:alias]} #{rollup_method[:sort_order]} "
-    else
-      inner_join += "ORDER BY #{data_column[:alias]} #{rollup_method[:sort_order]} "
-    end
+      "GROUP BY #{label_columns[0][:alias]} " \
+      "#{order_by} "
 
     if inner_limit_top
       inner_join += "LIMIT #{rollup_count} "
@@ -106,6 +104,25 @@ class AnalyticUtils
   end
 
 
+  def self.order_by_rollup(label_columns, data_column, rollup_method, order_via_group_bys, ordering = false)
+
+    order_by_stmt = "ORDER BY "
+
+    # If this order by statment is for multiple queries then include the ordering column
+    if ordering
+      order_by_stmt += "ordering, "
+    end
+
+    # If rolling up with multiple group bys or if label should sort by group_by then order by group bys
+    if order_via_group_bys || label_columns[0][:sort_by] == 'group_by'
+      # TODO: Month is in here but not cronological
+      group_by_label_cols = label_columns.map {|column| column[:alias]}
+      group_by_order_str = group_by_label_cols.join(" #{rollup_method[:sort_order]}, ")
+      return order_by_stmt + "#{group_by_order_str} #{rollup_method[:sort_order]} "
+    else
+      return order_by_stmt + "#{data_column[:alias]} #{rollup_method[:sort_order]} "
+    end
+  end
 
 
   def self.get_pull_request_data(search_criteria = nil)
@@ -126,38 +143,38 @@ class AnalyticUtils
   end
 
   # Input array must be [{label_index_name => label, data_index_name => data}]
-  def self.top_x_with_rollup(input_array, label_index_name, data_index_name, top_x_count, rollup_name, rollup_method)
-    if top_x_count < 0
-      top_x_count = 0
-    end
+  # def self.top_x_with_rollup(input_array, label_index_name, data_index_name, top_x_count, rollup_name, rollup_method)
+  #   if top_x_count < 0
+  #     top_x_count = 0
+  #   end
 
-    if top_x_count >= input_array.count
-      return input_array
-    end
+  #   if top_x_count >= input_array.count
+  #     return input_array
+  #   end
 
-    # Sort the array
-    sorted_array = input_array.sort_by {|x| x[data_index_name] }.reverse
+  #   # Sort the array
+  #   sorted_array = input_array.sort_by {|x| x[data_index_name] }.reverse
 
-    # Calculate the remaining
-    rollup_val = 0
-    if rollup_method == ROLLUP_METHOD::SUM
-      sorted_array[top_x_count..sorted_array.count].each {|x| rollup_val += x[data_index_name] }
-    elsif rollup_method == ROLLUP_METHOD::AVG
-      sorted_array[top_x_count..sorted_array.count].each {|x| rollup_val += x[data_index_name] }
-      rollup_val = rollup_val / (sorted_array.count - top_x_count)
-    else
-      puts "ERROR: Unknown Rollup Method '#{rollup_method}'"
-    end
+  #   # Calculate the remaining
+  #   rollup_val = 0
+  #   if rollup_method == ROLLUP_METHOD::SUM
+  #     sorted_array[top_x_count..sorted_array.count].each {|x| rollup_val += x[data_index_name] }
+  #   elsif rollup_method == ROLLUP_METHOD::AVG
+  #     sorted_array[top_x_count..sorted_array.count].each {|x| rollup_val += x[data_index_name] }
+  #     rollup_val = rollup_val / (sorted_array.count - top_x_count)
+  #   else
+  #     puts "ERROR: Unknown Rollup Method '#{rollup_method}'"
+  #   end
     
-    # Remove non-top
-    result = sorted_array[0...top_x_count]
+  #   # Remove non-top
+  #   result = sorted_array[0...top_x_count]
 
-    # Add rollup record
-    # Add the numbers for mysql
-    result << {label_index_name => rollup_name, data_index_name => rollup_val}
+  #   # Add rollup record
+  #   # Add the numbers for mysql
+  #   result << {label_index_name => rollup_name, data_index_name => rollup_val}
 
-    return result
-  end
+  #   return result
+  # end
 
   def self.clean()
 

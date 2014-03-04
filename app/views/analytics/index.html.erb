@@ -54,10 +54,7 @@
       analyticsAJAX(data, 'table', 'text', updateTableCallback);     
 
       // Update Chart
-      data.rollupVal = $("#rollup").val();
-      if (viewType == "pie" || viewType == "bar") {
-        data.showRollupRemainder = "true";
-      }
+      data.rollupCount = $("#rollup").val();
       analyticsAJAX(data, viewType, 'json', updateChartCallback);
 
       // Update the titles
@@ -148,7 +145,7 @@
         data = {
           metric: $("#metric_filter").val(),
           groupBy: $("#group_by_filter").val(),
-          rollupVal: $("#rollup").val(),
+          rollupCount: $("#rollup").val(),
           searchCriteria: createSearchCriteriaJSON()
         }
         analyticsAJAX(data, 'csv', 'text', downloadCSV);
