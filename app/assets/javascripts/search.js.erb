@@ -130,23 +130,16 @@ function createSearchCriteriaJSON() {
 
 
 function clearSearchCriteria() {
-  whereDropDownIds = ["month_filter", 
-                      "quarter_filter", 
-                      "year_filter", 
-                      "repo_filter", 
-                      "state_filter", 
-                      "company_filter", 
-                      "user_filter",
-                      "name_filter"];
-
+  
   // Clear all the dropdowns
   for ( id in whereDropDownIds ) {
-    $("#" + whereDropDownIds[id]).val("");
+    $("#" + whereDropDownIds[id]).multiselect("uncheckAll");
   }
 
   // Clear the date range
   $("#start_date_filter").val("");
   $("#end_date_filter").val("");
+
 
   // Update chart now that values have been reset
   filterUpdate();

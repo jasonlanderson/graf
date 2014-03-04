@@ -134,11 +134,20 @@
 <script type="text/javascript">
 initializeSearchCriteria();
   $(document).ready(function() {
-    $("select").multiselect({selectedList: 4 }).multiselectfilter();
-    $("#rollup").multiselect({multiple: false});
-    $("#metric_filter").multiselect({multiple: false});
-    $("#group_by_filter").multiselect({multiple: false});
-    $("#view_type").multiselect({multiple: false});
+    //$("select").multiselect({selectedList: 4 }).multiselectfilter();
+
+
+
+    // Clear all the dropdowns
+    for ( id in whereDropDownIds ) {
+      $("#" + whereDropDownIds[id]).multiselect({selectedList: 4 }).multiselectfilter();
+    }
+
+
+    $("#rollup").multiselect({multiple: false, selectedList: 1 });
+    $("#metric_filter").multiselect({multiple: false, selectedList: 1 });
+    $("#group_by_filter").multiselect({multiple: false, selectedList: 1 });
+    $("#view_type").multiselect({multiple: false, selectedList: 1 });
   });
 
 
