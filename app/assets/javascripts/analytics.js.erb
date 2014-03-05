@@ -44,6 +44,9 @@ PIE_OPTIONS = {
 };
 PIE_OPTIONS.colors = CHART_COLORS;
 
+var monthNames = [ "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+    "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" ];
+
 LINE_OPTIONS = {
   series: {
     lines: {
@@ -54,22 +57,27 @@ LINE_OPTIONS = {
     }
   },
   xaxis: {
-    mode: "time",
-    min: (new Date("2010/01/01")).getTime(),
-    max: (new Date("2014/01/02")).getTime(),
-    tickSize: [1, "month"],
-    monthNames: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
-            
-  },
+          //mode: "time",
+          tickFormatter: function(x) { 
+            date = new Date(x*1000);
+            month = monthNames[date.getMonth()] ;
+            year = date.getFullYear();
+            return month + " " + year
+           }
+        },
   legend: {
     position: "nw",
     noColumns: 3
   },
   yaxis: {
     minTickSize: 5
+  },
+  grid: {
+        hoverable: true,
+        borderWidth: 1
   }
-
 };
+
 LINE_OPTIONS.colors = CHART_COLORS;
 
 function analyticsAJAX(data, format, responseType, callback){
