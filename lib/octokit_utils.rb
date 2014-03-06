@@ -11,10 +11,10 @@ class OctokitUtils
 	  access_token: "1dd6279ced24c313519c3065e6260955ae94e94d",
 	  auto_paginate: true,
 	  auto_traversal: true # Specify authentication information
-	user = @@_client.user 'kkbankol' # Login as user
-	user.login
-	user.create_authorization
-	return @@_client
+  	user = @@_client.user 'kkbankol' # Login as user
+  	user.login
+  	user.create_authorization
+  	return @@_client
   end
 
   def self.get_rate_limit()

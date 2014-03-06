@@ -21,7 +21,6 @@ class LoadRepoUsers < LoadStep
     contributors.each {|user| 
       unless User.find_by(login: user[:login].downcase) 
         puts "Creating record for User #{user[:login]}"
-        puts user.inspect
         user_obj = client.user(user[:login]) 
         LoadHelpers.create_user_if_not_exist(user_obj)
       end  
