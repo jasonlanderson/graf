@@ -1,0 +1,14 @@
+---
+applications:
+- name: graf
+  memory: 1G
+  instances: 1
+  host: graf
+  domain: ng.w3.bluemix.net
+  path: .
+  services:
+    graf-db:
+      label: mysql
+      provider: core
+      version: '5.5'
+      plan: '300'
