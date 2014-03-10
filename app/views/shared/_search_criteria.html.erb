@@ -132,17 +132,33 @@
 
 </table>
 <script type="text/javascript">
-  $(document).ready(function() {
 
     // Initialize multiselect library
-    for ( id in whereDropDownIds ) {
-      $("#" + whereDropDownIds[id]).multiselect({selectedList: 4 , noneSelectedText: "All"}).multiselectfilter();
+
+    function initializeMultiSelect(){
+      for ( id in whereDropDownIds ) {
+        $("#" + whereDropDownIds[id]).multiselect({selectedList: 4 , noneSelectedText: "All"}).multiselectfilter();
+      }
+
+      $("#rollup").multiselect({multiple: false, header: "Select an option", selectedList: 1 });
+      $("#metric_filter").multiselect({multiple: false, header: "Select an option", selectedList: 1 });
+      $("#group_by_filter").multiselect({multiple: false, header: "Select an option" , selectedList: 1 });
+      $("#view_type").multiselect({multiple: false, header: "Select an option", selectedList: 1 });
     }
 
-    $("#rollup").multiselect({multiple: false, header: "Select an option", selectedList: 1 });
-    $("#metric_filter").multiselect({multiple: false, header: "Select an option", selectedList: 1 });
-    //$("#group_by_filter").multiselect({multiple: false, header: "Select an option" , selectedList: 1 });
-    $("#view_type").multiselect({multiple: false, header: "Select an option", selectedList: 1 });
+    function refreshMultiSelect(){
+      for ( id in whereDropDownIds ) {
+        $("#" + whereDropDownIds[id]).multiselect({selectedList: 4 , noneSelectedText: "All"}).multiselect('refresh');
+      }
+
+      $("#rollup").multiselect({multiple: false, header: "Select an option", selectedList: 1 }).multiselect('refresh');
+      $("#metric_filter").multiselect({multiple: false, header: "Select an option", selectedList: 1 }).multiselect('refresh');
+      $("#group_by_filter").multiselect({multiple: false, header: "Select an option" , selectedList: 1 }).multiselect('refresh');
+      $("#view_type").multiselect({multiple: false, header: "Select an option", selectedList: 1 }).multiselect('refresh');
+    }
+
+  $(document).ready(function() {
+
 
     initializeSearchCriteria();
 

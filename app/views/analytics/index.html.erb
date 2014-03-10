@@ -49,6 +49,8 @@
             $("#state_filter").multiselect('refresh'); 
        }
 
+      refreshMultiSelect()
+
       values = createSearchCriteriaJSON()
       localStorage.setItem('vals', JSON.stringify(values));
       viewType = $("#view_type").val();
@@ -164,6 +166,40 @@
 
       // Load initial chart
       filterUpdate();
+/////
+      function showTooltip(x, y, contents, z) {
+        $('<div id="flot-tooltip">' + contents + '</div>').css({
+            top: y - 30,
+            left: x - 135,
+            'border-color': z,
+        }).appendTo("body").fadeIn(200);
+    }
+
+    var previousPoint = null;
+
+    $("#metric_chart").bind("plothover", function (event, pos, item) {
+        if (item) {
+            if ((previousPoint != item.dataIndex) || (previousLabel != item.series.label)) {
+                previousPoint = item.dataIndex;
+                previousLabel = item.series.label;
+ 
+                $("#flot-tooltip").remove();
+ 
+                var x = convertToDate(item.datapoint[0]),
+                y = item.datapoint[1];
+                z = item.series.color;
+ 
+                showTooltip(item.pageX, item.pageY,
+                    "<b>" + item.series.label + "</b><br /> " + x + " = " + y + "mm",
+                    z);
+            }
+        } else {
+            $("#flot-tooltip").remove();
+            previousPoint = null;
+        }
+    });
+/////
+
     });
 
   </script>
