@@ -98,24 +98,26 @@ function parsePieToBar(data) {
   points = [];
   ticks = [];
   for (i = 0 ; i < data.length ; i++) {
-     points.push(Array(i, data[i].data));
-     ticks.push(Array(i, data[i].label));
+     points.push(Array(data[i].data, i));  //Array(i, data[i].data));
+     ticks.push(Array(data[i].label, i)); //Array(i, data[i].label));
   }
+
+
 
   data = [{
     data: points,
     minTickSize: 1,
     bars: { 
       show: true,
-      align: 'center'
-      //horizontal: true
+      horizontal: true, 
+      align: "center" 
     }         
   }];
-
+  ticks.forEach(function(arr) {arr.reverse()});
+  console.log(JSON.stringify(data))
+  console.log(JSON.stringify(ticks))
   options = {
-    xaxis: {
-      tickDecimals: 0,
-      labelAngle: 90,
+    yaxis: {      
       ticks: ticks
     }
   };

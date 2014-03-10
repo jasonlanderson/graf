@@ -10,7 +10,7 @@ gem "jquery-datatables-rails"
 gem "jquery-ui-rails"
 gem "httparty"
 gem 'jquery-rails'
-gem 'jquery-multiselect-rails', :git => 'git://github.com/arojoal/jquery-multiselect-rails.git'
+#gem 'jquery-multiselect-rails', :git => 'git://github.com/arojoal/jquery-multiselect-rails.git'
 
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 4.0.0'

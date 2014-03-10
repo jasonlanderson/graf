@@ -15,12 +15,12 @@
           $("#state_filter").val(""); // Reset state filter to default value
           $("#state_filter").multiselect().multiselect('disable'); // Disable state filter
           $("#group_by_filter option[value=state]").attr('disabled', true); // Disable state option in "Group By" filter
-          $("#group_by_filter").multiselect().multiselect('refresh'); 
+          $("#group_by_filter").multiselect({multiple: false, header: "Select an option", selectedList: 1 }).multiselect('refresh'); 
         }     
         else {
           $("#state_filter").multiselect().multiselect('enable'); // Enable state filter
           $("#group_by_filter option[value=state]").attr('disabled', false); // Enable state option in "Group By" filter
-          $("#group_by_filter").multiselect().multiselect('refresh'); 
+          $("#group_by_filter").multiselect({multiple: false, header: "Select an option", selectedList: 1 }).multiselect('refresh'); 
         }
 
         // Restrict view type
