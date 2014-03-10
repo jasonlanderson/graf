@@ -3,6 +3,7 @@ require 'load_steps/pre_load_user_cache'
 require 'load_steps/load_orgs'
 require 'load_steps/post_fix_users_without_companies'
 require 'load_steps/post_delete_companies_without_users'
+require 'load_steps/post_delete_users_without_contribs'
 
 class Constants
 
@@ -11,6 +12,7 @@ class Constants
     PreLoadStackalytics.new,
     LoadOrgs.new,
     PostFixUsersWithoutCompanies.new,
+    PostDeleteUsersWithoutContribs.new,
     PostDeleteCompaniesWithoutUsers.new
   ]
 

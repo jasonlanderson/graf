@@ -24,7 +24,7 @@
         }
 
         // Restrict view type
-        if (($("#metric_filter").val() != "prs") && ($("#metric_filter").val() != "commits") && ($("#metric_filter").val() != "avg_days_open") )  {
+        if (($("#metric_filter").val() != "prs") && ($("#metric_filter").val() != "commits") && ($("#metric_filter").val() != "avg_days_open"))  {
           $("#view_type").val("bar"); // Set to bar view
           $("#view_type option[value=line]").attr('disabled','disabled'); // Disable line option in "View by" button
           $("#view_type option[value=pie]").attr('disabled','disabled');
@@ -43,7 +43,6 @@
       // Reset/Disable state filters if metric set to commits or percent_merged
       if (($("#metric_filter").val() == "commits") || ($("#metric_filter").val() == "percent_merged"))
        {
-
             $("#group_by_filter").val("company") 
             $("#state_filter").val("")
             $("#group_by_filter").multiselect('refresh'); 
@@ -53,8 +52,6 @@
       values = createSearchCriteriaJSON()
       localStorage.setItem('vals', JSON.stringify(values));
       viewType = $("#view_type").val();
-
-      
 
       data = {
         metric: $("#metric_filter").val(),

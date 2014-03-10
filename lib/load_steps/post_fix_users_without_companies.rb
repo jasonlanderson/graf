@@ -14,8 +14,8 @@ class PostFixUsersWithoutCompanies < LoadStep
     GithubLoad.log_current_msg("***Fixing Users Without Companies", LogLevel::INFO)
     client = OctokitUtils.get_octokit_client
 
-    # For each company
-   Constants.get_org_to_company_mapping.each { |mapping|
+    # Iterate through each company
+    Constants.get_org_to_company_mapping.each { |mapping|
       company = Company.find_by(name: mapping['company'])
 
       # For each org which maps to this company

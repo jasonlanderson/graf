@@ -9,7 +9,7 @@ class LoadHelpers
     Constants.merge_companies.each { |company|
         #set["companies"].each { |company|
           company["alias"].each { |mapping|
-            if company_name.nil? || company_name.strip.length == 0
+            if (company_name.nil? || company_name.strip.length == 0)
                return "Independent"
             elsif company_name.downcase.include?(mapping)
                puts "Overriding user-defined company name"
@@ -23,49 +23,55 @@ class LoadHelpers
 
   def self.create_user_if_not_exist(pr_user)
     client = OctokitUtils.get_octokit_client
+
+    # Get "login" from user object
     if pr_user[:attrs]
       user_login = (pr_user[:attrs][:login] || pr_user[:attrs][:items][0][:attrs][:login]) 
     else
       user_login = pr_user[:login]
     end
+
+    # Check if user is in our DB
     user = User.find_by(login: user_login) 
 
+    # If user is not in DB, create
     unless (user and user.git_id)
       puts "---------"
       puts "--- Creating User: #{user_login}"
       puts "---------"
       GithubLoad.log_current_msg("Creating User: #{user_login}", LogLevel::INFO)
+
+      # Ensure we have the full user object (Which we don't when using HTTParty api requests)
       pr_user = client.user(user_login) if !pr_user[:_rels]
+      
       # Can we use nil, "" in the same way?
+
+      # Run GET request to get rest of user data
       user_details = pr_user[:_rels][:self].get.data
+
+      # "Clean" company name
       company_name = merge(user_details[:attrs][:company])
 
-#=begin      
-      if ((company_name.nil?) or (company_name.downcase.include? "available") or (company_name.downcase.include? "independent") or (company_name.downcase.include? "freelance") or (company_name.strip.length == 0) or company_name.nil?)
-          company_name = "Independent"
-      elsif (company_name.downcase.include? "vmware")
-          company_name = "VMware"
-      elsif ((company_name.downcase.include? "pivotal") || (company_name.downcase.include? "springsource")) 
-          company_name = "Pivotal"
-      elsif (company_name.downcase.include? "rbcon")
-          company_name = "Rbcon"
-      elsif (company_name.downcase.include? "ibm")
-          company_name = "IBM"
-      elsif (company_name.downcase.include? "mongo")
-          company_name = "MongoDB"
-      elsif (company_name.downcase.include? "10gen")
-          company_name = "MongoDB"
-      end
-#=end
       company = nil
-      if user_details[:attrs][:company] != "" && user_details[:attrs][:company] != nil
-        company = create_company_if_not_exist(company_name)
-      else
-        company = create_company_if_not_exist("Independent")
+      #company = Company.find_by(name: company_name)
+
+
+      # Create company if we don't have a record already
+      if company.nil?
+        if user_details[:attrs][:company] != "" && user_details[:attrs][:company] != nil # TODO This case should be caught already by the merge function
+          company = create_company_if_not_exist(company_name)
+        else
+          company = create_company_if_not_exist("Independent")
+        end
       end
 
-      name = format_name(user_details[:attrs][:name]) if (user_details[:attrs][:name])      
+      # TODO, Determine whether always removing middle initial is such a good idea. Searching with initial seems to break github search
+
+      # Format name if it exists
+      name = format_name(user_details[:attrs][:name]) if (user_details[:attrs][:name])
       login = user_details[:attrs][:login]
+
+      # Always store login in downcase format
       login = login.downcase if user_details[:attrs][:login]
 
       user = User.create(
@@ -164,7 +170,7 @@ class LoadHelpers
           search_results, num_results = search_email(email) if !email.include?("pair")
 
           # Search by name if commit submitted by pair, or if email not in github db
-          search_results, num_results = search_name(name) if ( !search_results || (search_results[:attrs][:total_count] == 0))  
+          search_results, num_results = search_name(name) if ( !search_results || (search_results[:attrs][:total_count] == 0))
       
           # Even if results are returned from searching for name, we need the name_match function to validate search results. 
           # This is done by ensuring result name (or login) directly matches with given commit author name
