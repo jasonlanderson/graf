@@ -39,16 +39,16 @@ class GithubLoader
     GithubLoad.set_current_load(load)
 
     # Determine load type
-    if load.initial_load
+    #if load.initial_load
       # Initial load
       load.log_msg("***Doing an initial load", LogLevel::INFO)
       (InitialLoad.new).execute
-    else
-      # Delta load
-      load.log_msg("***Doing an delta load", LogLevel::INFO)
-      GithubLoader.delta_load(load)
-      #(DeltaLoad.new).execute
-    end
+    # else
+    #   # Delta load
+    #   load.log_msg("***Doing an delta load", LogLevel::INFO)
+    #   GithubLoader.delta_load(load)
+    #   #(DeltaLoad.new).execute
+    # end
 
     finish_github_load(load)
   end

@@ -8,7 +8,7 @@ class Constants
 
   LOAD_STEPS_INITIAL = [
     #PreLoadUserCache.new,
-    #PreLoadStackalytics.new,
+    PreLoadStackalytics.new,
     LoadOrgs.new,
     PostFixUsersWithoutCompanies.new,
     PostDeleteCompaniesWithoutUsers.new

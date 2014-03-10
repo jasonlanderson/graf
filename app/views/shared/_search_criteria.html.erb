@@ -132,22 +132,21 @@
 
 </table>
 <script type="text/javascript">
-initializeSearchCriteria();
   $(document).ready(function() {
-    //$("select").multiselect({selectedList: 4 }).multiselectfilter();
 
-
-
-    // Clear all the dropdowns
+    // Initialize multiselect library
     for ( id in whereDropDownIds ) {
       $("#" + whereDropDownIds[id]).multiselect({selectedList: 4 , noneSelectedText: "All"}).multiselectfilter();
     }
-
 
     $("#rollup").multiselect({multiple: false, selectedList: 1 });
     $("#metric_filter").multiselect({multiple: false, selectedList: 1 });
     $("#group_by_filter").multiselect({multiple: false, selectedList: 1 });
     $("#view_type").multiselect({multiple: false, selectedList: 1 });
+
+    initializeSearchCriteria();
+
+    // Clear all the dropdowns
   });
 
 
