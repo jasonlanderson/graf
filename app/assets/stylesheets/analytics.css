@@ -52,6 +52,21 @@ a.tooltip span { border-radius:4px; -moz-border-radius: 4px; -webkit-border-radi
     padding: 5px;
 }
 
+#flot-tooltip {
+    font-size: 12px;
+    font-family: Verdana, Arial, sans-serif;
+    position: absolute;
+    display: none;
+    border: 2px solid;
+    padding: 2px;
+    background-color: #FFF;
+    opacity: 0.8;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    -khtml-border-radius: 5px;
+    border-radius: 5px;
+}
+
 /* 
 TODO 
 Auto resize based on browser size

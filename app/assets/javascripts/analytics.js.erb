@@ -59,6 +59,7 @@ LINE_OPTIONS = {
   xaxis: {
           //mode: "time",
           tickFormatter: function(x) { 
+            console.log(x)
             date = new Date(x*1000);
             month = monthNames[date.getMonth()] ;
             year = date.getFullYear();

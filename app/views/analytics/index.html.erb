@@ -173,34 +173,52 @@
             left: x - 135,
             'border-color': z,
         }).appendTo("body").fadeIn(200);
-    }
+      }
 
-    var previousPoint = null;
+      var previousPoint = null;
 
-    $("#metric_chart").bind("plothover", function (event, pos, item) {
-        if (item) {
-            if ((previousPoint != item.dataIndex) || (previousLabel != item.series.label)) {
-                previousPoint = item.dataIndex;
-                previousLabel = item.series.label;
+          function convertToDate(time) {
+            timestamp = time * 1000
+            var newDate = new Date(timestamp);
+            var month = newDate.getMonth() + 1;
+            var year = newDate.getYear() + 1900;
+            //var monthName = getMonthName(dateString);
+            date = month + "/" + year
+            //console.log(newDate.getYear())
+            return date;
+      }
+
+      function getMonthName(numericMonth) {
+            var monthArray = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+            var alphaMonth = monthArray[numericMonth];
+         
+            return alphaMonth;
+      }
  
-                $("#flot-tooltip").remove();
- 
-                var x = convertToDate(item.datapoint[0]),
-                y = item.datapoint[1];
-                z = item.series.color;
- 
-                showTooltip(item.pageX, item.pageY,
-                    "<b>" + item.series.label + "</b><br /> " + x + " = " + y + "mm",
-                    z);
-            }
-        } else {
-            $("#flot-tooltip").remove();
-            previousPoint = null;
-        }
-    });
+      $("#metric_chart").bind("plothover", function (event, pos, item) {
+          if (item) {
+              if ((previousPoint != item.dataIndex) || (previousLabel != item.series.label)) {
+                  previousPoint = item.dataIndex;
+                  previousLabel = item.series.label;
+   
+                  $("#flot-tooltip").remove();
+   
+                  var x = convertToDate(item.datapoint[0]),
+                  y = item.datapoint[1];
+                  z = item.series.color;
+   
+                  showTooltip(item.pageX, item.pageY,
+                      "<b>" + item.series.label + "</b><br /> " + x + " : " + y ,
+                      z);
+              }
+          } else {
+              $("#flot-tooltip").remove();
+              previousPoint = null;
+          }
+      });
 /////
 
-    });
+      });
 
   </script>
 <% end %>
