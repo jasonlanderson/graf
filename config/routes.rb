@@ -6,6 +6,7 @@ Graf::Application.routes.draw do  resources :github_loads
   resources :github_loads
   resources :github_load_msgs
   resources :commits
+  resources :orgs
 
   # Main Page Paths
   get '/analytics', to: 'analytics#index'

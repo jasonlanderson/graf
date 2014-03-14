@@ -1,6 +1,11 @@
 <p id="notice"><%= notice %></p>
 
 <p>
+  <strong>Org:</strong>
+  <%= @repo.org %>
+</p>
+
+<p>
   <strong>Git:</strong>
   <%= @repo.git_id %>
 </p>
@@ -33,11 +38,6 @@
 <p>
   <strong>Date pushed:</strong>
   <%= @repo.date_pushed %>
-</p>
-
-<p>
-  <strong>Org:</strong>
-  <%= @repo.org %>
 </p>
 
 <%= link_to 'Edit', edit_repo_path(@repo) %> |
