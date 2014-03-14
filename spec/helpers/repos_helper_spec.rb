@@ -12,4 +12,9 @@ require 'spec_helper'
 # end
 describe ReposHelper do
   pending "add some examples to (or delete) #{__FILE__}"
+  describe "source org" do
+	it "should have a reference to a single valid organization"
+	   #expect()
+	end
+  end
 end
