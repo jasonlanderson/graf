@@ -1,0 +1,17 @@
+###
+# Adding Code
+###
+Before adding code, the developer needs to review the files and indiviual changes:
+  1) git status
+  2) git diff - Look at the individual code changes and ensure every line is required (e.g. no debug stmts)
+  3) git add <files>
+  4) git commit -m "<Intelligent message of what is being commited>"
+
+###
+# General Code Guidelines
+###
+The following are general guidelines for writing GRAF Code:
+  1) Before adding a feature or fixing a bug, create a branch for your work
+  2) Keep methods short, between 5-7 lines each
+  3) Before writing any code, write the test for that code
+  4) Only write enough code to make your test pass
