@@ -3,6 +3,7 @@
 <table>
   <thead>
     <tr>
+      <th>Org</th>
       <th>Git</th>
       <th>Name</th>
       <th>Full name</th>
@@ -10,7 +11,6 @@
       <th>Date created</th>
       <th>Date updated</th>
       <th>Date pushed</th>
-      <th>Org</th>
       <th></th>
       <th></th>
       <th></th>
@@ -20,6 +20,7 @@
   <tbody>
     <% @repos.each do |repo| %>
       <tr>
+        <td><%= repo.org %></td>
         <td><%= repo.git_id %></td>
         <td><%= repo.name %></td>
         <td><%= repo.full_name %></td>
@@ -27,7 +28,6 @@
         <td><%= repo.date_created %></td>
         <td><%= repo.date_updated %></td>
         <td><%= repo.date_pushed %></td>
-        <td><%= repo.org %></td>
         <td><%= link_to 'Show', repo %></td>
         <td><%= link_to 'Edit', edit_repo_path(repo) %></td>
         <td><%= link_to 'Destroy', repo, method: :delete, data: { confirm: 'Are you sure?' } %></td>

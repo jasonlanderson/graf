@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140222190023) do
+ActiveRecord::Schema.define(version: 20140314190732) do
 
   create_table "commits", force: true do |t|
     t.integer  "repo_id"

@@ -12,6 +12,10 @@
   <% end %>
 
   <div class="field">
+    <%= f.label :org_id %><br>
+    <%= f.text_field :org_id %>
+  </div>
+  <div class="field">
     <%= f.label :git_id %><br>
     <%= f.number_field :git_id %>
   </div>
@@ -38,10 +42,6 @@
   <div class="field">
     <%= f.label :date_pushed %><br>
     <%= f.date_select :date_pushed %>
-  </div>
-  <div class="field">
-    <%= f.label :org %><br>
-    <%= f.text_field :org %>
   </div>
   <div class="actions">
     <%= f.submit %>
