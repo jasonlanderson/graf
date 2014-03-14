@@ -40,11 +40,11 @@ class LoadOrgRepos < LoadStep
           :date_pushed => repo[:attrs][:date_pushed]
         )
         GithubLoad.log_current_msg("Loading Commits By Repo (#{index+1} / #{total_repo_count})", LogLevel::INFO)
-
-        execute_load_steps(Constants::LOAD_STEPS_REPO, repo)
-
+          execute_load_steps(Constants::LOAD_STEPS_REPO, repo)
       end
     }
+    repos = nil
+    GC.start
 
     puts "Finish Step: #{name}" 
   end

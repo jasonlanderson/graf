@@ -38,6 +38,9 @@ class LoadRepoUsers < LoadStep
         end  
       }
     end
+    contributors = nil
+    collaborators = nil
+    GC.start
     puts "Finish Step: #{name}" 
   end
 

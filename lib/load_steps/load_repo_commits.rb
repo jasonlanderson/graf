@@ -47,6 +47,8 @@ class LoadRepoCommits < LoadStep
          LoadHelpers.process_authors(c, email, names)
       end
     }
+    commits = nil
+    GC.start
 
 
     puts "Finish Step: #{name}" 

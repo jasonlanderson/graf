@@ -40,6 +40,8 @@ class LoadRepoPullRequests < LoadStep
         :state => (pr[:attrs][:merged_at].nil? ? pr[:attrs][:state] : "merged")
         )
     }
+    pull_requests = nil
+    GC.start
 
     puts "Finish Step: #{name}" 
   end

@@ -1,0 +1,46 @@
+{
+  "orgs": [
+    {
+      "name": "cloudfoundry",
+      "org_type": "org",
+      "load": true,
+      "repos_to_skip": ["em-posix-spawn"]
+    },
+    {
+      "name": "cloudfoundry-attic",
+      "org_type": "user",
+      "load": true,
+      "repos_to_skip": []
+    },
+    {
+      "name": "cloudfoundry-incubator",
+      "org_type": "org",
+      "load": true,
+      "repos_to_skip": []
+    },
+    {
+      "name": "cloudfoundry-community",
+      "org_type": "org",
+      "load": true,
+      "repos_to_skip": []
+    },
+    {
+      "name": "mongodb",
+      "org_type": "org",
+      "load": true,
+      "repos_to_skip": []
+    },
+    {
+      "name": "openstack",
+      "org_type": "org",
+      "load": true,
+      "repos_to_skip": []
+    },
+    {
+      "name": "openstack-infra",
+      "org_type": "org",
+      "load": true,
+      "repos_to_skip": []
+    }
+  ]
+}
