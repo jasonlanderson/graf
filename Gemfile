@@ -11,6 +11,7 @@ gem "jquery-ui-rails"
 gem "httparty"
 gem 'jquery-rails'
 #gem 'jquery-multiselect-rails', :git => 'git://github.com/arojoal/jquery-multiselect-rails.git'
+gem 'mysql2'
 
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 4.0.0'
@@ -38,10 +39,8 @@ group :doc do
   gem 'sdoc', require: false
 end
 
+gem 'rspec-rails', '~> 3.0.0.beta'
 group :development, :test do
-  # Use sqlite3 as the database for Active Record
-  gem 'sqlite3'
-  gem 'rspec-rails'
 
   # The following optional lines are part of the advanced setup.
   # gem 'guard-rspec', '2.5.0'
@@ -51,7 +50,6 @@ group :development, :test do
 end
 
 group :production do
-  gem 'mysql2'
   gem 'rails_12factor'
 end
 

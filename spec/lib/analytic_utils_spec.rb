@@ -69,10 +69,10 @@ describe AnalyticUtils do
 
     it "can calculate stats" do
       results = AnalyticUtils.get_state_stats(@test_data)
-      results[:total].should == 4
-      results[:open].should == 1
-      results[:closed].should == 2
-      results[:merged].should == 1
+      expect(results[:total]).to equal 4
+      expect(results[:open]).to equal 1
+      expect(results[:closed]).to equal 2
+      expect(results[:merged]).to equal 1
     end
   end
 end
