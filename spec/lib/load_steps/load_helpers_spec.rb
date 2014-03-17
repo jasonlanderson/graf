@@ -14,7 +14,7 @@ describe LoadHelpers do
   company = "IBM Corporation"
  
   it 'merges similar companies' do
-	expect LoadHelpers.merge(company).to equal("IBM")
+	expect(LoadHelpers.merge(company)).to match("IBM")
   end
 
 end
