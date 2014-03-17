@@ -24,11 +24,11 @@ class LoadHelpers
   def self.create_user_if_not_exist(pr_user)
     client = OctokitUtils.get_octokit_client
 
-    # Get "login" from user object
+    # Get "login" from user object. Different user object, 
     if pr_user[:attrs]
       user_login = (pr_user[:attrs][:login] || pr_user[:attrs][:items][0][:attrs][:login]) 
     else
-      user_login = pr_user[:login]
+      user_login = pr_user[:login] # Raw api user object has no "attrs" field
     end
 
     # Check if user is in our DB
