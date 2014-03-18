@@ -36,7 +36,7 @@
           $("#view_type option[value=line]").removeAttr('disabled'); // Disable line option in "View by" button
           $("#view_type option[value=pie]").removeAttr('disabled');
           $("#view_type").multiselect().multiselect('refresh'); 
-          $("#view_type").val("pie"); 
+          //$("#view_type").val("pie"); // This allows the line graph to be disabled 
         }
     }
 
@@ -53,8 +53,8 @@
             $("#state_filter").multiselect('refresh'); 
        }
       var e = new Date();
-      console.log("Total time")
-      console.log((e - s)/1000 + "s")
+      //console.log("Total time")
+      //console.log((e - s)/1000 + "s")
 
       values = createSearchCriteriaJSON()
       localStorage.setItem('vals', JSON.stringify(values));

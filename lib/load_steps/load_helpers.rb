@@ -8,28 +8,36 @@ class LoadHelpers
   def self.merge(company_name)
     Constants.merge_companies.each { |company|
         #set["companies"].each { |company|
-          company["alias"].each { |mapping|
-            if (company_name.nil? || company_name.strip.length == 0)
-               return "Independent"
-            elsif company_name.downcase.include?(mapping)
-               puts "Overriding user-defined company name"
-	             return company["name"]
-            end
-          }
+        company["alias"].each { |mapping|
+          if (company_name.nil? || company_name.strip.length == 0)
+             return "Independent"
+          elsif company_name.downcase.include?(mapping)
+             puts "Overriding user-defined company name"
+             return company["name"]
+          end
+        }
         #}
       }
       return company_name
   end
 
+  def self.get_login(pr_user)
+    # Get "login" value from user object.
+    if pr_user[:attrs]
+      user_login = (pr_user[:attrs][:login] || pr_user[:attrs][:items][0][:attrs][:login]) 
+    # If not a Sawyer resource
+    else
+      user_login = pr_user[:login] 
+    end
+    return user_login
+  end
+
+
+
   def self.create_user_if_not_exist(pr_user)
     client = OctokitUtils.get_octokit_client
 
-    # Get "login" from user object. Different user object, 
-    if pr_user[:attrs]
-      user_login = (pr_user[:attrs][:login] || pr_user[:attrs][:items][0][:attrs][:login]) 
-    else
-      user_login = pr_user[:login] # Raw api user object has no "attrs" field
-    end
+    user_login = get_login(pr_user)
 
     # Check if user is in our DB
     user = User.find_by(login: user_login) 
@@ -44,35 +52,26 @@ class LoadHelpers
       # Ensure we have the full user object (Which we don't when using HTTParty api requests)
       pr_user = client.user(user_login) if !pr_user[:_rels]
       
-      # Can we use nil, "" in the same way?
-
       # Run GET request to get rest of user data
       user_details = pr_user[:_rels][:self].get.data
 
-      # "Clean" company name
+      # "Clean" company name, removing initial, capitilzing, etc
       company_name = merge(user_details[:attrs][:company])
 
-      company = nil
-      #company = Company.find_by(name: company_name)
-
+      #company = nil
 
       # Create company if we don't have a record already
-      if company.nil?
-        if user_details[:attrs][:company] != "" && user_details[:attrs][:company] != nil # TODO This case should be caught already by the merge function
-          company = create_company_if_not_exist(company_name)
-        else
-          company = create_company_if_not_exist("Independent")
-        end
-      end
+      #if user_details[:attrs][:company] != "" && user_details[:attrs][:company] != nil # TODO This case should be caught already by the merge function
+      company = create_company_if_not_exist(company_name)
+      #else
+      #  company = create_company_if_not_exist("Independent")
+      #end
 
       # TODO, Determine whether always removing middle initial is such a good idea. Searching with initial seems to break github search
 
-      # Format name if it exists
+      # Format name/login when applicable
       name = format_name(user_details[:attrs][:name]) if (user_details[:attrs][:name])
-      login = user_details[:attrs][:login]
-
-      # Always store login in downcase format
-      login = login.downcase if user_details[:attrs][:login]
+      login = user_details[:attrs][:login].downcase if user_details[:attrs][:login]
 
       user = User.create(
         :company => company,
@@ -109,7 +108,7 @@ class LoadHelpers
   def self.format_name(name)
       if (name.split(' ').length < 2) # If login
         name = name.downcase
-      elsif (name.split(' ').length > 2) #&& name.include?('.')) # If name includes middle initial, remove it, as initials don't work with search
+      elsif (name.split(' ').length > 2) # If name includes middle initial, remove it, as initials don't work with search
         name = "#{name.split(' ')[0]} #{name.split(' ')[2]}".titleize 
       elsif name.strip == ""
         name = "No Name Listed"
@@ -136,12 +135,7 @@ class LoadHelpers
     names.each do |name| 
       next if ((name == "unknown") || email.include?("none") || name.include?("jenkins") || name.include?("Bot") || email.include?("jenkins") || email.include?("-bot") || (email.length > 25) )
       start = Time.now        
-      #puts name
-      user = nil
-      user_type = nil
-      login = nil
-      user_id = nil
-      search_results = nil
+      user, user_type, login, user_id, search_results = nil
       num_results = 0
       name = format_name(name)
 
@@ -175,8 +169,6 @@ class LoadHelpers
           # Even if results are returned from searching for name, we need the name_match function to validate search results. 
           # This is done by ensuring result name (or login) directly matches with given commit author name
           if search_results and (num_results > 0) and name_match(search_results, name)
-            # puts "Creating record for user #{name}"
-            # puts "WARNING: Search returned #{search_results[:attrs][:total_count]} results for #{name}, #{email}" if (num_results > 1)
             login = search_results[:attrs][:items][0][:attrs][:login]
             user_obj = client.user(login) 
             puts "Successfully found reference of '#{name}' / #{email} in github db"
