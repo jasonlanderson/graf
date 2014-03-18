@@ -1,3 +1,14 @@
+GIT
+  remote: git://github.com/jnicklas/capybara.git
+  revision: a94dfbc4d07dcfe53bbea334f7f47f584737a0c0
+  specs:
+    capybara (2.2.0)
+      mime-types (>= 1.16)
+      nokogiri (>= 1.3.3)
+      rack (>= 1.0.0)
+      rack-test (>= 0.5.4)
+      xpath (~> 2.0)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -29,12 +40,8 @@ GEM
     arel (4.0.1)
     atomic (1.1.14)
     builder (3.1.4)
-    capybara (2.2.1)
-      mime-types (>= 1.16)
-      nokogiri (>= 1.3.3)
-      rack (>= 1.0.0)
-      rack-test (>= 0.5.4)
-      xpath (~> 2.0)
+    childprocess (0.5.1)
+      ffi (~> 1.0, >= 1.0.11)
     coffee-rails (4.0.1)
       coffee-script (>= 2.2.0)
       railties (>= 4.0.0, < 5.0)
@@ -49,6 +56,8 @@ GEM
       i18n (~> 0.5)
     faraday (0.8.8)
       multipart-post (~> 1.2.0)
+    ffi (1.9.3)
+    ffi (1.9.3-x86-mingw32)
     flot-rails (0.0.4)
       jquery-rails
     hike (1.2.3)
@@ -128,6 +137,7 @@ GEM
       rspec-mocks (= 3.0.0.beta2)
       rspec-support (= 3.0.0.beta2)
     rspec-support (3.0.0.beta2)
+    rubyzip (1.1.2)
     sass (3.2.12)
     sass-rails (4.0.1)
       railties (>= 4.0.0, < 5.0)
@@ -139,6 +149,11 @@ GEM
     sdoc (0.3.20)
       json (>= 1.1.3)
       rdoc (~> 3.10)
+    selenium-webdriver (2.40.0)
+      childprocess (>= 0.5.0)
+      multi_json (~> 1.0)
+      rubyzip (~> 1.0)
+      websocket (~> 1.0.4)
     sprockets (2.10.1)
       hike (~> 1.2)
       multi_json (~> 1.0)
@@ -161,6 +176,7 @@ GEM
     uglifier (2.3.3)
       execjs (>= 0.3.0)
       json (>= 1.8.0)
+    websocket (1.0.7)
     xpath (2.0.0)
       nokogiri (~> 1.3)
 
@@ -169,7 +185,7 @@ PLATFORMS
   x86-mingw32
 
 DEPENDENCIES
-  capybara (>= 2.2.0)
+  capybara!
   coffee-rails (~> 4.0.0)
   faker
   flot-rails (~> 0.0.4)
@@ -185,5 +201,6 @@ DEPENDENCIES
   rspec-rails (~> 3.0.0.beta)
   sass-rails (~> 4.0.0)
   sdoc
+  selenium-webdriver
   turbolinks
   uglifier (>= 1.3.0)
