@@ -15,3 +15,10 @@ The following are general guidelines for writing GRAF Code:
   2) Keep methods short, between 5-7 lines each
   3) Before writing any code, write the test for that code
   4) Only write enough code to make your test pass
+
+###
+# New Branch for Code Changes
+###
+  1) git checkout -b <branch-name>
+  2) git push -u origin <branch-name>
+  3) git pull
