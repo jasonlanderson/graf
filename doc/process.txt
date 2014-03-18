@@ -1,13 +1,4 @@
 ###
-# Adding Code
-###
-Before adding code, the developer needs to review the files and indiviual changes:
-  1) git status
-  2) git diff - Look at the individual code changes and ensure every line is required (e.g. no debug stmts)
-  3) git add <files>
-  4) git commit -m "<Intelligent message of what is being commited>"
-
-###
 # General Code Guidelines
 ###
 The following are general guidelines for writing GRAF Code:
@@ -17,8 +8,39 @@ The following are general guidelines for writing GRAF Code:
   4) Only write enough code to make your test pass
 
 ###
-# New Branch for Code Changes
+# Adding Code
 ###
-  1) git checkout -b <branch-name>
-  2) git push -u origin <branch-name>
-  3) git pull
+Before adding code, the developer needs to review the files and indiviual changes:
+  1) git status
+  2) git diff - Look at the individual code changes and ensure every line is required (e.g. no debug stmts)
+  3) git branch - Make sure you're adding to a local branch...NOT MASTER
+  3) git add <files>
+  4) git commit -m "<Intelligent message of what is being commited>"
+
+###
+# New Changes in New Branch Going to Master
+###
+1) Create new branch
+  - git checkout -b <branch-name>
+2) Make changes and commit to branch
+  - git commit -a -m "<commit>"
+
+3) Merge changes into master
+  - git checkout master
+  - git merge <branch-name>
+
+4) Push master to remote
+  - git push
+
+###
+# Pulling Changes in Master to Local Branch
+###
+1) Switch to local master branch
+  - git checkout master
+
+2) Pull down changes from remote
+  - git pull
+
+3) Merge changes from local master into local branch
+  - git checkout <branch-name>
+  - git merge master
