@@ -34,7 +34,6 @@ describe LoadHelpers do
   #     )
   #   end
   # end
-
   # self.merge
   # it 'merges similar companies' do
   #    # This merge function should be more generic by removing "Corporation", ".Inc", etc
