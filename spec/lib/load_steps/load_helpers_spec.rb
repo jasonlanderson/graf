@@ -1,3 +1,4 @@
+require "spec_helper"
 require "load_steps/load_helpers"
 require 'faker'
 
