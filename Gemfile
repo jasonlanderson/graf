@@ -41,6 +41,7 @@ end
 
 gem 'rspec-rails', '~> 3.0.0.beta'
 group :development, :test do
+  gem 'capybara'
 
   # The following optional lines are part of the advanced setup.
   # gem 'guard-rspec', '2.5.0'
