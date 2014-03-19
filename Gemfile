@@ -45,6 +45,8 @@ group :development, :test do
   gem 'capybara', :git => 'git://github.com/jnicklas/capybara.git'
   gem 'rspec-rails', '~> 3.0.0.beta'
   gem 'selenium-webdriver'
+  gem 'jasmine-rails'
+  #gem "capybara-webkit"
 
   # The following optional lines are part of the advanced setup.
   # gem 'guard-rspec', '2.5.0'
