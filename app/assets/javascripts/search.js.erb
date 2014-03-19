@@ -128,9 +128,10 @@ function createSearchCriteriaJSON() {
 function clearSearchCriteria() {
   
   // Clear all the dropdowns
-  for ( id in whereDropDownIds ) {
-    $("#" + whereDropDownIds[id]).multiselect("uncheckAll");
-  }
+  // for ( id in whereDropDownIds ) {
+  //   $("#" + whereDropDownIds[id]).multiselect("uncheckAll");
+  // }
+  $("select").multiselect("uncheckAll");
 
   // Clear the date range
   $("#start_date_filter").val("");
