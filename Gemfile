@@ -46,6 +46,7 @@ group :development, :test do
   gem 'rspec-rails', '~> 3.0.0.beta'
   gem 'selenium-webdriver'
   gem 'jasmine-rails'
+  gem 'jasmine-jquery-rails'
   #gem "capybara-webkit"
 
   # The following optional lines are part of the advanced setup.

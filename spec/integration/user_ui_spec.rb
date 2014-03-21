@@ -19,9 +19,19 @@ feature "Pages are accessible via links" do
 end
 
 feature "Restricting Graf View As Types" do
-  scenario "User changes mertic to be avg days open" do
-    visit root_path
-    # find(:xpath, '//*[@id="view_type"]')
+  scenario "User changes mertic to be avg days open and can only select bar and line" do
+    pending("Need to figure out how to reference jquery multiselect values")
+    #visit root_path
+    #find(:xpath, '//*[@id="view_type"]')
+    #find(:css, "#rollup[value='5']").set(true)
+    #puts find(:css, "#metric_filter[value='avg_days_open']")
+    #expect(page).to have_content("GRAF")
+  end
+
+  scenario "User changes to commits" do
+    pending("Need to figure out how to reference jquery multiselect values")
+    #visit root_path
+    #find(:xpath, '//*[@id="view_type"]')
     #find(:css, "#rollup[value='5']").set(true)
     #puts find(:css, "#metric_filter[value='avg_days_open']")
     #expect(page).to have_content("GRAF")

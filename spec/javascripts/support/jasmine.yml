@@ -7,6 +7,7 @@ src_dir: "app/assets/javascripts"
 # relative path from src_dir
 src_files:
  - "application.{js.coffee,js,coffee}"
+ - "assets/jasmine-jquery.js"
 
 # path to parent directory of spec_files
 # relative path from Rails.root
