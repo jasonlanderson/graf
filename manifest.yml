@@ -4,7 +4,7 @@ applications:
   memory: 1G
   instances: 1
   host: graf
-  domain: ng.w3.bluemix.net
+  domain: stage1.ng.bluemix.net
   path: .
   services:
     graf-db:

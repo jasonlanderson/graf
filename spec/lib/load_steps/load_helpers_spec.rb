@@ -39,11 +39,13 @@ describe LoadHelpers do
     all_ids = []
     def self.get_unique_id
         # Easier option would be to delete Objects with duplicate git_ids
-        id = rand(1000..99999)          
+        id = rand(1000..99999) 
+        # Line below checks to see if random git_id is in use by any other mock objects
+        # if User.find_by(id: id) || PullRequest.find_by(id: id) ...         
     end
 
     def self.search_users
-      # What should we do here?
+      # What should we do here? This is used for committers that aren't linked to a id
     end
 
 
