@@ -76,11 +76,20 @@ describe LoadHelpers do
 
     end
 
+    def data
+      # return 
+    end
+
     def self.create_user
       u = Hash.new
-      s = Struct(:get)
-      d = Struct(:)
-      #g = get.new(data)
+      # Need to access data like
+      # user_obj[:_rels][:self].get.data[:attrs]
+      gt = Struct.new(:data)
+      slf = Struct.new(:get)
+      g = gt.new({:attrs => {:company => "IBM"}})
+      test = {:self => slf.new(g)}
+      # d = Struct(:data)
+
       u[:_rels] = {
           :self => {
             get => {

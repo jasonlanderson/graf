@@ -12,3 +12,15 @@ applications:
       provider: core
       version: '5.5'
       plan: '300'
+- name: graf-stage
+  memory: 1G
+  instances: 1
+  host: graf-stage
+  domain: stage1.ng.bluemix.net
+  path: .
+  services:
+    graf-stage-db:
+      label: mysql
+      provider: core
+      version: '5.5'
+      plan: '300'
