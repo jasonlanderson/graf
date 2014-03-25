@@ -5,6 +5,7 @@ require 'constants'
 
 class LoadHelpers
 
+  # Tests done
   def self.merge(company_name)
     Constants.merge_companies.each { |company|
         #set["companies"].each { |company|
@@ -21,6 +22,7 @@ class LoadHelpers
       return company_name
   end
 
+  # 
   def self.get_login(pr_user)
     # Get "login" value from user object.
     if pr_user[:attrs]
@@ -105,6 +107,7 @@ class LoadHelpers
     return company
   end
 
+  # Tests are written, but rails functions don't seem to work w/rspec?
   def self.format_name(name)
       if (name.split(' ').length < 2) # If login
         name = name.downcase
@@ -190,29 +193,42 @@ class LoadHelpers
   end
 
 
-  def self.search_email(email)
-      sleep(3.0)
-      puts "Searching by email for #{email}"
-      puts "Throttling"
-      search_results = OctokitUtils.search_users(email)
-      num_results = search_results[:attrs][:total_count] 
-      return search_results, num_results
-  end
-        
-  def self.search_name(name)
-      sleep(3.0) # Throttling
-      puts "Searching by name for #{name}"
-      puts "Throttling"
-      client = OctokitUtils.get_octokit_client
-      if (name.split(' ').length < 2) # Only search by name if we have a first and last name. Else, we assume identifier is a "login" username
-        search_results = client.search_users("#{name} in:login", options = {:sort => "followers"}) # Grabs the most active/visual member with given name. 
-        num_results = search_results[:attrs][:total_count]
+  # def self.search_name(name)
+  #     sleep(3.0) # Throttling
+  #     puts "Searching by name for #{name}"
+  #     puts "Throttling"
+  #     client = OctokitUtils.get_octokit_client
+  #     if (name.split(' ').length < 2) # Only search by name if we have a first and last name. Else, we assume identifier is a "login" username
+  #       search_results = client.search_users("#{name} in:login", options = {:sort => "followers"}) # Grabs the most active/visual member with given name. 
+  #       num_results = search_results[:attrs][:total_count]
+  #     else
+  #       search_results = client.search_users("#{name} in:name", options = {:sort => "followers"}) # Grabs the most active/visual member with given name. 
+  #       num_results = search_results[:attrs][:total_count]
+  #     end
+  #     return search_results, num_results
+  # end
+
+  def self.get_search_type(identifier)
+      if (identifier.split(' ').length > 1)
+          return "name"
+      elsif (identifier.include?('@') && identifier.include?('.'))
+          return "email"
       else
-        search_results = client.search_users("#{name} in:name", options = {:sort => "followers"}) # Grabs the most active/visual member with given name. 
-        num_results = search_results[:attrs][:total_count]
+          return "login" 
       end
+  end
+
+  def self.search_name(name)
+      sleep(3.0)
+      search_type = get_search_type(name)
+      puts "Searching by #{search_type} for #{name} (Throttling 3s)"
+      client = OctokitUtils.get_octokit_client
+      #search_type = (name.split(' ').length < 2) ? "login" : "name"
+      search_results = client.search_users("#{name} in:#{search_type}", options = {:sort => "followers"}) 
+      num_results = search_results[:attrs][:total_count]
       return search_results, num_results
   end
+
 
   def self.get_stackalytics_JSON()
     return JSON.parse(HTTParty.get("http://raw.github.com/stackforge/stackalytics/master/etc/default_data.json"))
