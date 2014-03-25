@@ -14,6 +14,9 @@ class LoadRepoUsers < LoadStep
     puts "Start Step: #{name}"
 
     client = OctokitUtils.get_octokit_client
+    pid, size = `ps ax -o pid,rss | grep -E "^[[:space:]]*#{$$}"`.strip.split.map(&:to_i)
+    GithubLoad.log_current_msg("Initial memory #{size} KB", LogLevel::INFO)
+
     GithubLoad.log_current_msg("***Loading Users", LogLevel::INFO)
     
     # Contributors are those who have submitted at least one commit to the repo
@@ -38,9 +41,14 @@ class LoadRepoUsers < LoadStep
         end  
       }
     end
+    pid, size = `ps ax -o pid,rss | grep -E "^[[:space:]]*#{$$}"`.strip.split.map(&:to_i)
+    GithubLoad.log_current_msg("Memory before cleanup #{size} KB", LogLevel::INFO)    
     contributors = nil
     collaborators = nil
     GC.start
+    pid, size = `ps ax -o pid,rss | grep -E "^[[:space:]]*#{$$}"`.strip.split.map(&:to_i)
+    GithubLoad.log_current_msg("Memory after cleanup #{size} KB", LogLevel::INFO)
+    
     puts "Finish Step: #{name}" 
   end
 

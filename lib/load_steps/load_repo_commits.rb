@@ -18,6 +18,8 @@ class LoadRepoCommits < LoadStep
     puts "--- Loading Commits for #{repo.full_name}"
     puts "---------"
     GithubLoad.log_current_msg("Loading Commits for #{repo.full_name}", LogLevel::INFO)
+    pid, size = `ps ax -o pid,rss | grep -E "^[[:space:]]*#{$$}"`.strip.split.map(&:to_i)
+    GithubLoad.log_current_msg("Initial memory #{size} KB", LogLevel::INFO)
 
     client = OctokitUtils.get_octokit_client
     commits = client.commits(repo.full_name)
@@ -47,8 +49,12 @@ class LoadRepoCommits < LoadStep
          LoadHelpers.process_authors(c, email, names)
       end
     }
+    pid, size = `ps ax -o pid,rss | grep -E "^[[:space:]]*#{$$}"`.strip.split.map(&:to_i)
+    GithubLoad.log_current_msg("Memory before cleanup #{size} KB", LogLevel::INFO)
     commits = nil
     GC.start
+    pid, size = `ps ax -o pid,rss | grep -E "^[[:space:]]*#{$$}"`.strip.split.map(&:to_i)
+    GithubLoad.log_current_msg("Memory after cleanup #{size} KB", LogLevel::INFO)
 
 
     puts "Finish Step: #{name}" 

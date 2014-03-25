@@ -218,13 +218,13 @@ class LoadHelpers
       end
   end
 
-  def self.search(name)
+  def self.search(identifier)
       sleep(3.0)
-      search_type = get_search_type(name)
-      puts "Searching by #{search_type} for #{name} (Throttling 3s)"
+      search_type = get_search_type(identifier)
+      puts "Searching by #{search_type} for #{identifier} (Throttling 3s)"
       client = OctokitUtils.get_octokit_client
       #search_type = (name.split(' ').length < 2) ? "login" : "name"
-      search_results = client.search_users("#{name} in:#{search_type}", options = {:sort => "followers"}) 
+      search_results = client.search_users("#{identifier} in:#{search_type}", options = {:sort => "followers"}) 
       num_results = search_results[:attrs][:total_count]
       return search_results, num_results
   end

@@ -17,8 +17,11 @@ class LoadRepoPullRequests < LoadStep
     puts "--- Loading PRs for #{repo.full_name}"
     puts "---------"
     GithubLoad.log_current_msg("Loading PRs for #{repo.full_name}", LogLevel::INFO)
+    
 
     client = OctokitUtils.get_octokit_client
+    pid, size = `ps ax -o pid,rss | grep -E "^[[:space:]]*#{$$}"`.strip.split.map(&:to_i)
+    GithubLoad.log_current_msg("Initial memory before cleanup #{size} KB", LogLevel::INFO)
 
     pull_requests = client.pulls(repo.full_name, state = "open")
     pull_requests.concat(client.pulls(repo.full_name, state = "closed"))
@@ -40,8 +43,12 @@ class LoadRepoPullRequests < LoadStep
         :state => (pr[:attrs][:merged_at].nil? ? pr[:attrs][:state] : "merged")
         )
     }
+    pid, size = `ps ax -o pid,rss | grep -E "^[[:space:]]*#{$$}"`.strip.split.map(&:to_i)
+    GithubLoad.log_current_msg("Memory before cleanup #{size} KB", LogLevel::INFO)
     pull_requests = nil
     GC.start
+    pid, size = `ps ax -o pid,rss | grep -E "^[[:space:]]*#{$$}"`.strip.split.map(&:to_i)
+    GithubLoad.log_current_msg("Memory after cleanup #{size} KB", LogLevel::INFO)
 
     puts "Finish Step: #{name}" 
   end
