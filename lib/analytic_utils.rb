@@ -228,8 +228,8 @@ class AnalyticUtils
     if search_criteria[:state]
       where_stmt += " AND " unless search_criteria[:state].join == ""
       open = " pr.state = 'open' "
-      closed = " pr.date_merged IS NOT NULL "
-      merged = " pr.state = 'closed' AND pr.date_merged IS NULL "
+      merged = " pr.date_merged IS NOT NULL "
+      closed = " pr.state = 'closed' AND pr.date_merged IS NULL "
       search_criteria[:state].each {|state|
         puts "STATE #{state}"
         if state == 'open'
