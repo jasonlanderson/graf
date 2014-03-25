@@ -8,20 +8,26 @@ The following are general guidelines for writing GRAF Code:
   4) Only write enough code to make your test pass
 
 ###
+# GRAF Deploymnent Process
+###
+All GRAF pushes should be coordinated from the single deployment (jumpbox) machine.
+
+###
 # Adding Code
 ###
 Before adding code, the developer needs to review the files and indiviual changes:
   1) git status
   2) git diff - Look at the individual code changes and ensure every line is required (e.g. no debug stmts)
   3) git branch - Make sure you're adding to a local branch...NOT MASTER
-  3) git add <files>
-  4) git commit -m "<Intelligent message of what is being commited>"
+  4) git add <files>
+  5) git commit -m "<Intelligent message of what is being commited>"
 
 ###
 # New Changes in New Branch Going to Master
 ###
 1) Create new branch
   - git checkout -b <branch-name>
+
 2) Make changes and commit to branch
   - git commit -a -m "<commit>"
 

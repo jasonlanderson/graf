@@ -40,9 +40,14 @@ group :doc do
   gem 'sdoc', require: false
 end
 
-gem 'rspec-rails', '~> 3.0.0.beta'
+
 group :development, :test do
-  gem 'capybara', '>= 2.2.0'
+  gem 'capybara', :git => 'git://github.com/jnicklas/capybara.git'
+  gem 'rspec-rails', '~> 3.0.0.beta'
+  gem 'selenium-webdriver'
+  gem 'jasmine-rails'
+  gem 'jasmine-jquery-rails'
+  #gem "capybara-webkit"
 
   # The following optional lines are part of the advanced setup.
   # gem 'guard-rspec', '2.5.0'

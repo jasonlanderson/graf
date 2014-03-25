@@ -5,7 +5,7 @@ require 'constants'
 
 class LoadHelpers
 
-  # Tests done
+  # Done
   def self.merge(company_name)
     Constants.merge_companies.each { |company|
         #set["companies"].each { |company|
@@ -22,7 +22,7 @@ class LoadHelpers
       return company_name
   end
 
-  # 
+  # Done
   def self.get_login(pr_user)
     # Get "login" value from user object.
     if pr_user[:attrs]
@@ -59,15 +59,7 @@ class LoadHelpers
 
       # "Clean" company name, removing initial, capitilzing, etc
       company_name = merge(user_details[:attrs][:company])
-
-      #company = nil
-
-      # Create company if we don't have a record already
-      #if user_details[:attrs][:company] != "" && user_details[:attrs][:company] != nil # TODO This case should be caught already by the merge function
       company = create_company_if_not_exist(company_name)
-      #else
-      #  company = create_company_if_not_exist("Independent")
-      #end
 
       # TODO, Determine whether always removing middle initial is such a good idea. Searching with initial seems to break github search
 
@@ -90,6 +82,9 @@ class LoadHelpers
     return user
   end
 
+
+  # Test 
+  # 
   def self.create_company_if_not_exist(company_name)
     company = Company.find_by(name: company_name)
 
@@ -107,7 +102,7 @@ class LoadHelpers
     return company
   end
 
-  # Tests are written, but rails functions don't seem to work w/rspec?
+  
   def self.format_name(name)
       if (name.split(' ').length < 2) # If login
         name = name.downcase
@@ -133,10 +128,17 @@ class LoadHelpers
   end
 
 
+
+  # def self.check_db_for_user(name, email)
+    
+
+  # end
+# Name shouldn't be processed if it's unknown, a bot, etc.
+# 
   def self.process_authors(c, email, names) 
     client = OctokitUtils.get_octokit_client
     names.each do |n| 
-      next if ((name == "unknown") || email.include?("none") || name.include?("jenkins") || name.include?("Bot") || email.include?("jenkins") || email.include?("-bot") || (email.length > 25) )
+      next if ((n == "unknown") || email.include?("none") || n.include?("jenkins") || n.include?("Bot") || email.include?("jenkins") || email.include?("-bot") || (email.length > 25) )
       start = Time.now        
       user, user_type, login, user_id, search_results = nil
       num_results = 0
@@ -208,6 +210,7 @@ class LoadHelpers
   #     return search_results, num_results
   # end
 
+  # Done
   def self.get_search_type(identifier)
       if (identifier.split(' ').length > 1)
           return "name"
@@ -229,7 +232,7 @@ class LoadHelpers
       return search_results, num_results
   end
 
-
+  # Test should return a hash with certain keys (companies, users, ...)
   def self.get_stackalytics_JSON()
     return JSON.parse(HTTParty.get("http://raw.github.com/stackforge/stackalytics/master/etc/default_data.json"))
   end
