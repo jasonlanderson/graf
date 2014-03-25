@@ -57,6 +57,56 @@ describe AnalyticUtils do
   #   end
   # end
 
+  # TODO: Find where to put this in SpecHelper
+  def remove_whitespace(input)
+    input.gsub!(/\s+/, "")
+  end
+
+  describe "#get_state_criteria_clause" do
+    it "can filter for all states" do
+      states = ["open", "merged", "closed"]
+      results = AnalyticUtils.get_state_criteria_clause(states)
+      expect(remove_whitespace(results)).to include remove_whitespace("((pr.state = 'open') OR (pr.date_merged IS NOT NULL) OR (pr.state = 'closed' AND pr.date_merged IS NULL))")
+    end
+
+    it "can filter for only open" do
+      states = ["open"]
+      results = AnalyticUtils.get_state_criteria_clause(states)
+      expect(remove_whitespace(results)).to include remove_whitespace("((pr.state = 'open'))")
+    end
+
+    it "can filter for only merged" do
+      states = ["merged"]
+      results = AnalyticUtils.get_state_criteria_clause(states)
+      expect(remove_whitespace(results)).to include remove_whitespace("((pr.date_merged IS NOT NULL))")
+    end
+
+    it "can filter for only closed" do
+      states = ["closed"]
+      results = AnalyticUtils.get_state_criteria_clause(states)
+      expect(remove_whitespace(results)).to include remove_whitespace("((pr.state = 'closed' AND pr.date_merged IS NULL))")
+    end
+
+
+    it "can filter for only open or merged" do
+      states = ["open", "merged"]
+      results = AnalyticUtils.get_state_criteria_clause(states)
+      expect(remove_whitespace(results)).to include remove_whitespace("((pr.state = 'open') OR (pr.date_merged IS NOT NULL))")
+    end
+
+    it "can filter for only open or closed" do
+      states = ["open", "closed"]
+      results = AnalyticUtils.get_state_criteria_clause(states)
+      expect(remove_whitespace(results)).to include remove_whitespace("((pr.state = 'open') OR (pr.state = 'closed' AND pr.date_merged IS NULL)")
+    end
+
+    it "can filter for only merged or closed" do
+      states = ["merged", "closed"]
+      results = AnalyticUtils.get_state_criteria_clause(states)
+      expect(remove_whitespace(results)).to include remove_whitespace("((pr.date_merged IS NOT NULL) OR (pr.state = 'closed' AND pr.date_merged IS NULL)")
+    end
+  end
+
   describe "get_state_stats" do
 
     before :each do

@@ -19,7 +19,7 @@ feature "Pages are accessible via links" do
 end
 
 feature "Restricting Graf View As Types" do
-  scenario "User changes mertic to be avg days open and can only select bar and line" do
+  xscenario "User changes mertic to be avg days open and can only select bar and line" do
     pending("Need to figure out how to reference jquery multiselect values")
     #visit root_path
     #find(:xpath, '//*[@id="view_type"]')
@@ -28,7 +28,7 @@ feature "Restricting Graf View As Types" do
     #expect(page).to have_content("GRAF")
   end
 
-  scenario "User changes to commits" do
+  xscenario "User changes to commits" do
     pending("Need to figure out how to reference jquery multiselect values")
     #visit root_path
     #find(:xpath, '//*[@id="view_type"]')

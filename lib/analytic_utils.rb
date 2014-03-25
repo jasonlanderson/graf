@@ -172,7 +172,6 @@ class AnalyticUtils
     #   puts "MODIFIED FILTER ARRAY #{filter}, VALUE #{filter[1]} , CLASS #{filter[1].class}"
     # }
 
-
     if search_criteria[:month] && search_criteria[:month].join != ''
       where_stmt += "AND #{DBUtils.get_month('pr.date_created')} IN ('#{search_criteria[:month].join("', '")}') "
     end
@@ -222,21 +221,8 @@ class AnalyticUtils
       where_stmt += "AND r.name IN ('#{search_criteria[:repo].join("', '")}') "
     end
 
-    if search_criteria[:state]
-      where_stmt += " AND " unless search_criteria[:state].join == ""
-      open = " pr.state = 'open' "
-      merged = " pr.date_merged IS NOT NULL "
-      closed = " pr.state = 'closed' AND pr.date_merged IS NULL "
-      search_criteria[:state].each {|state|
-        if state == 'open'
-          where_stmt += " (#{open}) "
-        elsif state == 'merged'
-          where_stmt += " (#{merged}) "
-        elsif state == 'closed' # Not including merged prs
-          where_stmt += " (#{closed}) "
-        end
-        where_stmt += " OR " unless state == search_criteria[:state].last
-      }
+    if search_criteria[:state] && search_criteria[:state].join != ''
+      where_stmt += " AND " + get_state_criteria_clause(search_criteria[:state])
     end
 
     # TODO, See if 
@@ -258,6 +244,21 @@ class AnalyticUtils
       where_stmt += "AND o.login IN ('#{(search_criteria[:org]).join("', '")}') "
     end
     return where_stmt
+  end
+
+  def self.get_state_criteria_clause(states)
+    state_where_stmt = "("
+    states.each { |state|
+      if state == 'open'
+        state_where_stmt += " (pr.state = 'open') "
+      elsif state == 'merged'
+        state_where_stmt += " (pr.date_merged IS NOT NULL) "
+      elsif state == 'closed' # Not including merged prs
+        state_where_stmt += " (pr.state = 'closed' AND pr.date_merged IS NULL) "
+      end
+      state_where_stmt += " OR " unless state == states.last
+    }
+    return state_where_stmt + ")"
   end
 
   def self.get_state_stats(data)
