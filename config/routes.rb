@@ -42,6 +42,9 @@ Graf::Application.routes.draw do  resources :github_loads
   # root 'welcome#index'
   root :to => 'analytics#index'
 
+  # Testing
+  mount JasmineRails::Engine => '/specs' if defined?(JasmineRails)
+
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'
 

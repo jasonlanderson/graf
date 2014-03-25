@@ -11,33 +11,32 @@
 
     function restrictSelections() {
 
-      if (($("#metric_filter").val() != "prs") && ($("#metric_filter").val() != "avg_days_open")){
-          $("#state_filter").val(""); // Reset state filter to default value
-          $("#state_filter").multiselect().multiselect('disable'); // Disable state filter
-          $("#group_by_filter option[value=state]").attr('disabled', true); // Disable state option in "Group By" filter
-          $("#group_by_filter").multiselect({multiple: false, header: "Select an option", selectedList: 1 }).multiselect('refresh'); 
-        }     
-        else {
-          $("#state_filter").multiselect().multiselect('enable'); // Enable state filter
-          $("#group_by_filter option[value=state]").attr('disabled', false); // Enable state option in "Group By" filter
-          $("#group_by_filter").multiselect({multiple: false, header: "Select an option", selectedList: 1 }).multiselect('refresh'); 
-        }
+      if (($("#metric_filter").val() != "prs") && ($("#metric_filter").val() != "avg_days_open")) {
+        $("#state_filter").val(""); // Reset state filter to default value
+        $("#state_filter").multiselect().multiselect('disable'); // Disable state filter
+        $("#group_by_filter option[value=state]").attr('disabled', true); // Disable state option in "Group By" filter
+        $("#group_by_filter").multiselect({multiple: false, header: "Select an option", selectedList: 1 }).multiselect('refresh'); 
+      }     
+      else {
+        $("#state_filter").multiselect().multiselect('enable'); // Enable state filter
+        $("#group_by_filter option[value=state]").attr('disabled', false); // Enable state option in "Group By" filter
+        $("#group_by_filter").multiselect({multiple: false, header: "Select an option", selectedList: 1 }).multiselect('refresh'); 
+      }
 
-        // Restrict view type
-        if (($("#metric_filter").val() != "prs") && ($("#metric_filter").val() != "commits") && ($("#metric_filter").val() != "avg_days_open"))  {
-          $("#view_type").val("bar"); // Set to bar view
-          $("#view_type").multiselect({multiple: false, header: "Select an option", selectedList: 1 }).multiselect('refresh');
-          $("#view_type option[value=line]").attr('disabled','disabled'); // Disable line option in "View by" button
-          $("#view_type option[value=pie]").attr('disabled','disabled');
-          $("#view_type").multiselect('refresh'); 
-
-        }
-        else {
-          $("#view_type option[value=line]").removeAttr('disabled'); // Disable line option in "View by" button
-          $("#view_type option[value=pie]").removeAttr('disabled');
-          $("#view_type").multiselect().multiselect('refresh'); 
-          //$("#view_type").val("pie"); // This allows the line graph to be disabled 
-        }
+      // Restrict view type
+      if (($("#metric_filter").val() != "prs") && ($("#metric_filter").val() != "commits") && ($("#metric_filter").val() != "avg_days_open"))  {
+        $("#view_type").val("bar"); // Set to bar view
+        $("#view_type").multiselect({multiple: false, header: "Select an option", selectedList: 1 }).multiselect('refresh');
+        $("#view_type option[value=line]").attr('disabled','disabled'); // Disable line option in "View by" button
+        $("#view_type option[value=pie]").attr('disabled','disabled');
+        $("#view_type").multiselect('refresh'); 
+      }
+      else {
+        $("#view_type option[value=line]").removeAttr('disabled'); // Disable line option in "View by" button
+        $("#view_type option[value=pie]").removeAttr('disabled');
+        $("#view_type").multiselect().multiselect('refresh'); 
+        //$("#view_type").val("pie"); // This allows the line graph to be disabled 
+      }
     }
 
     function filterUpdate() {
@@ -45,13 +44,12 @@
       // Reset/Disable state filters if metric set to commits or percent_merged
       console.log("filterUpdate")
       var s = new Date();
-      if (($("#metric_filter").val() == "commits") || ($("#metric_filter").val() == "percent_merged"))
-       {
-            $("#group_by_filter").val("company") 
-            $("#state_filter").val("")
-            $("#group_by_filter").multiselect('refresh'); 
-            $("#state_filter").multiselect('refresh'); 
-       }
+      if (($("#metric_filter").val() == "commits") || ($("#metric_filter").val() == "percent_merged")) {
+        $("#group_by_filter").val("company") 
+        $("#state_filter").val("")
+        $("#group_by_filter").multiselect('refresh'); 
+        $("#state_filter").multiselect('refresh'); 
+      }
       var e = new Date();
       //console.log("Total time")
       //console.log((e - s)/1000 + "s")
@@ -66,7 +64,7 @@
         searchCriteria: values
       }
       
-      restrictSelections()
+      restrictSelections();
 
       // Make API calls to update the data in table
       analyticsAJAX(data, 'table', 'text', updateTableCallback);     
@@ -276,21 +274,23 @@ Group By:
 <hr>
 
 <div style="margin-bottom: 0; padding-bottom: 0; font-weight:normal;" >
-<p id="chart_title" style="display:inline; margin-bottom: 0; padding-bottom: 0; font-size:20px"> Pull Requests Grouped By Company</p>
-<a href="#" class="tooltip"><%= image_tag "tooltip.gif" %><span style="font-size: 15px;">  
-This pie chart represents all pull requests submitted to the Cloud Foundry Github repositories during the specifed time period. <br> Each slice represents a separate company, and the size of each slice is proportional to the company's quantity of contributions. 
-<br>
-Each of the top 5 contributers have their own slice of the pie chart. The remaining contributers are then merged together into the "Others" slice.
-</span></a>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br><br>
-<div>
+  <p id="chart_title" style="display:inline; margin-bottom: 0; padding-bottom: 0; font-size:20px"> Pull Requests Grouped By Company</p>
+  <a href="#" class="tooltip"><%= image_tag "tooltip.gif" %><span style="font-size: 15px;">  
+  This pie chart represents all pull requests submitted to the Cloud Foundry Github repositories during the specifed time period. <br> Each slice represents a separate company, and the size of each slice is proportional to the company's quantity of contributions. 
+  <br>
+  Each of the top 5 contributers have their own slice of the pie chart. The remaining contributers are then merged together into the "Others" slice.
+  </span></a>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <br><br>
+  
+  <div>
     View As:
     <select id="view_type" >
         <option value="pie">Pie Chart</option>
         <option value="bar">Bar Chart</option>
         <option value="line">Line Chart</option>
     </select>
+
     Rollup:
     <select id="rollup" >
         <option value="5" selected>5</option>
@@ -305,6 +305,7 @@ Each of the top 5 contributers have their own slice of the pie chart. The remain
 <%# ----------------- %>
 <%# This is the Chart %>
 <%# ----------------- %>
+<br>
 <div id="metric_chart"></div>
 
 
