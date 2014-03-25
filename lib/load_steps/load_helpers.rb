@@ -135,12 +135,12 @@ class LoadHelpers
 
   def self.process_authors(c, email, names) 
     client = OctokitUtils.get_octokit_client
-    names.each do |name| 
+    names.each do |n| 
       next if ((name == "unknown") || email.include?("none") || name.include?("jenkins") || name.include?("Bot") || email.include?("jenkins") || email.include?("-bot") || (email.length > 25) )
       start = Time.now        
       user, user_type, login, user_id, search_results = nil
       num_results = 0
-      name = format_name(name)
+      name = format_name(n)
 
       # Check our db for user by checking: full name, first name, email
       user = (User.find_by(name: name ) || User.find_by(login: name) || User.find_by(name: name.split(' ')[0]) || User.find_by(email: email) || User.find_by(login: email.gsub(".", "").split("@")[0]) || User.find_by(login: email.gsub(".", "").split("@")[0].chop) )
@@ -164,10 +164,10 @@ class LoadHelpers
             )
         else
           # Search by email, unless commit has multiple contributors
-          search_results, num_results = search_email(email) if !email.include?("pair")
+          search_results, num_results = search(email) if !email.include?("pair")
 
           # Search by name if commit submitted by pair, or if email not in github db
-          search_results, num_results = search_name(name) if ( !search_results || (search_results[:attrs][:total_count] == 0))
+          search_results, num_results = search(name) if ( !search_results || (search_results[:attrs][:total_count] == 0))
       
           # Even if results are returned from searching for name, we need the name_match function to validate search results. 
           # This is done by ensuring result name (or login) directly matches with given commit author name
@@ -218,7 +218,7 @@ class LoadHelpers
       end
   end
 
-  def self.search_name(name)
+  def self.search(name)
       sleep(3.0)
       search_type = get_search_type(name)
       puts "Searching by #{search_type} for #{name} (Throttling 3s)"

@@ -22,20 +22,20 @@ describe LoadHelpers do
 
   end
 
+  it 'can get id type' do
+    identifier = "Kalonji Bankole"
+    expect(LoadHelpers.get_search_type(identifier)).to match("name")
+
+    identifier = "kkbankol"
+    expect(LoadHelpers.get_search_type(identifier)).to match("login")
+    
+    identifier = "kkbankol@us.ibm.com"
+    expect(LoadHelpers.get_search_type(identifier)).to match("email")
+
+  end
+
   it 'can extract login' do
-    # # Octokit.user(username)[:_rels][:self].get.data[:attrs][:login]
-    # user = {
-    #         :_rels => {
-    #           :self => Struct.new(:get).new(Struct.new(:data).new({:attrs => {
-    #           :company => "IBM",
-    #           :login => "kkbankol",
-    #           :name => "Kalonji Bankole"
-    #           }}))          
-    #     }
-    # }
-    # expect(LoadHelpers.get_login(user)).to match("kkbankol")
-
-
+    
     # Octokit.pulls("repo")[0][:user][:attrs][:login]
     user = {
               :attrs => {
@@ -117,9 +117,7 @@ describe LoadHelpers do
 
   # Test that there are no companies without users
   it 'all companies have users' do
-    # Branch out, show results in both cases. What are the results when the where statement is true, and vice versa
-
-    #Run 
     expect(Company.where("NOT EXISTS (SELECT * FROM users where companies.id = users.company_id)").length).to match(0)
   end
+
 end
