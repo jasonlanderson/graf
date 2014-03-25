@@ -23,24 +23,25 @@
       "org_type": "org",
       "load": true,
       "repos_to_skip": []
-    },
-    {
-      "name": "mongodb",
-      "org_type": "org",
-      "load": true,
-      "repos_to_skip": []
-    },
-    {
-      "name": "openstack",
-      "org_type": "org",
-      "load": true,
-      "repos_to_skip": []
-    },
-    {
-      "name": "openstack-infra",
-      "org_type": "org",
-      "load": true,
-      "repos_to_skip": []
     }
+    // },
+    // {
+    //   "name": "mongodb",
+    //   "org_type": "org",
+    //   "load": true,
+    //   "repos_to_skip": []
+    // },
+    // {
+    //   "name": "openstack",
+    //   "org_type": "org",
+    //   "load": true,
+    //   "repos_to_skip": []
+    // },
+    // {
+    //   "name": "openstack-infra",
+    //   "org_type": "org",
+    //   "load": true,
+    //   "repos_to_skip": []
+    // }
   ]
 }

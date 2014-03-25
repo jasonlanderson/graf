@@ -68,7 +68,6 @@ class GithubLoader
     client = OctokitUtils.get_octokit_client
     # TODO: Create delta load code
 
-
     Repo.all().each {|repo|
         # Load PRs for each repo
         pulls = JSON.parse(HTTParty.get("https://api.github.com/search/issues?q=repo:#{repo[:full_name]}+type:pr+updated:%3E#{parsed_date}", :headers => {"User-Agent" => "kkbankol"} ).body)["items"]
@@ -134,14 +133,11 @@ class GithubLoader
 
                   names = commit[:attrs][:commit][:attrs][:author][:name].gsub(" and ", "|").gsub(", ","|").gsub(" & ", '|').split('|')
                   LoadHelpers.process_authors(c, email, names)
-
             end
-
         }
         end   
     }
     last_completed = Time.now.utc
   end
-
 
 end

@@ -3,44 +3,74 @@ require "load_steps/load_helpers"
 require 'faker'
 
 describe LoadHelpers do
-  #name = "Kalonji K. bankole"
-  #it 'contains no initial?' do
-  #	expect(LoadHelpers.format_name(name)).to equal("Kalonji Bankole")
-  #end
-  #
-  #name = "kalonji BANKOLE"
-  #it 'capitalized?' do
-  #	expect LoadHelpers.format_name(name).to equal "Kalonji Bankole"
-  #end
-
-  # def create_fake_users(count)
-  #   for i in 1..count
-  #     # Use random number to determine if user is Independent or not
-  #     if rand(10) < 5
-  #       company = Company.find_by(name: "Independent")
-  #     else  
-  #       company = LoadHelpers.create_company_if_not_exist(Faker::Company.name)
-  #     end
-
-  #     # Create user with fake data
-  #     user = User.create(
-  #       :company => company,
-  #       :git_id => rand(6),
-  #       :login => Faker::Internet.user_name,
-  #       :name => Faker::Name.name,
-  #       #:location => , 
-  #       :email => Faker::Internet.email,
-  #       :created_at => rand(2.years).ago
-  #     )
-  #   end
-  # end
+  
+  it 'contains no initial?' do
+    name = "Kalonji K. bankole"
+    expect(LoadHelpers.format_name(name)).to match("Kalonji Bankole")
+  end
+  
+  it 'capitalized?' do
+    name = "kalonji BANKOLE"
+    expect(LoadHelpers.format_name(name)).to match "Kalonji Bankole"
+  end
 
   # self.merge
-  # it 'merges similar companies' do
-  #    # This merge function should be more generic by removing "Corporation", ".Inc", etc
-  #    company = "IBM Corporation"
-	 #   expect(LoadHelpers.merge(company)).to match("IBM")
-  # end
+  it 'merges similar companies' do
+     # This merge function should be more generic by removing "Corporation", ".Inc", etc
+     company = "IBM Corporation"
+     expect(LoadHelpers.merge(company)).to match("IBM")
+
+  end
+
+  it 'can get id type' do
+    identifier = "Kalonji Bankole"
+    expect(LoadHelpers.get_search_type(identifier)).to match("name")
+
+    identifier = "kkbankol"
+    expect(LoadHelpers.get_search_type(identifier)).to match("login")
+    
+    identifier = "kkbankol@us.ibm.com"
+    expect(LoadHelpers.get_search_type(identifier)).to match("email")
+
+  end
+
+  it 'can extract login' do
+    
+    # Octokit.pulls("repo")[0][:user][:attrs][:login]
+    user = {
+              :attrs => {
+              :company => "IBM",
+              :login => "kkbankol",
+              :name => "Kalonji Bankole"
+          }
+    }
+    expect(LoadHelpers.get_login(user)).to match("kkbankol")
+
+
+    # Octokit.search_users(username)[:items][0][:attrs][:login]
+    user = {
+          :attrs => {            
+            :items => [{
+              :attrs => {
+                :login => "kkbankol"
+              }
+            }]  
+          }
+    }
+
+    expect(LoadHelpers.get_login(user)).to match("kkbankol")
+
+
+    user = {
+              :company => "IBM",
+              :login => "kkbankol",
+              :name => "Kalonji Bankole"
+    }
+
+    expect(LoadHelpers.get_login(user)).to match("kkbankol")
+
+  end
+
 
   # self.create_user_if_not_exist
 
@@ -66,6 +96,7 @@ describe LoadHelpers do
   # end
 
 
+
   # Test that there are no users without a company. Those users should be under "Independent"
   # it 'all users have a company' do
   #   # Create 20 to 100 mock users
@@ -85,13 +116,8 @@ describe LoadHelpers do
   # end
 
   # Test that there are no companies without users
-  # it 'all companies have users' do
-  #   #Load mock objects      
-        
+  it 'all companies have users' do
+    expect(Company.where("NOT EXISTS (SELECT * FROM users where companies.id = users.company_id)").length).to match(0)
+  end
 
-  #   # Branch out, show results in both cases. What are the results when the where statement is true, and vice versa
-
-  #   #Run 
-  #   expect(Company.where("NOT EXISTS (SELECT * FROM users where companies.id = users.company_id)").length).to match(0)
-  # end
 end
