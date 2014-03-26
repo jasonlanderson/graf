@@ -12,7 +12,7 @@ class Constants
     PreLoadStackalytics.new,
     LoadOrgs.new,
     PostFixUsersWithoutCompanies.new,
-    PostDeleteUsersWithoutContribs.new,
+    #PostDeleteUsersWithoutContribs.new,
     PostDeleteCompaniesWithoutUsers.new
   ]
 

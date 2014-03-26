@@ -1,5 +1,6 @@
 require 'github_loader'
 require 'log_level'
+require 'db_utils'
 
 class LoadController < ApplicationController
   def load_status
@@ -58,15 +59,7 @@ class LoadController < ApplicationController
 
   # TODO Take this out after development
   def delete_all_data
-    Commit.delete_all
-    Company.delete_all
-    GithubLoadMsg.delete_all
-    GithubLoad.delete_all
-    PullRequest.delete_all
-    Repo.delete_all
-    User.delete_all
-    Org.delete_all
-
+    DBUtils.delete_all_data
     render :text => "All Data Deleted"
   end
   

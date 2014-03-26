@@ -1,6 +1,7 @@
 require "spec_helper"
 require "load_steps/load_helpers"
 require 'faker'
+require 'db_utils'
 
 describe LoadHelpers do
   
@@ -31,7 +32,6 @@ describe LoadHelpers do
     
     identifier = "kkbankol@us.ibm.com"
     expect(LoadHelpers.get_search_type(identifier)).to match("email")
-
   end
 
   it 'can extract login' do
@@ -45,7 +45,6 @@ describe LoadHelpers do
           }
     }
     expect(LoadHelpers.get_login(user)).to match("kkbankol")
-
 
     # Octokit.search_users(username)[:items][0][:attrs][:login]
     user = {
@@ -73,7 +72,17 @@ describe LoadHelpers do
 
 
   # self.create_user_if_not_exist
-
+  it "can create a user record" do
+    user = { :attrs => { :company => "IBM", :login => "kkbankol", :name => "Kalonji Bankole" }}
+    DBUtils.delete_all_data
+    expect(User.all.length).to match(0)
+    expect(User.find_by(name: "Kalonji Bankole")).to match(nil)
+    LoadHelpers.create_user_if_not_exist(user)
+    expect(User.all.length).to match(1)
+    #expect(User.find_by(name: "Kalonji Bankole")).to exist
+    expect(User.find_by(name: "Kalonji Bankole").login).to match("kkbankol")
+    DBUtils.delete_all_data
+  end
     # Test returns user object that already exists
     # pr_user = User.all[0] #client.user("kkbankol")
 

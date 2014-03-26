@@ -81,5 +81,15 @@ class DBUtils
     return "case when #{state_field} = 'open' then 'open' else (case when #{merged_date_field} IS NULL then 'closed' else 'merged' end) end"
   end
 
+  def self.delete_all_data
+    Commit.delete_all
+    Company.delete_all
+    GithubLoadMsg.delete_all
+    GithubLoad.delete_all
+    PullRequest.delete_all
+    Repo.delete_all
+    User.delete_all
+    Org.delete_all    
+  end
 
 end
