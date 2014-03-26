@@ -14,7 +14,7 @@ class PostOverrideCompaniesStackalytics < LoadStep
 
     override_user_companies
 
-    puts "Finish Step: #{name}"
+    GithubLoad.log_current_msg("Finish Step: #{name}", LogLevel::INFO)
   end
 
   def revert

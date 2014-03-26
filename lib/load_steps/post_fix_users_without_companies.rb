@@ -34,8 +34,7 @@ class PostFixUsersWithoutCompanies < LoadStep
         }
       }
     }
-
-    puts "Finish Step: #{name}"
+    GithubLoad.log_current_msg("Finish Step: #{name}", LogLevel::INFO)
   end
 
   def revert

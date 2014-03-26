@@ -13,7 +13,7 @@ class PostDeleteCompaniesWithoutUsers < LoadStep
 
     Company.where("NOT EXISTS (SELECT * FROM users where companies.id = users.company_id)").destroy_all
 
-    puts "Finish Step: #{name}"    
+    GithubLoad.log_current_msg("Finish Step: #{name}", LogLevel::INFO)  
   end
 
   def revert
