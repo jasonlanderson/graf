@@ -9,7 +9,7 @@ class GithubLoad < ActiveRecord::Base
   end
 
   def self.set_current_load(current_load)
-      @@current_load = current_load
+    @@current_load = current_load
   end
 
   def log_msg(msg, log_level, log_date = Time.now)
