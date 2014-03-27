@@ -44,7 +44,9 @@ class GithubLoader
       load.log_msg("***Doing an initial load", LogLevel::INFO)
       begin
         (InitialLoad.new).execute
-      rescue => e
+      # Catch all exceptions, even out of memory exceptions
+      # Otherwise just get rid of Exception below
+      rescue Exception => e
         load.log_msg("The following error occured...", LogLevel::ERROR)
         load.log_msg(e.message, LogLevel::ERROR)
         load.log_msg(e.backtrace.join("\n"), LogLevel::ERROR)

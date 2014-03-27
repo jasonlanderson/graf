@@ -39,9 +39,11 @@
 
     function onDataReceived(response) {
       // Process any messages
+      //alert(response.messages.length);
       if (response.messages.length > 0) {
         // Add them to the output log
         for (var i in response.messages) {
+          //alert(response.messages[i]);
           writeToLoadLog(response.messages[i]);
         }
 
@@ -141,7 +143,10 @@
       logEntry.style.color= "red";
     }
 
-    logEntry.innerHTML = msg_obj.log_date_formatted + " - " + msg_obj.msg
+    //logEntry.innerHTML = msg_obj.log_date_formatted + " - " + msg_obj.msg
+    log_date = new Date(msg_obj.log_date);
+    msg = msg_obj.msg.replace("\n", "<br/>");
+    logEntry.innerHTML = log_date.toString() + " - " + msg
     $("#loadLogCtr").append(logEntry)
   }
 </script>
