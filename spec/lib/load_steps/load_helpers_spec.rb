@@ -5,33 +5,39 @@ require 'db_utils'
 
 describe LoadHelpers do
   
-  it 'contains no initial?' do
+  it 'removes initial' do
     name = "Kalonji K. bankole"
-    expect(LoadHelpers.format_name(name)).to match("Kalonji Bankole")
+    expect(LoadHelpers.format_name(name)).to match "Kalonji Bankole"
   end
   
-  it 'capitalized?' do
+  it 'titleized?' do
     name = "kalonji BANKOLE"
     expect(LoadHelpers.format_name(name)).to match "Kalonji Bankole"
   end
 
+  it 'catches unnamed users' do
+    name = "        "
+    expect(LoadHelpers.format_name(name)).to match "No Name Listed"
+    name = nil
+    expect(LoadHelpers.format_name(name)).to match "No Name Listed"
+  end 
+
   # self.merge
   it 'merges similar companies' do
-     # This merge function should be more generic by removing "Corporation", ".Inc", etc
+     # This merge function should be more generic by removing "Corporation", ".Inc", etc from all companies
      company = "IBM Corporation"
-     expect(LoadHelpers.merge(company)).to match("IBM")
-
+     expect(LoadHelpers.merge(company)).to match "IBM"
   end
 
   it 'can get id type' do
     identifier = "Kalonji Bankole"
-    expect(LoadHelpers.get_search_type(identifier)).to match("name")
+    expect(LoadHelpers.get_search_type(identifier)).to match "name"
 
     identifier = "kkbankol"
-    expect(LoadHelpers.get_search_type(identifier)).to match("login")
+    expect(LoadHelpers.get_search_type(identifier)).to match "login"
     
     identifier = "kkbankol@us.ibm.com"
-    expect(LoadHelpers.get_search_type(identifier)).to match("email")
+    expect(LoadHelpers.get_search_type(identifier)).to match "email"
   end
 
   it 'can extract login' do
@@ -44,7 +50,7 @@ describe LoadHelpers do
               :name => "Kalonji Bankole"
           }
     }
-    expect(LoadHelpers.get_login(user)).to match("kkbankol")
+    expect(LoadHelpers.get_login(user)).to match "kkbankol"
 
     # Octokit.search_users(username)[:items][0][:attrs][:login]
     user = {
@@ -57,7 +63,7 @@ describe LoadHelpers do
           }
     }
 
-    expect(LoadHelpers.get_login(user)).to match("kkbankol")
+    expect(LoadHelpers.get_login(user)).to match "kkbankol"
 
 
     user = {
@@ -66,7 +72,7 @@ describe LoadHelpers do
               :name => "Kalonji Bankole"
     }
 
-    expect(LoadHelpers.get_login(user)).to match("kkbankol")
+    expect(LoadHelpers.get_login(user)).to match "kkbankol"
 
   end
 
@@ -75,36 +81,36 @@ describe LoadHelpers do
   it "can create a user record" do
     user = { :attrs => { :company => "IBM", :login => "kkbankol", :name => "Kalonji Bankole" }}
     DBUtils.delete_all_data
-    expect(User.all.length).to match(0)
-    expect(User.find_by(name: "Kalonji Bankole")).to match(nil)
+    expect(User.all.length).to match 0
+    expect(User.find_by(name: "Kalonji Bankole")).to match nil
     LoadHelpers.create_user_if_not_exist(user)
-    expect(User.all.length).to match(1)
-    #expect(User.find_by(name: "Kalonji Bankole")).to exist
-    expect(User.find_by(name: "Kalonji Bankole").login).to match("kkbankol")
+    expect(User.all.length).to match 1
+    #expect(User.find_by(name: "Kalonji Bankole")).to exist # This is the correct way to do it
+    expect(User.find_by(name: "Kalonji Bankole").login).to match "kkbankol"
     DBUtils.delete_all_data
   end
-    # Test returns user object that already exists
-    # pr_user = User.all[0] #client.user("kkbankol")
 
 
-    # Test creates user object that doesn't exist
-    # name = "some user not in db"
-    # pr_user = client.user(name)
-    # LoadHelpers.create_user_if_not_exist(pr_user)
-    # 
+  xit "should place users w/no company under Independent" do
+    user = { :attrs => { :company => nil, :login => "kkbankol", :name => "Kalonji Bankole" }}
+    DBUtils.delete_all_data
+    expect(User.all.length).to match 0
+    expect(User.find_by(name: "Kalonji Bankole")).to match nil
+    LoadHelpers.create_user_if_not_exist(user)
+    expect(User.all.length).to match 1
+    #expect(User.find_by(name: "Kalonji Bankole")).to exist # This is the correct way to do it
+    expect(User.find_by(name: "Kalonji Bankole").company.name).to match "Independent"
+    DBUtils.delete_all_data
+  end
 
-    # Test associating company with a user (should become method)
+  it "can fetch and parse stackalytics data" do
+    expect(LoadHelpers.get_stackalytics_JSON().class).to match Hash
+  end
 
 
-
-  # it 'searching commit author'
-  #   name = "Kalonji Bankole"
-  #   LoadHelpers.search_name()
-  #   name = "Matthew"
+  # it "all users have contributions"
 
   # end
-
-
 
   # Test that there are no users without a company. Those users should be under "Independent"
   # it 'all users have a company' do

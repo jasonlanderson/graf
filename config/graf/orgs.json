@@ -16,31 +16,13 @@
       "name": "cloudfoundry-incubator",
       "org_type": "org",
       "load": true,
-      "repos_to_skip": ["stager", "runtime-schema", "executor", "admin-ui", "inigo"]
+      "repos_to_skip": []
     },
     {
       "name": "cloudfoundry-community",
       "org_type": "org",
       "load": true,
-      "repos_to_skip": []
-    },
-    {
-      "name": "mongodb",
-      "org_type": "org",
-      "load": true,
-      "repos_to_skip": []
-    },
-    {
-      "name": "openstack",
-      "org_type": "org",
-      "load": true,
-      "repos_to_skip": []
-    },
-    {
-      "name": "openstack-infra",
-      "org_type": "org",
-      "load": true,
-      "repos_to_skip": []
+      "repos_to_skip": ["bosh-cloudstack-cpi"]
     }
   ]
 }

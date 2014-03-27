@@ -8,7 +8,6 @@ class LoadHelpers
   # Done
   def self.merge(company_name)
     Constants.merge_companies.each { |company|
-        #set["companies"].each { |company|
         company["alias"].each { |mapping|
           if (company_name.nil? || company_name.strip.length == 0)
              return "Independent"
@@ -17,7 +16,6 @@ class LoadHelpers
              return company["name"]
           end
         }
-        #}
       }
       return company_name
   end
@@ -102,14 +100,14 @@ class LoadHelpers
     return company
   end
 
-  
+  # Done
   def self.format_name(name)
-      if (name.split(' ').length < 2) # If login
-        name = name.downcase
+      if (name.nil? || (name.strip == ""))
+        name = "No Name Listed"
+      elsif (name.split(' ').length < 2) # If login
+        name = name.downcase      
       elsif (name.split(' ').length > 2) # If name includes middle initial, remove it, as initials don't work with search
         name = "#{name.split(' ')[0]} #{name.split(' ')[2]}".titleize 
-      elsif name.strip == ""
-        name = "No Name Listed"
       else
         name = name.titleize
       end
@@ -138,7 +136,7 @@ class LoadHelpers
   def self.process_authors(c, email, names) 
     client = OctokitUtils.get_octokit_client
     names.each do |n| 
-      next if ((n == "unknown") || email.include?("none") || n.include?("jenkins") || n.include?("Bot") || email.include?("jenkins") || email.include?("-bot") || (email.length > 25) )
+      next if ((n == "unknown") || n.include?("jenkins") || n.include?("Bot") || email.include?("jenkins") || email.include?("-bot") || (email.length > 25) )
       start = Time.now        
       user, user_type, login, user_id, search_results = nil
       num_results = 0
@@ -148,6 +146,8 @@ class LoadHelpers
       user = (User.find_by(name: name ) || User.find_by(login: name) || User.find_by(name: name.split(' ')[0]) || User.find_by(email: email) || User.find_by(login: email.gsub(".", "").split("@")[0]) || User.find_by(login: email.gsub(".", "").split("@")[0].chop) )
 
       unless user
+
+        # Put this stuff in a JSON file
         if email.include?("pivotal")
           user = User.create(
             :company => Company.find_by(name: "Pivotal"), 
@@ -166,7 +166,7 @@ class LoadHelpers
             )
         else
           # Search by email, unless commit has multiple contributors
-          search_results, num_results = search(email) if !email.include?("pair")
+          search_results, num_results = search(email) unless (email.include?("pair") || email.include?("none") || (email.length > 25))
 
           # Search by name if commit submitted by pair, or if email not in github db
           search_results, num_results = search(name) if ( !search_results || (search_results[:attrs][:total_count] == 0))
