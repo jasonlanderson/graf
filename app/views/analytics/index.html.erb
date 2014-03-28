@@ -11,6 +11,7 @@
 
     function restrictSelections() {
 
+      // Restrict the group by and filter for state
       if (($("#metric_filter").val() != "prs") && ($("#metric_filter").val() != "avg_days_open")) {
         $("#state_filter").val(""); // Reset state filter to default value
         $("#state_filter").multiselect().multiselect('disable'); // Disable state filter
@@ -32,10 +33,9 @@
         $("#view_type").multiselect('refresh'); 
       }
       else {
-        $("#view_type option[value=line]").removeAttr('disabled'); // Disable line option in "View by" button
+        $("#view_type option[value=line]").removeAttr('disabled'); // Enable line option in "View by" button
         $("#view_type option[value=pie]").removeAttr('disabled');
-        $("#view_type").multiselect().multiselect('refresh'); 
-        //$("#view_type").val("pie"); // This allows the line graph to be disabled 
+        $("#view_type").multiselect().multiselect('refresh');
       }
     }
 
@@ -44,6 +44,7 @@
       // Reset/Disable state filters if metric set to commits or percent_merged
       console.log("filterUpdate")
       var s = new Date();
+
       if (($("#metric_filter").val() == "commits") || ($("#metric_filter").val() == "percent_merged")) {
         $("#group_by_filter").val("company") 
         $("#state_filter").val("")
@@ -105,21 +106,20 @@
       $.plot($("#metric_chart"), data, options);
     }
     
-    function updateTableCallback(result){
+    function updateTableCallback(result) {
       $("#table_container").empty();
       $("#table_container").html(result);
       $("#metric_table").dataTable(ANALYTICS_TABLE_OPTIONS);
     }
 
-    function downloadCSV(result){
-      
+    function downloadCSV(result) {
       var CSV = result;
       window.URL = window.webkitURL || window.URL;
       var contentType = 'text/csv';
       var csvFile = new Blob([CSV], {type: contentType});
       var a = document.createElement('a');
       a.download = 'graf_output.csv';
-      a.href = window.URL.createObjectURL(csvFile);//
+      a.href = window.URL.createObjectURL(csvFile);
       //a.textContent = 'Download CSV';
       a.onclick = destroyClickedElement;
       a.dataset.downloadurl = [contentType, a.download, a.href];
@@ -127,11 +127,9 @@
       a.click();
       //window.location = a.href;
       //window.open($("#download_button").attr('href'),'_blank')
-      
     }
 
-    function destroyClickedElement(event)
-    {
+    function destroyClickedElement(event) {
       document.body.removeChild(event.target);
     }
   
@@ -140,18 +138,18 @@
     //
     $(document).ready(function () {
       $("#metric_filter").change(function () {
-        filterUpdate()
+        filterUpdate();
       });
 
       $("#group_by_filter").change(function () {
-        filterUpdate()
+        filterUpdate();
       });
 
       $("#view_type").change(function () {
-        filterUpdate()
+        filterUpdate();
       });
       $("#rollup").change(function () {
-        filterUpdate()
+        filterUpdate();
       });
 
       $("#download").click(function () {
@@ -160,7 +158,8 @@
           groupBy: $("#group_by_filter").val(),
           rollupCount: $("#rollup").val(),
           searchCriteria: createSearchCriteriaJSON()
-        }
+        };
+
         analyticsAJAX(data, 'csv', 'text', downloadCSV);
       });
 
@@ -169,7 +168,7 @@
 
       // Load initial chart
       filterUpdate();
-/////
+
       function showTooltip(x, y, contents, z) {
         $('<div id="flot-tooltip">' + contents + '</div>').css({
             top: y - 30,
@@ -179,16 +178,15 @@
       }
 
       var previousPoint = null;
-
-          function convertToDate(time) {
-            timestamp = time * 1000
-            var newDate = new Date(timestamp);
-            var month = newDate.getMonth() + 1;
-            var year = newDate.getYear() + 1900;
-            //var monthName = getMonthName(dateString);
-            date = month + "/" + year
-            //console.log(newDate.getYear())
-            return date;
+      function convertToDate(time) {
+        timestamp = time * 1000
+        var newDate = new Date(timestamp);
+        var month = newDate.getMonth() + 1;
+        var year = newDate.getYear() + 1900;
+        //var monthName = getMonthName(dateString);
+        date = month + "/" + year
+        //console.log(newDate.getYear())
+        return date;
       }
 
       function getMonthName(numericMonth) {
@@ -199,30 +197,28 @@
       }
  
       $("#metric_chart").bind("plothover", function (event, pos, item) {
-          if (item) {
-              if ((previousPoint != item.dataIndex) || (previousLabel != item.series.label)) {
-                  previousPoint = item.dataIndex;
-                  previousLabel = item.series.label;
-   
-                  $("#flot-tooltip").remove();
-   
-                  var x = convertToDate(item.datapoint[0]),
-                  y = item.datapoint[1];
-                  z = item.series.color;
-   
-                  showTooltip(item.pageX, item.pageY,
-                      "<b>" + item.series.label + "</b><br /> " + x + " : " + y ,
-                      z);
-              }
-          } else {
-              $("#flot-tooltip").remove();
-              previousPoint = null;
+        if (item) {
+          if ((previousPoint != item.dataIndex) || (previousLabel != item.series.label)) {
+            previousPoint = item.dataIndex;
+            previousLabel = item.series.label;
+
+            $("#flot-tooltip").remove();
+
+            var x = convertToDate(item.datapoint[0]),
+            y = item.datapoint[1];
+            z = item.series.color;
+
+            showTooltip(item.pageX, item.pageY,
+                "<b>" + item.series.label + "</b><br /> " + x + " : " + y ,
+                z);
           }
+        }
+        else {
+            $("#flot-tooltip").remove();
+            previousPoint = null;
+        }
       });
-/////
-
-      });
-
+    });
   </script>
 <% end %>
 

@@ -1,0 +1,37 @@
+{
+  "base_metrics": {
+    "prs": {
+      "filters": ["org", "month", "quarter", "year", "start_date", "end_date",
+                  "state", "repo", "company", "user", "name"],
+      "group_by": ["month", "quarter", "year", "state", "repo", "company", "user", "name"]
+    },
+    "commits": {
+      "filters": ["org", "month", "quarter", "year", "start_date", "end_date",
+                  "repo", "company", "user", "name"],
+      "group_by": ["month", "quarter", "year", "repo", "company", "user", "name"]
+    }
+  },
+
+  "metrics": [
+    {
+      "name": "prs",
+      "description": "Pull Requests",
+      "view_as": ["pie", "bar", "line"]
+    },
+    {
+      "name": "prs",
+      "description": "Pull Requests",
+      "view_as": ["pie", "bar", "line"]
+    },
+    {
+      "name": "prs",
+      "description": "Pull Requests",
+      "view_as": ["pie", "bar", "line"]
+    },
+    {
+      "name": "commits",
+      "description": "Pull Requests",
+      "view_as": ["pie", "bar", "line"]
+    }
+  ]
+}
