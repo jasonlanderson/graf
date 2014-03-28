@@ -138,7 +138,7 @@
     // Initialize the Filters
     jQuery.each(FILTERS, function(filterName, filterDetails) {
       //alert(filterDetails.multiselect);
-      if (filterDetails.multiselect) {
+      if (filterDetails.type == "multiselect") {
         $("#" + filterName + "_filter").multiselect({selectedList: 4 , noneSelectedText: "All"}).multiselectfilter();
       }
     });

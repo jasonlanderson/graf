@@ -3,18 +3,18 @@
 //
 function toDash(input) {
   return input.replace(/([A-Z])/g, function($1){return "-"+$1.toLowerCase();});
-};
+}
 
 function toUnderscore(input) {
   return input.replace(/([A-Z])/g, function($1){return "_"+$1.toLowerCase();});
-};
+}
 
 //
 // Date Functions
 //
 function utcToLocal(input) {
   return new Date("2012-11-29 17:00:34 UTC");
-};
+}
 
 // function rubyUTCDateToLocal(rubyDate){
 //   // Sample Input: 2014-03-27T05:31:33.000Z
@@ -31,12 +31,15 @@ function utcToLocal(input) {
 var startTimerTime = null;
 function startTimer() {
   startTimerTime = new Date();
-};
+}
 
 function endTimer() {
   var endTimerTime = new Date();
   var resultTimeStr = (endTimerTime - startTimerTime)/1000 + "s";
   console.log("Timer time: " + resultTimeStr);
   return resultTimeStr;
-};
+}
 
+function destroyClickedElement(event) {
+  document.body.removeChild(event.target);
+}

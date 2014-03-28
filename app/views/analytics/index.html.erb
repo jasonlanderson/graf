@@ -9,54 +9,13 @@
       $( document ).tooltip();
     });
 
-    function restrictSearchCriteria() {
-      // Restrict the group by and filter for state
-      if (($("#metric_filter").val() != "prs") && ($("#metric_filter").val() != "avg_days_open")) {
-        $("#state_filter").val(""); // Reset state filter to default value
-        $("#state_filter").multiselect().multiselect('disable'); // Disable state filter
-        $("#group_by_filter option[value=state]").attr('disabled', true); // Disable state option in "Group By" filter
-        $("#group_by_filter").multiselect({multiple: false, header: "Select an option", selectedList: 1 }).multiselect('refresh'); 
-      }     
-      else {
-        $("#state_filter").multiselect().multiselect('enable'); // Enable state filter
-        $("#group_by_filter option[value=state]").attr('disabled', false); // Enable state option in "Group By" filter
-        $("#group_by_filter").multiselect({multiple: false, header: "Select an option", selectedList: 1 }).multiselect('refresh'); 
-      }
-    }
-
-    function restrictChartViews() {
-      // Restrict view type
-      
-      if (($("#metric_filter").val() != "prs") && ($("#metric_filter").val() != "commits") && ($("#metric_filter").val() != "avg_days_open"))  {
-        $("#view_type").val("bar"); // Set to bar view
-        $("#view_type").multiselect({multiple: false, header: "Select an option", selectedList: 1 }).multiselect('refresh');
-        $("#view_type option[value=line]").attr('disabled','disabled'); // Disable line option in "View by" button
-        $("#view_type option[value=pie]").attr('disabled','disabled');
-        $("#view_type").multiselect('refresh'); 
-      }
-      else {
-        $("#view_type option[value=line]").removeAttr('disabled'); // Enable line option in "View by" button
-        $("#view_type option[value=pie]").removeAttr('disabled');
-        $("#view_type").multiselect().multiselect('refresh');
-      }
-    }
-
     function filterUpdate() {
 
       // Reset/Disable state filters if metric set to commits or percent_merged
-      console.log("filterUpdate")
-      
+      console.log("filterUpdate");
 
-      if (($("#metric_filter").val() == "commits") || ($("#metric_filter").val() == "percent_merged")) {
-        $("#group_by_filter").val("company") 
-        $("#state_filter").val("")
-        $("#group_by_filter").multiselect('refresh'); 
-        $("#state_filter").multiselect('refresh'); 
-      }
-
-      values = createSearchCriteriaJSON()
+      values = createSearchCriteriaJSON();
       localStorage.setItem('vals', JSON.stringify(values));
-      viewType = $("#view_type").val();
 
       data = {
         metric: $("#metric_filter").val(),
@@ -73,7 +32,7 @@
 
       // Update Chart
       data.rollupCount = $("#rollup").val();
-      analyticsAJAX(data, viewType, 'json', updateChartCallback);
+      analyticsAJAX(data, $("#view_type").val(), 'json', updateChartCallback);
 
       // Update the titles
       $("#chart_title").html($("#metric_filter option:selected").text() +  " Grouped By " + $("#group_by_filter option:selected").text());
@@ -128,10 +87,6 @@
       a.click();
       //window.location = a.href;
       //window.open($("#download_button").attr('href'),'_blank')
-    }
-
-    function destroyClickedElement(event) {
-      document.body.removeChild(event.target);
     }
   
     //

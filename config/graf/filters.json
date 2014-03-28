@@ -1,37 +1,37 @@
 {
   "filters": {
     "org": {
-      "multiselect": true
+      "type": "multiselect"
     },
     "month": {
-      "multiselect": true
+      "type": "multiselect"
     },
     "quarter": {
-      "multiselect": true
+      "type": "multiselect"
     },
     "year": {
-      "multiselect": true
+      "type": "multiselect"
     },
     "start_date": {
-      "multiselect": false
+      "type": "datepicker"
     },
     "end_date": {
-      "multiselect": false
+      "type": "datepicker"
     },
     "state": {
-      "multiselect": true
+      "type": "multiselect"
     },
     "repo": {
-      "multiselect": true
+      "type": "multiselect"
     },
     "company": {
-      "multiselect": true
+      "type": "multiselect"
     },
     "user": {
-      "multiselect": true
+      "type": "multiselect"
     },
     "name": {
-      "multiselect": true
+      "type": "multiselect"
     }
   }
 }
