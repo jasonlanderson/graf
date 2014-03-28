@@ -1,6 +1,9 @@
 <% require 'constants' %>
 CHART_COLORS = <%= Constants.get_chart_colors.to_json %>;
 METRICS = <%= Constants.metrics.to_json %>;
+FILTERS = <%= Constants.filters.to_json %>;
+MONTH_NAMES = [ "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+                "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" ];
 
 ANALYTICS_TABLE_OPTIONS = {
   "sScrollY": "350px",
@@ -11,16 +14,6 @@ ANALYTICS_TABLE_OPTIONS = {
   "bSort" : false,
   //"aaSorting": [[ 1, "desc" ]]
 };
-
-whereDropDownIds = ["month_filter", 
-                        "quarter_filter", 
-                        "year_filter", 
-                        "repo_filter", 
-                        "state_filter", 
-                        "company_filter", 
-                        "user_filter",
-                        "name_filter",
-                        "org_filter"];
 
 PIE_OPTIONS = {
   series: {
@@ -45,8 +38,6 @@ PIE_OPTIONS = {
 };
 PIE_OPTIONS.colors = CHART_COLORS;
 
-var monthNames = [ "Jan", "Feb", "Mar", "Apr", "May", "Jun",
-    "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" ];
 
 LINE_OPTIONS = {
   series: {
@@ -58,15 +49,15 @@ LINE_OPTIONS = {
     }
   },
   xaxis: {
-          //mode: "time",
-          tickFormatter: function(x) { 
-            console.log(x)
-            date = new Date(x*1000);
-            month = monthNames[date.getMonth()] ;
-            year = date.getFullYear();
-            return month + " " + year
-           }
-        },
+    //mode: "time",
+    tickFormatter: function(x) { 
+      console.log(x)
+      date = new Date(x*1000);
+      month = MONTH_NAMES[date.getMonth()] ;
+      year = date.getFullYear();
+      return month + " " + year
+     }
+  },
   legend: {
     position: "nw",
     noColumns: 3
@@ -103,8 +94,6 @@ function parsePieToBar(data) {
      points.push(Array(data[i].data, i));  //Array(i, data[i].data));
      ticks.push(Array(data[i].label, i)); //Array(i, data[i].label));
   }
-
-
 
   data = [{
     data: points,

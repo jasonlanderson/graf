@@ -1,7 +1,21 @@
+DATE_PICKER_OPTIONS = {
+    showOn: "button",
+    buttonImage: "<%= image_path "calendar.png" %>",
+    buttonImageOnly: true
+  };
+
 //
 // Search Criteria Box Functions
 //
 function initializeSearchCriteria() {
+  // Initialize the Filters
+  jQuery.each(FILTERS, function(filterName, filterDetails) {
+    //alert(filterDetails.multiselect);
+    $("#" + filterName + "_filter").change(function () {
+      filterUpdate()
+    });
+  });
+
   $("#metric_filter").change(function () {
     filterUpdate()
   });
@@ -10,68 +24,19 @@ function initializeSearchCriteria() {
     filterUpdate()
   });
 
-  $("#month_filter").change(function () {
-    filterUpdate()
-  });
-
-  $("#quarter_filter").change(function () {
-    filterUpdate()
-  });
-
-  $("#year_filter").change(function () {
-    filterUpdate()
-  });
-
-  $("#repo_filter").change(function () {
-    filterUpdate()
-  });
-
-  $("#state_filter").change(function () {
-    filterUpdate()
-  });
-
-  $("#company_filter").change(function () {
-    filterUpdate()
-  });
-
-  $("#user_filter").change(function () {
-    filterUpdate()
-  });
-
-  $("#name_filter").change(function () {
-    filterUpdate()
-  });
-
-  $("#org_filter").change(function () {
-    filterUpdate()
-  });
-
-  $("#start_date_filter").change(function () {
-    filterUpdate()
-  });
-
-  $("#end_date_filter").change(function () {
-    filterUpdate()
-  });
-
   $("#clear_search_criteria_button").click(function () {
     clearSearchCriteria();
   });
 
+  //
+  // Setup the date pickers
+  //
   $(function() {
-    $( "#start_date_filter" ).datepicker({
-      showOn: "button",
-      buttonImage: "<%= image_path "calendar.png" %>",
-      buttonImageOnly: true
-    });
+    $( "#start_date_filter" ).datepicker(DATE_PICKER_OPTIONS);
   });
 
   $(function() {
-    $( "#end_date_filter" ).datepicker({
-      showOn: "button",
-      buttonImage: "<%= image_path "calendar.png" %>",
-      buttonImageOnly: true
-    });
+    $( "#end_date_filter" ).datepicker(DATE_PICKER_OPTIONS);
   });
 }
 
@@ -87,41 +52,38 @@ function loadLocalStorage() {
 function sanitizeSearchValue(input) {
   if (input == null) {
     var arr = new Array();
-    arr[0] = ""
-    return arr
+    arr[0] = "";
+    return arr;
   }
   else {
-    return input  
+    return input;
   }
 }
 
 function createSearchCriteriaJSON() {
-  
-  values = {
-          month: sanitizeSearchValue($("#month_filter").val()),
-          quarter: sanitizeSearchValue($("#quarter_filter").val()),
-          year: sanitizeSearchValue($("#year_filter").val()),
-          start_date: ($("#start_date_filter").val()),
-          end_date: ($("#end_date_filter").val()),
-          repo: sanitizeSearchValue($("#repo_filter").val()),
-          state: sanitizeSearchValue($("#state_filter").val()),
-          company: sanitizeSearchValue($("#company_filter").val()),
-          user: sanitizeSearchValue($("#user_filter").val()),
-          name: sanitizeSearchValue($("#name_filter").val()),
-          org: sanitizeSearchValue($("#org_filter").val())
-        };
-  //console.log("Values");      
-  //console.log(values);
-  // for (i in values) {
-  //   id = "#" + i + "_filter";
-  //   console.log($(id).val())
-  //   console.log(typeof $(id).val())
-  //   if ( typeof $(id).val() == null) {      
-  //     $(id).val("");
-  //   }
-  //}
+  values = {}
+  alert(JSON.stringify(METRICS));
+  alert(METRICS.metrics[$("#metric_filter").val()].base_metric);
+  filters = METRICS.base_metrics[METRICS.metrics[$("#metric_filter").val()].base_metric].filters
+  $.each(filters, function(index, filterName) {
+    values[filterName] = sanitizeSearchValue($("#" + filterName + "_filter").val())
+  });
 
-  return values
+   // = {
+   //        month: $("#month_filter"),
+   //        quarter: sanitizeSearchValue($("#quarter_filter").val()),
+   //        year: sanitizeSearchValue($("#year_filter").val()),
+   //        start_date: ($("#start_date_filter").val()),
+   //        end_date: ($("#end_date_filter").val()),
+   //        repo: sanitizeSearchValue($("#repo_filter").val()),
+   //        state: sanitizeSearchValue($("#state_filter").val()),
+   //        company: sanitizeSearchValue($("#company_filter").val()),
+   //        user: sanitizeSearchValue($("#user_filter").val()),
+   //        name: sanitizeSearchValue($("#name_filter").val()),
+   //        org: sanitizeSearchValue($("#org_filter").val())
+   //      };
+
+  return values;
 }
 
 

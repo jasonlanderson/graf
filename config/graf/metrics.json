@@ -11,26 +11,26 @@
       "group_by": ["month", "quarter", "year", "repo", "company", "user", "name"]
     }
   },
-  "metrics": [
-    {
-      "name": "prs",
+  "metrics": {
+    "prs": {
+      "base_metric": "prs",
       "description": "Pull Requests",
       "view_as": ["pie", "bar", "line"]
     },
-    {
-      "name": "avg_days_open",
+    "avg_days_open": {
+      "base_metric": "prs",
       "description": "Average Days Opened",
       "view_as": ["pie", "bar", "line"]
     },
-    {
-      "name": "percent_merged",
+    "percent_merged": {
+      "base_metric": "prs",
       "description": "Percent Merged",
       "view_as": ["bar"]
     },
-    {
-      "name": "commits",
+    "commits": {
+      "base_metric": "commits",
       "description": "Commits",
       "view_as": ["pie", "bar", "line"]
     }
-  ]
+  }
 }

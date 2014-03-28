@@ -30,6 +30,8 @@ Get delta github data: https://coderwall.com/p/hu2n4g
 
 How to delete all database data: rake db:schema:load
 
+If you are changing text that is inserted into a javascript.js.erb file with no other changed (e.g. changing one of the constants.js file), then run the following for the changes to be picked up = rake tmp:clear
+
 
 ###
 # MYSQL

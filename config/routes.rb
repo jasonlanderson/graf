@@ -34,6 +34,7 @@ Graf::Application.routes.draw do  resources :github_loads
   # Info Paths
   get '/info', to: 'info#info'
   get '/constants/:constant', to: 'constants#index'
+  get '/clear_constants', to: 'constants#clear'
 
 
   # The priority is based upon order of creation: first created -> highest priority.

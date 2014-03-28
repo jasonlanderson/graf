@@ -1,0 +1,37 @@
+{
+  "filters": {
+    "org": {
+      "multiselect": true
+    },
+    "month": {
+      "multiselect": true
+    },
+    "quarter": {
+      "multiselect": true
+    },
+    "year": {
+      "multiselect": true
+    },
+    "start_date": {
+      "multiselect": false
+    },
+    "end_date": {
+      "multiselect": false
+    },
+    "state": {
+      "multiselect": true
+    },
+    "repo": {
+      "multiselect": true
+    },
+    "company": {
+      "multiselect": true
+    },
+    "user": {
+      "multiselect": true
+    },
+    "name": {
+      "multiselect": true
+    }
+  }
+}

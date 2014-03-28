@@ -1,4 +1,5 @@
 require 'octokit_utils'
+require 'constants'
 
 class ConstantsController < ApplicationController
 
@@ -9,5 +10,10 @@ class ConstantsController < ApplicationController
       render :text => "Cannot find constant '#{params[:constant]}'"
     end
   end
-  
+
+  def clear
+    Constants.clear_constants
+    render :text => "Constants have been cleared'"
+  end
+
 end
