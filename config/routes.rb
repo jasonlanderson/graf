@@ -33,6 +33,7 @@ Graf::Application.routes.draw do  resources :github_loads
 
   # Info Paths
   get '/info', to: 'info#info'
+  get '/constants/:constant', to: 'constants#index'
 
 
   # The priority is based upon order of creation: first created -> highest priority.
@@ -44,6 +45,7 @@ Graf::Application.routes.draw do  resources :github_loads
 
   # Testing
   mount JasmineRails::Engine => '/specs' if defined?(JasmineRails)
+
 
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'

@@ -9,8 +9,7 @@
       $( document ).tooltip();
     });
 
-    function restrictSelections() {
-
+    function restrictSearchCriteria() {
       // Restrict the group by and filter for state
       if (($("#metric_filter").val() != "prs") && ($("#metric_filter").val() != "avg_days_open")) {
         $("#state_filter").val(""); // Reset state filter to default value
@@ -23,8 +22,11 @@
         $("#group_by_filter option[value=state]").attr('disabled', false); // Enable state option in "Group By" filter
         $("#group_by_filter").multiselect({multiple: false, header: "Select an option", selectedList: 1 }).multiselect('refresh'); 
       }
+    }
 
+    function restrictChartViews() {
       // Restrict view type
+      
       if (($("#metric_filter").val() != "prs") && ($("#metric_filter").val() != "commits") && ($("#metric_filter").val() != "avg_days_open"))  {
         $("#view_type").val("bar"); // Set to bar view
         $("#view_type").multiselect({multiple: false, header: "Select an option", selectedList: 1 }).multiselect('refresh');
@@ -43,7 +45,7 @@
 
       // Reset/Disable state filters if metric set to commits or percent_merged
       console.log("filterUpdate")
-      var s = new Date();
+      
 
       if (($("#metric_filter").val() == "commits") || ($("#metric_filter").val() == "percent_merged")) {
         $("#group_by_filter").val("company") 
@@ -51,9 +53,6 @@
         $("#group_by_filter").multiselect('refresh'); 
         $("#state_filter").multiselect('refresh'); 
       }
-      var e = new Date();
-      //console.log("Total time")
-      //console.log((e - s)/1000 + "s")
 
       values = createSearchCriteriaJSON()
       localStorage.setItem('vals', JSON.stringify(values));
@@ -65,7 +64,9 @@
         searchCriteria: values
       }
       
-      restrictSelections();
+      // Make restrictions
+      restrictSearchCriteria();
+      restrictChartViews();
 
       // Make API calls to update the data in table
       analyticsAJAX(data, 'table', 'text', updateTableCallback);     

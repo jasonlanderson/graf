@@ -9,7 +9,7 @@ describe('#sanitizeSearchValue', function() {
 });
 
 
-xdescribe('#createSearchCriteriaJSON', function() {
+describe('#createSearchCriteriaJSON', function() {
   beforeEach(function () {
     jasmine.getFixtures().fixturesPath = '/spec/javascripts/fixtures';
     $('#fixture').remove();

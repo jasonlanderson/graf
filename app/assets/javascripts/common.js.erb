@@ -1,13 +1,19 @@
-function toDash(input){
+//
+// Variable Name Manipulation
+//
+function toDash(input) {
   return input.replace(/([A-Z])/g, function($1){return "-"+$1.toLowerCase();});
 };
 
-function toUnderscore(input){
+function toUnderscore(input) {
   return input.replace(/([A-Z])/g, function($1){return "_"+$1.toLowerCase();});
 };
 
-function utcToLocal(input){
-  return new Date("2012-11-29 17:00:34 UTC")
+//
+// Date Functions
+//
+function utcToLocal(input) {
+  return new Date("2012-11-29 17:00:34 UTC");
 };
 
 // function rubyUTCDateToLocal(rubyDate){
@@ -17,3 +23,20 @@ function utcToLocal(input){
 //   //return date + " " + time + " UTC"
 //   return new Date(date + " " + time + " PM UTC")
 // };
+
+
+//
+// Timer Functions
+//
+var startTimerTime = null;
+function startTimer() {
+  startTimerTime = new Date();
+};
+
+function endTimer() {
+  var endTimerTime = new Date();
+  var resultTimeStr = (endTimerTime - startTimerTime)/1000 + "s";
+  console.log("Timer time: " + resultTimeStr);
+  return resultTimeStr;
+};
+
