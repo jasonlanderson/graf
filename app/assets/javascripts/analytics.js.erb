@@ -116,9 +116,81 @@ function parsePieToBar(data) {
   return {data: data, options: options};
 }
 
-function filterUpdate() {
+function setupAnalyticsReady() {
+  // Setup Controls
+  $("#metric_filter").change(function () {
+    filterUpdateAnalytics();
+  });
+
+  $("#group_by_filter").change(function () {
+    filterUpdateAnalytics();
+  });
+
+  $("#view_type").change(function () {
+    filterUpdateAnalytics();
+  });
+  $("#rollup").change(function () {
+    filterUpdateAnalytics();
+  });
+
+  $("#rollup").multiselect(MULTI_SELECT_OPTIONS);
+  $("#metric_filter").multiselect(MULTI_SELECT_OPTIONS);
+  $("#group_by_filter").multiselect(MULTI_SELECT_OPTIONS);
+  $("#view_type").multiselect(MULTI_SELECT_OPTIONS);
+
+  $("#download").click(function () {
+    data = {
+      metric: $("#metric_filter").val(),
+      groupBy: $("#group_by_filter").val(),
+      rollupCount: $("#rollup").val(),
+      searchCriteria: createSearchCriteriaJSON()
+    };
+
+    analyticsAJAX(data, 'csv', 'text', downloadCSV);
+  });
+
+  // Load local storage
+  loadLocalStorage();
+
+  // Load initial chart
+  filterUpdateAnalytics();
+
+  var previousPoint = null;
+
+  $("#metric_chart").bind("plothover", function (event, pos, item) {
+    if (item) {
+      if ((previousPoint != item.dataIndex) || (previousLabel != item.series.label)) {
+        previousPoint = item.dataIndex;
+        previousLabel = item.series.label;
+
+        $("#flot-tooltip").remove();
+
+        var x = convertToDate(item.datapoint[0]),
+        y = item.datapoint[1];
+        z = item.series.color;
+
+        showTooltip(item.pageX, item.pageY,
+            "<b>" + item.series.label + "</b><br /> " + x + " : " + y ,
+            z);
+      }
+    }
+    else {
+        $("#flot-tooltip").remove();
+        previousPoint = null;
+    }
+  });
+}
+
+
+function guardedFilterUpdateAnalytics() {
+  if(autoUpdateOnFilterChange) {
+    filterUpdateAnalytics();
+  }
+}
+
+function filterUpdateAnalytics() {
   // Reset/Disable state filters if metric set to commits or percent_merged
-  console.log("filterUpdate");
+  console.log("filterUpdateAnalytics");
 
   values = createSearchCriteriaJSON();
   localStorage.setItem('vals', JSON.stringify(values));
@@ -134,7 +206,7 @@ function filterUpdate() {
   restrictChartViews();
 
   // Make API calls to update the data in table
-  analyticsAJAX(data, 'table', 'text', updateTableCallback);     
+  analyticsAJAX(data, 'table', 'text', updateAnalyticsTableCallback);     
 
   // Update Chart
   data.rollupCount = $("#rollup").val();
@@ -172,7 +244,7 @@ function updateChartCallback(result){
   $.plot($("#metric_chart"), data, options);
 }
 
-function updateTableCallback(result) {
+function updateAnalyticsTableCallback(result) {
   $("#table_container").empty();
   $("#table_container").html(result);
   $("#metric_table").dataTable(ANALYTICS_TABLE_OPTIONS);

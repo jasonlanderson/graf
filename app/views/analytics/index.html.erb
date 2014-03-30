@@ -8,114 +8,12 @@
     $(function() {
       $( document ).tooltip();
     });
-
-    function downloadCSV(result) {
-      var CSV = result;
-      window.URL = window.webkitURL || window.URL;
-      var contentType = 'text/csv';
-      var csvFile = new Blob([CSV], {type: contentType});
-      var a = document.createElement('a');
-      a.download = 'graf_output.csv';
-      a.href = window.URL.createObjectURL(csvFile);
-      //a.textContent = 'Download CSV';
-      a.onclick = destroyClickedElement;
-      a.dataset.downloadurl = [contentType, a.download, a.href];
-      document.body.appendChild(a);
-      a.click();
-    }
   
     //
     // Initial Page Load Activities
     //
     $(document).ready(function () {
-
-      // Setup Controls
-      $("#metric_filter").change(function () {
-        filterUpdate();
-      });
-
-      $("#group_by_filter").change(function () {
-        filterUpdate();
-      });
-
-      $("#view_type").change(function () {
-        filterUpdate();
-      });
-      $("#rollup").change(function () {
-        filterUpdate();
-      });
-
-      $("#rollup").multiselect(MULTI_SELECT_OPTIONS);
-      $("#metric_filter").multiselect(MULTI_SELECT_OPTIONS);
-      $("#group_by_filter").multiselect(MULTI_SELECT_OPTIONS);
-      $("#view_type").multiselect(MULTI_SELECT_OPTIONS);
-
-      $("#download").click(function () {
-        data = {
-          metric: $("#metric_filter").val(),
-          groupBy: $("#group_by_filter").val(),
-          rollupCount: $("#rollup").val(),
-          searchCriteria: createSearchCriteriaJSON()
-        };
-
-        analyticsAJAX(data, 'csv', 'text', downloadCSV);
-      });
-
-      // Load local storage
-      loadLocalStorage();
-
-      // Load initial chart
-      filterUpdate();
-
-      function showTooltip(x, y, contents, z) {
-        $('<div id="flot-tooltip">' + contents + '</div>').css({
-            top: y - 30,
-            left: x - 135,
-            'border-color': z,
-        }).appendTo("body").fadeIn(200);
-      }
-
-      var previousPoint = null;
-      function convertToDate(time) {
-        timestamp = time * 1000
-        var newDate = new Date(timestamp);
-        var month = newDate.getMonth() + 1;
-        var year = newDate.getYear() + 1900;
-        //var monthName = getMonthName(dateString);
-        date = month + "/" + year
-        //console.log(newDate.getYear())
-        return date;
-      }
-
-      function getMonthName(numericMonth) {
-            var monthArray = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-            var alphaMonth = monthArray[numericMonth];
-         
-            return alphaMonth;
-      }
- 
-      $("#metric_chart").bind("plothover", function (event, pos, item) {
-        if (item) {
-          if ((previousPoint != item.dataIndex) || (previousLabel != item.series.label)) {
-            previousPoint = item.dataIndex;
-            previousLabel = item.series.label;
-
-            $("#flot-tooltip").remove();
-
-            var x = convertToDate(item.datapoint[0]),
-            y = item.datapoint[1];
-            z = item.series.color;
-
-            showTooltip(item.pageX, item.pageY,
-                "<b>" + item.series.label + "</b><br /> " + x + " : " + y ,
-                z);
-          }
-        }
-        else {
-            $("#flot-tooltip").remove();
-            previousPoint = null;
-        }
-      });
+      setupAnalyticsReady();
     });
   </script>
 <% end %>
@@ -161,7 +59,7 @@ Group By:
   </select>
 
 <br><br>
-
+<% @filter_update_function = 'guardedFilterUpdateAnalytics' %>
 <%= render 'shared/search_criteria' %>
 
 

@@ -146,10 +146,8 @@
 
 
   $(document).ready(function() {
-
     initializeMultiSelect();
-    initializeSearchCriteria();
-
+    initializeSearchCriteria(<%=@filter_update_function%>);
     // TODO: Clear all the dropdowns
   });
 

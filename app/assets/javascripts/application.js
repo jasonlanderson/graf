@@ -23,3 +23,5 @@
 //= require dataTables/jquery.dataTables
 //= require turbolinks
 //= require_tree .
+//= require jquery.multiselect
+//= require jquery.multiselect.filter

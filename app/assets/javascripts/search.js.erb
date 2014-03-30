@@ -3,28 +3,22 @@ DATE_PICKER_OPTIONS = {
     buttonImage: "<%= image_path "calendar.png" %>",
     buttonImageOnly: true
   };
-
+  
 var autoUpdateOnFilterChange = true;
-
-function guardedFilterUpdate() {
-  if(autoUpdateOnFilterChange) {
-    filterUpdate();
-  }
-}
 
 //
 // Search Criteria Box Functions
 //
-function initializeSearchCriteria() {
+function initializeSearchCriteria(guardedUpdate) {
   // Initialize the Filters
   jQuery.each(FILTERS, function(filterName, filterDetails) {
     $("#" + filterName + "_filter").change(function () {
-      guardedFilterUpdate();
+      guardedUpdate();
     });
   });
 
   $("#clear_search_criteria_button").click(function () {
-    clearSearchCriteria();
+    clearSearchCriteria(guardedUpdate);
   });
 
   //
@@ -61,7 +55,7 @@ function createSearchCriteriaJSON() {
 }
 
 
-function clearSearchCriteria() {
+function clearSearchCriteria(guardedUpdate) {
   // Turn off auto updates on a filter change since we will be clearing all of them
   // in a serialize fashion which would trigger multiple updates.
   autoUpdateOnFilterChange = false;
@@ -84,5 +78,5 @@ function clearSearchCriteria() {
   autoUpdateOnFilterChange = true;
 
   // Update chart now that values have been reset
-  filterUpdate();
+  guardedUpdate();
 }

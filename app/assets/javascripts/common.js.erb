@@ -27,13 +27,22 @@ function utcToLocal(input) {
   return new Date("2012-11-29 17:00:34 UTC");
 }
 
+function convertToDate(time) {
+  timestamp = time * 1000
+  var newDate = new Date(timestamp);
+  var month = newDate.getMonth() + 1;
+  var year = newDate.getYear() + 1900;
+  date = month + "/" + year
+  return date;
+}
+
 // function rubyUTCDateToLocal(rubyDate){
 //   // Sample Input: 2014-03-27T05:31:33.000Z
 //   date = rubyDate.substring(0, 10)
 //   time = rubyDate.substring(11, 22)
 //   //return date + " " + time + " UTC"
 //   return new Date(date + " " + time + " PM UTC")
-// };
+// }
 
 
 //
@@ -69,4 +78,12 @@ function downloadCSV(result) {
   a.dataset.downloadurl = [contentType, a.download, a.href];
   document.body.appendChild(a);
   a.click();
+}
+
+function showTooltip(x, y, contents, z) {
+  $('<div id="flot-tooltip">' + contents + '</div>').css({
+      top: y - 30,
+      left: x - 135,
+      'border-color': z,
+  }).appendTo("body").fadeIn(200);
 }
