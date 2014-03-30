@@ -4,6 +4,14 @@ DATE_PICKER_OPTIONS = {
     buttonImageOnly: true
   };
 
+var autoUpdateOnFilterChange = true;
+
+function guardedFilterUpdate() {
+  if(autoUpdateOnFilterChange) {
+    filterUpdate();
+  }
+}
+
 //
 // Search Criteria Box Functions
 //
@@ -11,16 +19,8 @@ function initializeSearchCriteria() {
   // Initialize the Filters
   jQuery.each(FILTERS, function(filterName, filterDetails) {
     $("#" + filterName + "_filter").change(function () {
-      filterUpdate();
+      guardedFilterUpdate();
     });
-  });
-
-  $("#metric_filter").change(function () {
-    filterUpdate();
-  });
-
-  $("#group_by_filter").change(function () {
-    filterUpdate();
   });
 
   $("#clear_search_criteria_button").click(function () {
@@ -31,21 +31,12 @@ function initializeSearchCriteria() {
   // Setup the date pickers
   //
   $(function() {
-    $( "#start_date_filter" ).datepicker(DATE_PICKER_OPTIONS);
+    $("#start_date_filter").datepicker(DATE_PICKER_OPTIONS);
   });
 
   $(function() {
-    $( "#end_date_filter" ).datepicker(DATE_PICKER_OPTIONS);
+    $("#end_date_filter").datepicker(DATE_PICKER_OPTIONS);
   });
-}
-
-function loadLocalStorage() {
-  // Load and parse local storage
-  var values = window.localStorage.getItem('vals');
-  values = jQuery.parseJSON(values);
-  for (v in values){
-    $("#" + toUnderscore(v) + "_filter").val(values[v]);
-  }
 }
 
 function sanitizeSearchValue(input) {
@@ -71,6 +62,9 @@ function createSearchCriteriaJSON() {
 
 
 function clearSearchCriteria() {
+  // Turn off auto updates on a filter change since we will be clearing all of them
+  // in a serialize fashion which would trigger multiple updates.
+  autoUpdateOnFilterChange = false;
   
   // Clear all the filters
   // TODO suspend all refreshs and do one at the end
@@ -85,6 +79,9 @@ function clearSearchCriteria() {
       alert('Unknown filterType = ' + filterDetails.type);
     }
   });
+
+  // Turn automatice filter updates back on
+  autoUpdateOnFilterChange = true;
 
   // Update chart now that values have been reset
   filterUpdate();

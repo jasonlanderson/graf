@@ -1,3 +1,14 @@
+MULTI_SELECT_OPTIONS = {multiple: false, header: "Select an option", selectedList: 1 }
+
+function loadLocalStorage() {
+  // Load and parse local storage
+  var values = window.localStorage.getItem('vals');
+  values = jQuery.parseJSON(values);
+  for (v in values){
+    $("#" + toUnderscore(v) + "_filter").val(values[v]);
+  }
+}
+
 //
 // Variable Name Manipulation
 //
@@ -42,4 +53,20 @@ function endTimer() {
 
 function destroyClickedElement(event) {
   document.body.removeChild(event.target);
+}
+
+
+function downloadCSV(result) {
+  var CSV = result;
+  window.URL = window.webkitURL || window.URL;
+  var contentType = 'text/csv';
+  var csvFile = new Blob([CSV], {type: contentType});
+  var a = document.createElement('a');
+  a.download = 'graf_output.csv';
+  a.href = window.URL.createObjectURL(csvFile);
+  //a.textContent = 'Download CSV';
+  a.onclick = destroyClickedElement;
+  a.dataset.downloadurl = [contentType, a.download, a.href];
+  document.body.appendChild(a);
+  a.click();
 }

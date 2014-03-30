@@ -116,6 +116,68 @@ function parsePieToBar(data) {
   return {data: data, options: options};
 }
 
+function filterUpdate() {
+  // Reset/Disable state filters if metric set to commits or percent_merged
+  console.log("filterUpdate");
+
+  values = createSearchCriteriaJSON();
+  localStorage.setItem('vals', JSON.stringify(values));
+
+  data = {
+    metric: $("#metric_filter").val(),
+    groupBy: $("#group_by_filter").val(),
+    searchCriteria: values
+  }
+  
+  // Make restrictions
+  restrictSearchCriteria();
+  restrictChartViews();
+
+  // Make API calls to update the data in table
+  analyticsAJAX(data, 'table', 'text', updateTableCallback);     
+
+  // Update Chart
+  data.rollupCount = $("#rollup").val();
+  analyticsAJAX(data, $("#view_type").val(), 'json', updateChartCallback);
+
+  // Update the titles
+  $("#chart_title").html($("#metric_filter option:selected").text() +  " Grouped By " + $("#group_by_filter option:selected").text());
+  $("#table_title").html($("#metric_filter option:selected").text() +  " Grouped By " + $("#group_by_filter option:selected").text());
+}
+
+function updateChartCallback(result){
+  $("#metric_chart").empty();
+
+  if (result.response.length == 0) {
+    data = [{ label: "No Pull Requests", data: 1, color:'#E0E0E0' }];
+  }
+  else {
+    data = result.response;
+  }
+
+  viewType = $("#view_type").val()
+
+  if (viewType == "pie") {
+    options = PIE_OPTIONS;
+  }
+  else if (viewType == "bar") {
+    result = parsePieToBar(data);
+    var data = result.data;
+    var options = result.options;
+  }
+  else {
+    options = LINE_OPTIONS;
+  }
+
+  $.plot($("#metric_chart"), data, options);
+}
+
+function updateTableCallback(result) {
+  $("#table_container").empty();
+  $("#table_container").html(result);
+  $("#metric_table").dataTable(ANALYTICS_TABLE_OPTIONS);
+}
+
 function restrictSearchCriteria() {
   // TODO: Refactor to use METRICS
   // Restrict the group by and filter for state

@@ -142,11 +142,6 @@
         $("#" + filterName + "_filter").multiselect({selectedList: 4 , noneSelectedText: "All"}).multiselectfilter();
       }
     });
-
-    $("#rollup").multiselect({multiple: false, header: "Select an option", selectedList: 1 });
-    $("#metric_filter").multiselect({multiple: false, header: "Select an option", selectedList: 1 });
-    $("#group_by_filter").multiselect({multiple: false, header: "Select an option" , selectedList: 1 });
-    $("#view_type").multiselect({multiple: false, header: "Select an option", selectedList: 1 });
   }
 
 
@@ -155,7 +150,7 @@
     initializeMultiSelect();
     initializeSearchCriteria();
 
-    // Clear all the dropdowns
+    // TODO: Clear all the dropdowns
   });
 
 
