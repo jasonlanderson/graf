@@ -82,6 +82,7 @@ class DBUtils
   end
 
   def self.delete_all_data
+    ActiveRecord::Base.connection.exec_query("DELETE FROM commits_users")
     Commit.delete_all
     Company.delete_all
     GithubLoadMsg.delete_all

@@ -5,6 +5,11 @@ require 'db_utils'
 
 describe LoadHelpers do
   
+  before(:each) do
+    DBUtils.delete_all_data
+  end
+
+
   it 'removes initial' do
     name = "Kalonji K. bankole"
     expect(LoadHelpers.format_name(name)).to match "Kalonji Bankole"
@@ -73,34 +78,38 @@ describe LoadHelpers do
     }
 
     expect(LoadHelpers.get_login(user)).to match "kkbankol"
+  end
 
+  it "can create a company record" do
+    company = "IBM"
+    expect(Company.all.length).to match 0
+    expect(Company.find_by(name: "IBM")).to match nil
+    LoadHelpers.create_company_if_not_exist(company)
+    expect(Company.find_by(name: "IBM").name).to match "IBM" 
   end
 
 
-  # self.create_user_if_not_exist
+  # Done
   it "can create a user record" do
     user = { :attrs => { :company => "IBM", :login => "kkbankol", :name => "Kalonji Bankole" }}
-    DBUtils.delete_all_data
     expect(User.all.length).to match 0
     expect(User.find_by(name: "Kalonji Bankole")).to match nil
     LoadHelpers.create_user_if_not_exist(user)
-    expect(User.all.length).to match 1
     #expect(User.find_by(name: "Kalonji Bankole")).to exist # This is the correct way to do it
     expect(User.find_by(name: "Kalonji Bankole").login).to match "kkbankol"
-    DBUtils.delete_all_data
   end
+
+
 
 
   xit "should place users w/no company under Independent" do
     user = { :attrs => { :company => nil, :login => "kkbankol", :name => "Kalonji Bankole" }}
-    DBUtils.delete_all_data
     expect(User.all.length).to match 0
     expect(User.find_by(name: "Kalonji Bankole")).to match nil
     LoadHelpers.create_user_if_not_exist(user)
     expect(User.all.length).to match 1
     #expect(User.find_by(name: "Kalonji Bankole")).to exist # This is the correct way to do it
     expect(User.find_by(name: "Kalonji Bankole").company.name).to match "Independent"
-    DBUtils.delete_all_data
   end
 
   it "can fetch and parse stackalytics data" do

@@ -1,0 +1,57 @@
+{
+  "emails": [
+    {
+     "name": "VMware",
+     "alias": ["vmware"]
+    },
+    {
+     "name": "Pivotal",
+     "alias": ["pivotal", "springsource", "cloudfoundry"]
+    },
+    {
+     "name": "Rbcon",
+     "alias": ["rbcon"]
+    },
+    {
+     "name": "IBM",
+     "alias": ["ibm"]
+    },
+    {
+     "name": "Rbcon",
+     "alias": ["mongo", "10gen"]
+    },
+    {
+     "name": "Apcera",
+     "alias": ["apcera"]
+    },
+    {
+     "name": "Avarteq GmbH",
+     "alias": ["avarteq"]
+    },
+    {
+     "name": "CoreOS",
+     "alias": ["coreos"]
+    },
+    {
+     "name": "eBay Inc.",
+     "alias": ["ebay"]
+    },
+    {
+     "name": "EMC Corporation",
+     "alias": ["emc"]
+    },
+    {
+     "name": "GitHub",
+     "alias": ["github"]
+    },
+    {
+     "name": "NTT Laboratory",
+     "alias": ["ntt"]
+    },
+    {
+     "name": "Rakuten, Inc.",
+     "alias": ["rakuten"]
+    }
+
+  ]
+}
