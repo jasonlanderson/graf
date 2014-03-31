@@ -1,13 +1,8 @@
-MULTI_SELECT_OPTIONS = {multiple: false, header: "Select an option", selectedList: 1 }
 
-function loadLocalStorage() {
-  // Load and parse local storage
-  var values = window.localStorage.getItem('vals');
-  values = jQuery.parseJSON(values);
-  for (v in values){
-    $("#" + toUnderscore(v) + "_filter").val(values[v]);
-  }
-}
+SINGLE_SELECT_OPTIONS = {multiple: false, header: "Select an option", selectedList: 1}
+MULTI_SELECT_OPTIONS = {noneSelectedText: "All", selectedList: 4} 
+
+var allowDataRefresh = true;
 
 //
 // Variable Name Manipulation

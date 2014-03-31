@@ -25,7 +25,7 @@ LABEL_MAPPING = {
     sort_by: 'group_by',
     time_based: true
   },
-  'repository' => {
+  'repo' => {
     sql_select: 'r.name',
     alias: 'repo_name',
     sort_by: 'metric',

@@ -1,8 +1,6 @@
 <%################%>
 <%# Extra Headers %>
 <%################%>
-<script src="/assets/jquery.multiselect.filter.js"></script>
-<script src="/assets/jquery.multiselect.filter.css"></script>
 <% content_for(:extra_headers) do %>
   <script type="text/javascript">
     $(function() {
@@ -17,7 +15,6 @@
     });
   </script>
 <% end %>
-
 
 
 <%###############%>
@@ -51,7 +48,7 @@ Group By:
     <option value="month">Month</option>
     <option value="quarter">Quarter</option>
     <option value="year">Year</option>
-    <option value="repository">Repository</option>
+    <option value="repo">Repository</option>
     <option value="state">State</option>
     <option value="company" selected>Company</option>
     <option value="user">User</option>
@@ -59,7 +56,7 @@ Group By:
   </select>
 
 <br><br>
-<% @filter_update_function = 'guardedFilterUpdateAnalytics' %>
+<% @filter_changed_function = 'analyticsFilterChanged' %>
 <%= render 'shared/search_criteria' %>
 
 

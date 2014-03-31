@@ -3,22 +3,45 @@ DATE_PICKER_OPTIONS = {
     buttonImage: "<%= image_path "calendar.png" %>",
     buttonImageOnly: true
   };
-  
-var autoUpdateOnFilterChange = true;
+
+//
+// Filter Local Storage
+//
+function loadFiltersFromLocalStorage() {
+  // Load and parse local storage
+  var values = window.localStorage.getItem('vals');
+  values = $.parseJSON(values);
+  for (v in values){
+    $("#" + toUnderscore(v) + "_filter").val(values[v]);
+  }
+}
+
+function storeFiltersToLocalStorage() {
+  // TODO?: This will not save state if commits is selected
+  values = createSearchCriteriaJSON();
+  localStorage.setItem('vals', JSON.stringify(values));
+}
 
 //
 // Search Criteria Box Functions
 //
-function initializeSearchCriteria(guardedUpdate) {
-  // Initialize the Filters
-  jQuery.each(FILTERS, function(filterName, filterDetails) {
+function initializeSearchCriteria(filterChanged) {
+  // Initialize the multi-select filters
+  $.each(FILTERS, function(filterName, filterDetails) {
+    if (filterDetails.type == "multiselect") {
+      $("#" + filterName + "_filter").multiselect(MULTI_SELECT_OPTIONS).multiselectfilter();
+    }
+  });
+
+  // Initialize the change events on filters
+  $.each(FILTERS, function(filterName, filterDetails) {
     $("#" + filterName + "_filter").change(function () {
-      guardedUpdate();
+      filterChanged();
     });
   });
 
   $("#clear_search_criteria_button").click(function () {
-    clearSearchCriteria(guardedUpdate);
+    clearSearchCriteria(filterChanged);
   });
 
   //
@@ -54,29 +77,70 @@ function createSearchCriteriaJSON() {
   return values;
 }
 
-
-function clearSearchCriteria(guardedUpdate) {
+function clearSearchCriteria(filterChanged) {
   // Turn off auto updates on a filter change since we will be clearing all of them
   // in a serialize fashion which would trigger multiple updates.
-  autoUpdateOnFilterChange = false;
+  allowDataRefresh = false;
   
   // Clear all the filters
-  // TODO suspend all refreshs and do one at the end
-  jQuery.each(FILTERS, function(filterName, filterDetails) {
-    if (filterDetails.type == "multiselect") {
-      $("#" + filterName + "_filter").multiselect("uncheckAll");
-    }
-    else if (filterDetails.type == "datepicker") {
-      $("#" + filterName + "_filter").val("");
-    }
-    else {
-      alert('Unknown filterType = ' + filterDetails.type);
-    }
+  $.each(FILTERS, function(filterName, filterDetails) {
+    clearFilter(filterName, filterDetails.type);
   });
 
   // Turn automatice filter updates back on
-  autoUpdateOnFilterChange = true;
+  allowDataRefresh = true;
 
   // Update chart now that values have been reset
-  guardedUpdate();
+  filterChanged();
+}
+
+function restrictFilters() {
+  var validFilters = METRICS.base_metrics[METRICS.metrics[$("#metric_filter").val()].base_metric].filters;
+
+  $.each(FILTERS, function(filterName, filterDetails) {
+    var indexOf = validFilters.indexOf(filterName);
+    if (indexOf >= 0) {
+      enableFilter(filterName, filterDetails.type);
+    }
+    else {
+      clearFilter(filterName, filterDetails.type);
+      disableFilter(filterName, filterDetails.type);
+    }
+  });
+}
+
+function clearFilter(filterName, filterType) {
+  if (filterType == "multiselect") {
+    $("#" + filterName + "_filter").multiselect("uncheckAll");
+  }
+  else if (filterType == "datepicker") {
+    $("#" + filterName + "_filter").val("");
+  }
+  else {
+    alert('Unknown filterType = ' + filterType);
+  }
+}
+
+function disableFilter(filterName, filterType) {
+  if (filterType == "multiselect") {
+    $("#" + filterName + "_filter").multiselect(MULTI_SELECT_OPTIONS).multiselect('disable');
+  }
+  else if (filterType == "datepicker") {
+    $("#" + filterName + "_filter").prop('disabled', true);
+  }
+  else {
+    alert('Unknown filterType = ' + filterType);
+  }
+}
+
+function enableFilter(filterName, filterType) {
+  if (filterType == "multiselect") {
+    $("#" + filterName + "_filter").multiselect(MULTI_SELECT_OPTIONS).multiselect('enable');
+  }
+  else if (filterType == "datepicker") {
+    $("#" + filterName + "_filter").prop('disabled', false);
+  }
+  else {
+    alert('Unknown filterType = ' + filterType);
+  }
 }

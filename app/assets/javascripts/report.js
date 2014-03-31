@@ -29,10 +29,10 @@ function reportAJAX(data, responseType, callback){
 
 function setupReportReady() {
   // Load local values 
-  loadLocalStorage();
+  loadFiltersFromLocalStorage();
   
   // Run the filter update on load to get the data      
-  filterUpdateReport();
+  refreshReportData();
 
   // Setup the CSV download button
   $("#download").click(function () {
@@ -45,33 +45,35 @@ function setupReportReady() {
   });
 }
 
-function guardedFilterUpdateReport() {
-  if(autoUpdateOnFilterChange) {
-    filterUpdateReport();
+function refreshReportData() {
+  if (!allowDataRefresh) {
+    return;
   }
-}
-
-function filterUpdateReport() {
-  values = createSearchCriteriaJSON()
-  localStorage.setItem('vals', JSON.stringify(values));
 
   data = {
     report: 'prs',
-    searchCriteria: values
-    // Add summary
+    searchCriteria: createSearchCriteriaJSON()
   }
+
+  // TODO: When adding future metrics, will need to add in the
+  // restrict search criteria
 
   // Make API calls to update the data
   reportAJAX(data, 'text', updateReportTableCallback);
 
   data = {
     report: 'summary',
-    searchCriteria: values
-    // TODO?: Add summary
+    searchCriteria: createSearchCriteriaJSON()
   }
 
   // Make API calls to update the data
   reportAJAX(data, 'text', updateSummaryTableCallback);
+}
+
+function reportFilterChanged() {
+  storeFiltersToLocalStorage();
+
+  refreshReportData();
 }
 
 function updateReportTableCallback(result){

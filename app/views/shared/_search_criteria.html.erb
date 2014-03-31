@@ -2,7 +2,6 @@
 
 <table>
   <tr>
-
     <td>
       Month:
     </td>
@@ -108,15 +107,14 @@
       <% @drop_down_selected = nil %>
       <%= render 'shared/drop_down' %>
     </td>
-    
   </tr>
   <tr>
-  <td></td>
-  <td></td>
-  <td></td>
-  <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
 
-  <td>
+    <td>
       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Name:
     </td>
     
@@ -132,24 +130,8 @@
 
 </table>
 <script type="text/javascript">
-
-  // Initialize multiselect library
-  function initializeMultiSelect(){
-    // Initialize the Filters
-    jQuery.each(FILTERS, function(filterName, filterDetails) {
-      //alert(filterDetails.multiselect);
-      if (filterDetails.type == "multiselect") {
-        $("#" + filterName + "_filter").multiselect({selectedList: 4 , noneSelectedText: "All"}).multiselectfilter();
-      }
-    });
-  }
-
-
   $(document).ready(function() {
-    initializeMultiSelect();
-    initializeSearchCriteria(<%=@filter_update_function%>);
+    initializeSearchCriteria(<%=@filter_changed_function%>);
     // TODO: Clear all the dropdowns
   });
-
-
 </script>

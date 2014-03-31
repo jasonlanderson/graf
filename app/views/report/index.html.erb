@@ -34,7 +34,6 @@
 </div>
 
 <br><br>
-
 <h2>Metric:</h2>
  <select id="metric_filter">
     <option value="prs">Pull Requests</option>
@@ -42,7 +41,7 @@
 
 <br><br>
 
-<% @filter_update_function = 'guardedFilterUpdateReport' %>
+<% @filter_changed_function = 'reportFilterChanged' %>
 <%= render 'shared/search_criteria' %>
 <br>
 <hr>
