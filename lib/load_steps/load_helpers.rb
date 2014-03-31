@@ -81,8 +81,7 @@ class LoadHelpers
   end
 
 
-  # Test 
-  # 
+  # Done
   def self.create_company_if_not_exist(company_name)
     company = Company.find_by(name: company_name)
 
@@ -127,15 +126,21 @@ class LoadHelpers
 
 
 
-  # def self.check_db_for_user(name, email)
-    
+  def self.check_db_for_user(name, email)
+        user = ( User.find_by(name: name ) \
+              || User.find_by(login: name) \
+              || User.find_by(name: name.split(' ')[0]) \
+              || User.find_by(email: email) \
+              || User.find_by(login: email.gsub(".", "").split("@")[0]) \
+              || User.find_by(login: email.gsub(".", "").split("@")[0].chop) \
+        )
+        return user
+  end
 
-  # end
-# Name shouldn't be processed if it's unknown, a bot, etc.
-# 
   def self.process_authors(c, email, names) 
     client = OctokitUtils.get_octokit_client
     names.each do |n| 
+      # Name shouldn't be processed if it's unknown, a bot, etc.
       next if ((n == "unknown") || n.include?("jenkins") || n.include?("Bot") || email.include?("jenkins") || email.include?("-bot") || (email.length > 25) )
       start = Time.now        
       user, user_type, login, user_id, search_results = nil
@@ -143,7 +148,7 @@ class LoadHelpers
       name = format_name(n)
 
       # Check our db for user by checking: full name, first name, email
-      user = (User.find_by(name: name ) || User.find_by(login: name) || User.find_by(name: name.split(' ')[0]) || User.find_by(email: email) || User.find_by(login: email.gsub(".", "").split("@")[0]) || User.find_by(login: email.gsub(".", "").split("@")[0].chop) )
+      user = check_db_for_user(name, email)
 
       unless user
 
