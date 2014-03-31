@@ -5,6 +5,17 @@ require 'constants'
 
 class LoadHelpers
 
+  def self.octo
+    class OctokitUtils
+      def self.get_octokit_client        
+        client = OctokitMockClient.new
+        raise 'Kalonji in monkey patch function' 
+        return client
+      end
+    end
+    #puts OctokitUtils.new
+  end
+
   # Done
   def self.merge(company_name)
     Constants.merge_companies.each { |company|
@@ -55,7 +66,7 @@ class LoadHelpers
       # Run GET request to get rest of user data
       user_details = pr_user[:_rels][:self].get.data
 
-      # "Clean" company name, removing initial, capitilzing, etc
+      # Standardize company name, removing initial, capitilzing, etc
       company_name = merge(user_details[:attrs][:company])
       company = create_company_if_not_exist(company_name)
 
@@ -106,7 +117,7 @@ class LoadHelpers
       elsif (name.split(' ').length < 2) # If login
         name = name.downcase      
       elsif (name.split(' ').length > 2) # If name includes middle initial, remove it, as initials don't work with search
-        name = "#{name.split(' ')[0]} #{name.split(' ')[2]}".titleize 
+        name = "#{name.downcase.split(' ')[0]} #{name.downcase.split(' ')[2]}".titleize 
       else
         name = name.titleize
       end
@@ -137,60 +148,75 @@ class LoadHelpers
         return user
   end
 
+  def self.skip?(n, email)    
+    if  (  n.include?("unknown") \
+        || n.include?("jenkins") \
+        || n.include?("Bot") \
+        || email.include?("jenkins") \
+        || email.include?("-bot") \
+        || (email.length > 25) \
+        )
+      return true
+    else
+      return false
+    end
+  end
+
+  def self.associate_company_email(email)
+    Constants.get_email_to_company.each {|co_email|
+      if co_email["alias"].any? {|v| email.include?(v)}
+        return co_email["name"]
+      end
+    }
+  end
+
+  def self.process_results(search_results, num_results)
+      # Even if results are returned from searching for name, we need the name_match function to validate search results. 
+      # This is done by ensuring result name (or login) directly matches with given commit author name
+      if search_results and (num_results > 0) and name_match(search_results, name)
+        login = search_results[:attrs][:items][0][:attrs][:login]
+        user_obj = client.user(login) 
+        puts "Successfully found reference of '#{name}' / #{email} in github db"
+        user = create_user_if_not_exist(user_obj) 
+      else
+        puts "Failed to find reference of '#{name}' / #{email} in github db"
+        user = User.create(
+          :name => name, 
+          :email => email,
+          :company => Company.find_by(name: "Independent") 
+        )
+      end
+      return user
+  end
+
+
   def self.process_authors(c, email, names) 
     client = OctokitUtils.get_octokit_client
     names.each do |n| 
       # Name shouldn't be processed if it's unknown, a bot, etc.
-      next if ((n == "unknown") || n.include?("jenkins") || n.include?("Bot") || email.include?("jenkins") || email.include?("-bot") || (email.length > 25) )
+      next if skip?(n, email)
       start = Time.now        
       user, user_type, login, user_id, search_results = nil
       num_results = 0
       name = format_name(n)
-
       # Check our db for user by checking: full name, first name, email
       user = check_db_for_user(name, email)
-
       unless user
-
-        # Put this stuff in a JSON file
-        if email.include?("pivotal")
+        # If we can id user by email
+        company_name = associate_company_email(email)
+        if company_name
           user = User.create(
-            :company => Company.find_by(name: "Pivotal"), 
-            :name => name
-            ) 
-        elsif email.include?("vmware") 
-          user = User.create(
-            :company => Company.find_by(name: "VMware"), 
-            :name => name, 
+            :company => Company.find_by(name: company_name), 
+            :name => name,
             :email => email
-            )  
-        elsif email.include?("rbcon") 
-          user = User.create(
-            :company => Company.find_by(name: "Pivotal"), 
-            :name => name
-            )
+            ) 
+        # Else try searching by email, and then by name
         else
           # Search by email, unless commit has multiple contributors
           search_results, num_results = search(email) unless (email.include?("pair") || email.include?("none") || (email.length > 25))
-
           # Search by name if commit submitted by pair, or if email not in github db
           search_results, num_results = search(name) if ( !search_results || (search_results[:attrs][:total_count] == 0))
-      
-          # Even if results are returned from searching for name, we need the name_match function to validate search results. 
-          # This is done by ensuring result name (or login) directly matches with given commit author name
-          if search_results and (num_results > 0) and name_match(search_results, name)
-            login = search_results[:attrs][:items][0][:attrs][:login]
-            user_obj = client.user(login) 
-            puts "Successfully found reference of '#{name}' / #{email} in github db"
-            user = create_user_if_not_exist(user_obj) 
-          else
-            puts "Failed to find reference of '#{name}' / #{email} in github db"
-            user = User.create(
-              :name => name, 
-              :email => email,
-              :company => Company.find_by(name: "Independent") 
-              )
-          end
+          user = process_results(search_results, num_results)
         end
       end
       puts "Took #{Time.now - start}s to process #{name} / #{email} " if ((Time.now - start) > 6.0)
@@ -198,22 +224,6 @@ class LoadHelpers
       c.save()
     end
   end
-
-
-  # def self.search_name(name)
-  #     sleep(3.0) # Throttling
-  #     puts "Searching by name for #{name}"
-  #     puts "Throttling"
-  #     client = OctokitUtils.get_octokit_client
-  #     if (name.split(' ').length < 2) # Only search by name if we have a first and last name. Else, we assume identifier is a "login" username
-  #       search_results = client.search_users("#{name} in:login", options = {:sort => "followers"}) # Grabs the most active/visual member with given name. 
-  #       num_results = search_results[:attrs][:total_count]
-  #     else
-  #       search_results = client.search_users("#{name} in:name", options = {:sort => "followers"}) # Grabs the most active/visual member with given name. 
-  #       num_results = search_results[:attrs][:total_count]
-  #     end
-  #     return search_results, num_results
-  # end
 
   # Done
   def self.get_search_type(identifier)
@@ -226,6 +236,8 @@ class LoadHelpers
       end
   end
 
+  # TODO
+  # How should we do tests here, if we're not reaching out to github?
   def self.search(identifier)
       sleep(3.0)
       search_type = get_search_type(identifier)
@@ -237,7 +249,7 @@ class LoadHelpers
       return search_results, num_results
   end
 
-  # Test should return a hash with certain keys (companies, users, ...)
+  # Done
   def self.get_stackalytics_JSON()
     return JSON.parse(HTTParty.get("http://raw.github.com/stackforge/stackalytics/master/etc/default_data.json"))
   end
