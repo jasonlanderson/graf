@@ -78,8 +78,16 @@
         headerLinkContainer = (this.headerLinkContainer = $('<ul />'))
           .addClass('ui-helper-reset')
           .html(function() {
+            var checkall  = '';
+            var uncheckall = '';
             if(o.header === true) {
-              return '<li><a class="ui-multiselect-all" href="#"><span class="ui-icon ui-icon-check"></span><span>' + o.checkAllText + '</span></a></li><li><a class="ui-multiselect-none" href="#"><span class="ui-icon ui-icon-closethick"></span><span>' + o.uncheckAllText + '</span></a></li>';
+                if (o.checkAllText!='') {
+                    //checkall = '<li><a class="ui-multiselect-all" href="#"><span class="ui-icon ui-icon-check"></span><span>' + o.checkAllText + '</span></a></li>';
+                }
+                if (o.uncheckAllText!='') {
+                    uncheckall = '<li><a class="ui-multiselect-none" href="#"><span class="ui-icon ui-icon-closethick"></span><span>' + o.uncheckAllText + '</span></a></li>';
+                }   
+                return checkall + uncheckall;
             } else if(typeof o.header === "string") {
               return '<li>' + o.header + '</li>';
             } else {
