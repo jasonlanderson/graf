@@ -5,16 +5,6 @@ require 'constants'
 
 class LoadHelpers
 
-  def self.octo
-    class OctokitUtils
-      def self.get_octokit_client        
-        client = OctokitMockClient.new
-        raise 'Kalonji in monkey patch function' 
-        return client
-      end
-    end
-    #puts OctokitUtils.new
-  end
 
   # Done
   def self.merge(company_name)

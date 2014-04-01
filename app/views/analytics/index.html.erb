@@ -158,7 +158,6 @@
         data = {
           metric: $("#metric_filter").val(),
           groupBy: $("#group_by_filter").val(),
-          rollupCount: $("#rollup").val(),
           searchCriteria: createSearchCriteriaJSON()
         }
         analyticsAJAX(data, 'csv', 'text', downloadCSV);
