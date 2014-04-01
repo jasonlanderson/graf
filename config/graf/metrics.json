@@ -1,0 +1,36 @@
+{
+  "base_metrics": {
+    "prs": {
+      "filters": ["org", "month", "quarter", "year", "start_date", "end_date",
+                  "state", "repo", "company", "user", "name"],
+      "group_by": ["month", "quarter", "year", "state", "repo", "company", "user", "name"]
+    },
+    "commits": {
+      "filters": ["org", "month", "quarter", "year", "start_date", "end_date",
+                  "repo", "company", "user", "name"],
+      "group_by": ["month", "quarter", "year", "repo", "company", "user", "name"]
+    }
+  },
+  "metrics": {
+    "prs": {
+      "base_metric": "prs",
+      "description": "Pull Requests",
+      "view_as": ["pie", "bar", "line"]
+    },
+    "avg_days_open": {
+      "base_metric": "prs",
+      "description": "Average Days Opened",
+      "view_as": ["pie", "bar", "line"]
+    },
+    "percent_merged": {
+      "base_metric": "prs",
+      "description": "Percent Merged",
+      "view_as": ["bar"]
+    },
+    "commits": {
+      "base_metric": "commits",
+      "description": "Commits",
+      "view_as": ["pie", "bar", "line"]
+    }
+  }
+}

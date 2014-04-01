@@ -1,5 +1,201 @@
 <% require 'constants' %>
 CHART_COLORS = <%= Constants.get_chart_colors.to_json %>;
+METRICS = <%= Constants.metrics.to_json %>;
+FILTERS = <%= Constants.filters.to_json %>;
+MONTH_NAMES = [ "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+                "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" ];
+
+
+
+//
+// General Analytics Functions
+//
+function analyticsAJAX(data, format, responseType, callback){
+  data.format = format
+  $.ajax({
+      url: "analytics_data",
+      data: data,
+      method: 'POST',
+      dataType: responseType,
+      success: callback,
+      error: function(XMLHttpRequest, textStatus, errorThrown) { 
+        alert("Status: " + textStatus); alert("Error: " + errorThrown); 
+    }       
+  });
+}
+
+function setupAnalyticsReady() {
+  // Setup Controls
+  $("#metric_filter").change(function () {
+    metricChanged();
+  });
+
+  $("#group_by_filter").change(function () {
+    refreshAnalyticsData();
+  });
+
+  $("#view_type").change(function () {
+    refreshAnalyticsChartData();
+  });
+
+  $("#rollup").change(function () {
+    refreshAnalyticsChartData();
+  });
+
+  $("#rollup").multiselect(SINGLE_SELECT_OPTIONS);
+  $("#metric_filter").multiselect(SINGLE_SELECT_OPTIONS);
+  $("#group_by_filter").multiselect(SINGLE_SELECT_OPTIONS);
+  $("#view_type").multiselect(SINGLE_SELECT_OPTIONS);
+
+  // Setup CSV links
+  $("#download").click(function () {
+    data = {
+      metric: $("#metric_filter").val(),
+      groupBy: $("#group_by_filter").val(),
+      searchCriteria: createSearchCriteriaJSON()
+    };
+
+    analyticsAJAX(data, 'csv', 'text', downloadCSV);
+  });
+
+  // Load local storage
+  loadFiltersFromLocalStorage();
+
+  // Make restrictions
+  restrictFilters();
+  restrictGroupBys();
+  restrictChartViews();
+
+  // Load initial data
+  refreshAnalyticsData();
+
+  // TODO: Put in its own function
+  var previousPoint = null;
+
+  $("#metric_chart").bind("plothover", function (event, pos, item) {
+    if (item) {
+      if ((previousPoint != item.dataIndex) || (previousLabel != item.series.label)) {
+        previousPoint = item.dataIndex;
+        previousLabel = item.series.label;
+
+        $("#flot-tooltip").remove();
+
+        var x = convertToDate(item.datapoint[0]),
+        y = item.datapoint[1];
+        z = item.series.color;
+
+        showTooltip(item.pageX, item.pageY,
+            "<b>" + item.series.label + "</b><br /> " + x + " : " + y ,
+            z);
+      }
+    }
+    else {
+        $("#flot-tooltip").remove();
+        previousPoint = null;
+    }
+  });
+}
+
+function analyticsFilterChanged() {
+  storeFiltersToLocalStorage();
+
+  refreshAnalyticsData();
+}
+
+function metricChanged() {
+  // Make restrictions
+  restrictFilters();
+  restrictGroupBys();
+  restrictChartViews();
+
+  storeFiltersToLocalStorage();
+
+  refreshAnalyticsData();
+}
+
+function refreshAnalyticsData() {
+  refreshAnalyticsChartData();
+  refreshAnalyticsTableData();
+}
+
+function refreshAnalyticsChartData() {
+  if (!allowDataRefresh) {
+    return;
+  }
+
+  data = {
+    metric: $("#metric_filter").val(),
+    groupBy: $("#group_by_filter").val(),
+    rollupCount: $("#rollup").val(),
+    searchCriteria: createSearchCriteriaJSON()
+  }
+
+  // Update Chart
+  analyticsAJAX(data, $("#view_type").val(), 'json', updateChartCallback);
+
+  // Update the titles
+  $("#chart_title").html($("#metric_filter option:selected").text() +  " Grouped By " + $("#group_by_filter option:selected").text());
+}
+
+function refreshAnalyticsTableData() {
+  if (!allowDataRefresh) {
+    return;
+  }
+
+  data = {
+    metric: $("#metric_filter").val(),
+    groupBy: $("#group_by_filter").val(),
+    searchCriteria: createSearchCriteriaJSON()
+  }
+
+  // Make API calls to update the data in table
+  analyticsAJAX(data, 'table', 'text', updateAnalyticsTableCallback);
+  $("#table_title").html($("#metric_filter option:selected").text() +  " Grouped By " + $("#group_by_filter option:selected").text());
+}
+
+function restrictGroupBys() {
+  // Restrict the group by
+  var validGroupBys = METRICS.base_metrics[METRICS.metrics[$("#metric_filter").val()].base_metric].group_by;
+
+  // Set value to the first group by
+  $("#group_by_filter").val(validGroupBys[0]);
+
+  $(function() {
+    $("#group_by_filter option").each(function(i){
+      var indexOf = validGroupBys.indexOf($(this).val());
+      if (indexOf >= 0) {
+        // Enable
+        enableGroupBy($(this).val());
+      }
+      else {
+        // Disable
+        disableGroupBy($(this).val());
+      }
+    });
+  });
+
+  // Refresh the group by filter
+  $("#group_by_filter").multiselect(SINGLE_SELECT_OPTIONS).multiselect('refresh');
+}
+
+function disableGroupBy(groupBy) {
+  $("#group_by_filter option[value=" + groupBy + "]").attr('disabled', true);
+}
+
+function enableGroupBy(groupBy) {
+  $("#group_by_filter option[value=" + groupBy + "]").attr('disabled', false);
+}
+
+
+
+//
+// Data Table
+//
+function updateAnalyticsTableCallback(result) {
+  $("#table_container").empty();
+  $("#table_container").html(result);
+  $("#metric_table").dataTable(ANALYTICS_TABLE_OPTIONS);
+}
 
 ANALYTICS_TABLE_OPTIONS = {
   "sScrollY": "350px",
@@ -11,15 +207,96 @@ ANALYTICS_TABLE_OPTIONS = {
   //"aaSorting": [[ 1, "desc" ]]
 };
 
-whereDropDownIds = ["month_filter", 
-                        "quarter_filter", 
-                        "year_filter", 
-                        "repo_filter", 
-                        "state_filter", 
-                        "company_filter", 
-                        "user_filter",
-                        "name_filter",
-                        "org_filter"];
+
+
+//
+// Charts
+//
+function restrictChartViews() {
+  var curMetric = METRICS.metrics[$("#metric_filter").val()];
+
+  // Set the view to the first value in the list so that it is valid
+  $("#view_type").val(curMetric.view_as[0]);
+
+  $(function() {
+    $("#view_type option").each(function(i){
+      var indexOf = curMetric.view_as.indexOf($(this).val());
+      if (indexOf >= 0) {
+        enableChartView($(this).val());
+      }
+      else {
+        disableChartView($(this).val());
+      }
+    });
+  });
+
+  $("#view_type").multiselect('refresh');
+}
+
+function disableChartView(viewName) {
+    $("#view_type option[value=" + viewName + "]").attr('disabled','disabled');
+}
+
+function enableChartView(viewName) {
+    $("#view_type option[value=" + viewName + "]").removeAttr('disabled');
+}
+
+function updateChartCallback(result){
+  $("#metric_chart").empty();
+
+  if (result.response.length == 0) {
+    data = [{ label: "No Pull Requests", data: 1, color:'#E0E0E0' }];
+  }
+  else {
+    data = result.response;
+  }
+
+  viewType = $("#view_type").val()
+
+  if (viewType == "pie") {
+    options = PIE_OPTIONS;
+  }
+  else if (viewType == "bar") {
+    result = parsePieToBar(data);
+    var data = result.data;
+    var options = result.options;
+  }
+  else {
+    options = LINE_OPTIONS;
+  }
+
+  $.plot($("#metric_chart"), data, options);
+}
+
+function parsePieToBar(data) {
+  points = [];
+  ticks = [];
+  for (i = 0 ; i < data.length ; i++) {
+     points.push(Array(data[i].data, i));  //Array(i, data[i].data));
+     ticks.push(Array(data[i].label, i)); //Array(i, data[i].label));
+  }
+
+  data = [{
+    data: points,
+    minTickSize: 1,
+    bars: { 
+      show: true,
+      horizontal: true, 
+      align: "center" 
+    }         
+  }];
+  ticks.forEach(function(arr) {arr.reverse()});
+  //console.log(JSON.stringify(data))
+  //console.log(JSON.stringify(ticks))
+  options = {
+    yaxis: {      
+      ticks: ticks
+    }
+  };
+  options.colors = CHART_COLORS;
+  return {data: data, options: options};
+}
+
 
 PIE_OPTIONS = {
   series: {
@@ -44,8 +321,6 @@ PIE_OPTIONS = {
 };
 PIE_OPTIONS.colors = CHART_COLORS;
 
-var monthNames = [ "Jan", "Feb", "Mar", "Apr", "May", "Jun",
-    "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" ];
 
 LINE_OPTIONS = {
   series: {
@@ -57,15 +332,15 @@ LINE_OPTIONS = {
     }
   },
   xaxis: {
-          //mode: "time",
-          tickFormatter: function(x) { 
-            console.log(x)
-            date = new Date(x*1000);
-            month = monthNames[date.getMonth()] ;
-            year = date.getFullYear();
-            return month + " " + year
-           }
-        },
+    //mode: "time",
+    tickFormatter: function(x) { 
+      console.log(x)
+      date = new Date(x*1000);
+      month = MONTH_NAMES[date.getMonth()] ;
+      year = date.getFullYear();
+      return month + " " + year
+     }
+  },
   legend: {
     position: "nw",
     noColumns: 3
@@ -80,48 +355,3 @@ LINE_OPTIONS = {
 };
 
 LINE_OPTIONS.colors = CHART_COLORS;
-
-function analyticsAJAX(data, format, responseType, callback){
-  data.format = format
-  $.ajax({
-      url: "analytics_data",
-      data: data,
-      method: 'POST',
-      dataType: responseType,
-      success: callback,
-      error: function(XMLHttpRequest, textStatus, errorThrown) { 
-        alert("Status: " + textStatus); alert("Error: " + errorThrown); 
-    }       
-  });
-}
-
-function parsePieToBar(data) {
-  points = [];
-  ticks = [];
-  for (i = 0 ; i < data.length ; i++) {
-     points.push(Array(data[i].data, i));  //Array(i, data[i].data));
-     ticks.push(Array(data[i].label, i)); //Array(i, data[i].label));
-  }
-
-
-
-  data = [{
-    data: points,
-    minTickSize: 1,
-    bars: { 
-      show: true,
-      horizontal: true, 
-      align: "center" 
-    }         
-  }];
-  ticks.forEach(function(arr) {arr.reverse()});
-  //console.log(JSON.stringify(data))
-  //console.log(JSON.stringify(ticks))
-  options = {
-    yaxis: {      
-      ticks: ticks
-    }
-  };
-  options.colors = CHART_COLORS;
-  return {data: data, options: options};
-}

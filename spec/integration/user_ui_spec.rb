@@ -37,3 +37,45 @@ feature "Restricting Graf View As Types" do
     #expect(page).to have_content("GRAF")
   end
 end
+
+feature "Restricting Group By For Metrics" do
+  xscenario "When a user selects commits, state should no longer be a selectable group by" do
+  end
+
+  xscenario "When a user selects non-commits, state should be a selectable group by" do
+  end
+end
+
+feature "Restricting Filters For Metrics" do
+  xscenario "When a user selects commits, state should no longer be a selectable filter" do
+  end
+
+  xscenario "When a user selects non-commits, state should be a selectable filter" do
+  end
+end
+
+feature "Clearing search criteria" do
+  xscenario "Clearing search criteria with no search criteria selected" do
+    # Run clear search criteria
+
+    # Check that all search fields are now cleared
+  end
+
+  xscenario "Clearing search criteria with search criteria selected" do
+    # Add in some seearch criteria
+
+    # Run clear search criteria
+
+    # Check that all search fields are now cleared
+  end
+end
+
+feature "Download CSV File" do
+  xscenario "Clicking download CSV file will download the file" do
+  end
+end
+
+feature "Changing Chart View" do
+  xscenario "A user can change the chart view" do
+  end
+end

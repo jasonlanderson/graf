@@ -13,6 +13,8 @@ class LoadOrgs < LoadStep
   def execute(*args)
     puts "Start Step: #{name}"
 
+    #raise "Testing error raised"
+
     # Load all orgs
     client = OctokitUtils.get_octokit_client
     Constants.get_orgs.each { |org_hash|

@@ -26,6 +26,17 @@ class Constants
   @@org_to_company_mapping = nil
   @@orgs = nil
   @@company_names = nil
+  @@metrics = nil
+  @@filters = nil
+
+  def self.clear_constants
+    @@settings = nil
+    @@org_to_company_mapping = nil
+    @@orgs = nil
+    @@company_names = nil
+    @@metrics = nil
+    @@filters = nil
+  end
 
   def self.get_settings
     if @@settings
@@ -67,5 +78,22 @@ class Constants
     return @@company_names
   end
 
+  def self.metrics
+    if @@metrics
+      return @@metrics
+    end
+
+    @@metrics = JSON.parse(File.read('config/graf/metrics.json'))
+    return @@metrics
+  end
+
+  def self.filters
+    if @@filters
+      return @@filters
+    end
+
+    @@filters = JSON.parse(File.read('config/graf/filters.json'))["filters"]
+    return @@filters
+  end
 
 end

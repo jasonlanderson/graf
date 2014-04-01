@@ -2,7 +2,6 @@
 
 <table>
   <tr>
-
     <td>
       Month:
     </td>
@@ -108,15 +107,14 @@
       <% @drop_down_selected = nil %>
       <%= render 'shared/drop_down' %>
     </td>
-    
   </tr>
   <tr>
-  <td></td>
-  <td></td>
-  <td></td>
-  <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
 
-  <td>
+    <td>
       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Name:
     </td>
     
@@ -132,28 +130,8 @@
 
 </table>
 <script type="text/javascript">
-
-    // Initialize multiselect library
-
-    function initializeMultiSelect(){
-      for ( id in whereDropDownIds ) {
-        $("#" + whereDropDownIds[id]).multiselect({selectedList: 4 , noneSelectedText: "All"}).multiselectfilter();
-      }
-
-      $("#rollup").multiselect({multiple: false, header: "Select an option", selectedList: 1 });
-      $("#metric_filter").multiselect({multiple: false, header: "Select an option", selectedList: 1 });
-      $("#group_by_filter").multiselect({multiple: false, header: "Select an option" , selectedList: 1 });
-      $("#view_type").multiselect({multiple: false, header: "Select an option", selectedList: 1 });
-    }
-
-
   $(document).ready(function() {
-
-    initializeMultiSelect();
-    initializeSearchCriteria();
-
-    // Clear all the dropdowns
+    initializeSearchCriteria(<%=@filter_changed_function%>);
+    // TODO: Clear all the dropdowns
   });
-
-
 </script>

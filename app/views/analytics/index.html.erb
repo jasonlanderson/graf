@@ -1,230 +1,20 @@
 <%################%>
 <%# Extra Headers %>
 <%################%>
-<script src="/assets/jquery.multiselect.filter.js"></script>
-<script src="/assets/jquery.multiselect.filter.css"></script>
 <% content_for(:extra_headers) do %>
   <script type="text/javascript">
     $(function() {
       $( document ).tooltip();
     });
-
-    function restrictSelections() {
-
-      if (($("#metric_filter").val() != "prs") && ($("#metric_filter").val() != "avg_days_open")) {
-        $("#state_filter").val(""); // Reset state filter to default value
-        $("#state_filter").multiselect().multiselect('disable'); // Disable state filter
-        $("#group_by_filter option[value=state]").attr('disabled', true); // Disable state option in "Group By" filter
-        $("#group_by_filter").multiselect({multiple: false, header: "Select an option", selectedList: 1 }).multiselect('refresh'); 
-      }     
-      else {
-        $("#state_filter").multiselect().multiselect('enable'); // Enable state filter
-        $("#group_by_filter option[value=state]").attr('disabled', false); // Enable state option in "Group By" filter
-        $("#group_by_filter").multiselect({multiple: false, header: "Select an option", selectedList: 1 }).multiselect('refresh'); 
-      }
-
-      // Restrict view type
-      if (($("#metric_filter").val() != "prs") && ($("#metric_filter").val() != "commits") && ($("#metric_filter").val() != "avg_days_open"))  {
-        $("#view_type").val("bar"); // Set to bar view
-        $("#view_type").multiselect({multiple: false, header: "Select an option", selectedList: 1 }).multiselect('refresh');
-        $("#view_type option[value=line]").attr('disabled','disabled'); // Disable line option in "View by" button
-        $("#view_type option[value=pie]").attr('disabled','disabled');
-        $("#view_type").multiselect('refresh'); 
-      }
-      else {
-        $("#view_type option[value=line]").removeAttr('disabled'); // Disable line option in "View by" button
-        $("#view_type option[value=pie]").removeAttr('disabled');
-        $("#view_type").multiselect().multiselect('refresh'); 
-        //$("#view_type").val("pie"); // This allows the line graph to be disabled 
-      }
-    }
-
-    function filterUpdate() {
-
-      // Reset/Disable state filters if metric set to commits or percent_merged
-      console.log("filterUpdate")
-      var s = new Date();
-      if (($("#metric_filter").val() == "commits") || ($("#metric_filter").val() == "percent_merged")) {
-        $("#group_by_filter").val("company") 
-        $("#state_filter").val("")
-        $("#group_by_filter").multiselect('refresh'); 
-        $("#state_filter").multiselect('refresh'); 
-      }
-      var e = new Date();
-      //console.log("Total time")
-      //console.log((e - s)/1000 + "s")
-
-      values = createSearchCriteriaJSON()
-      localStorage.setItem('vals', JSON.stringify(values));
-      viewType = $("#view_type").val();
-
-      data = {
-        metric: $("#metric_filter").val(),
-        groupBy: $("#group_by_filter").val(),
-        searchCriteria: values
-      }
-      
-      restrictSelections();
-
-      // Make API calls to update the data in table
-      analyticsAJAX(data, 'table', 'text', updateTableCallback);     
-
-      // Update Chart
-      data.rollupCount = $("#rollup").val();
-      analyticsAJAX(data, viewType, 'json', updateChartCallback);
-
-      // Update the titles
-      $("#chart_title").html($("#metric_filter option:selected").text() +  " Grouped By " + $("#group_by_filter option:selected").text());
-      $("#table_title").html($("#metric_filter option:selected").text() +  " Grouped By " + $("#group_by_filter option:selected").text());
-    }
-
-    function updateChartCallback(result){
-      $("#metric_chart").empty();
-
-      if (result.response.length == 0) {
-        data = [{ label: "No Pull Requests", data: 1, color:'#E0E0E0' }];
-      }
-      else {
-        data = result.response;
-      }
-
-      viewType = $("#view_type").val()
-
-      if (viewType == "pie") {
-        options = PIE_OPTIONS;
-      }
-      else if (viewType == "bar") {
-        result = parsePieToBar(data);
-        var data = result.data;
-        var options = result.options;
-      }
-      else {
-        options = LINE_OPTIONS;
-      }
-
-      $.plot($("#metric_chart"), data, options);
-    }
-    
-    function updateTableCallback(result){
-      $("#table_container").empty();
-      $("#table_container").html(result);
-      $("#metric_table").dataTable(ANALYTICS_TABLE_OPTIONS);
-    }
-
-    function downloadCSV(result){
-      
-      var CSV = result;
-      window.URL = window.webkitURL || window.URL;
-      var contentType = 'text/csv';
-      var csvFile = new Blob([CSV], {type: contentType});
-      var a = document.createElement('a');
-      a.download = 'graf_output.csv';
-      a.href = window.URL.createObjectURL(csvFile);//
-      //a.textContent = 'Download CSV';
-      a.onclick = destroyClickedElement;
-      a.dataset.downloadurl = [contentType, a.download, a.href];
-      document.body.appendChild(a);
-      a.click();
-      //window.location = a.href;
-      //window.open($("#download_button").attr('href'),'_blank')
-      
-    }
-
-    function destroyClickedElement(event)
-    {
-      document.body.removeChild(event.target);
-    }
   
     //
     // Initial Page Load Activities
     //
     $(document).ready(function () {
-      $("#metric_filter").change(function () {
-        filterUpdate()
-      });
-
-      $("#group_by_filter").change(function () {
-        filterUpdate()
-      });
-
-      $("#view_type").change(function () {
-        filterUpdate()
-      });
-      $("#rollup").change(function () {
-        filterUpdate()
-      });
-
-      $("#download").click(function () {
-        data = {
-          metric: $("#metric_filter").val(),
-          groupBy: $("#group_by_filter").val(),
-          searchCriteria: createSearchCriteriaJSON()
-        }
-        analyticsAJAX(data, 'csv', 'text', downloadCSV);
-      });
-
-      // Load local storage
-      loadLocalStorage();
-
-      // Load initial chart
-      filterUpdate();
-/////
-      function showTooltip(x, y, contents, z) {
-        $('<div id="flot-tooltip">' + contents + '</div>').css({
-            top: y - 30,
-            left: x - 135,
-            'border-color': z,
-        }).appendTo("body").fadeIn(200);
-      }
-
-      var previousPoint = null;
-
-          function convertToDate(time) {
-            timestamp = time * 1000
-            var newDate = new Date(timestamp);
-            var month = newDate.getMonth() + 1;
-            var year = newDate.getYear() + 1900;
-            //var monthName = getMonthName(dateString);
-            date = month + "/" + year
-            //console.log(newDate.getYear())
-            return date;
-      }
-
-      function getMonthName(numericMonth) {
-            var monthArray = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-            var alphaMonth = monthArray[numericMonth];
-         
-            return alphaMonth;
-      }
- 
-      $("#metric_chart").bind("plothover", function (event, pos, item) {
-          if (item) {
-              if ((previousPoint != item.dataIndex) || (previousLabel != item.series.label)) {
-                  previousPoint = item.dataIndex;
-                  previousLabel = item.series.label;
-   
-                  $("#flot-tooltip").remove();
-   
-                  var x = convertToDate(item.datapoint[0]),
-                  y = item.datapoint[1];
-                  z = item.series.color;
-   
-                  showTooltip(item.pageX, item.pageY,
-                      "<b>" + item.series.label + "</b><br /> " + x + " : " + y ,
-                      z);
-              }
-          } else {
-              $("#flot-tooltip").remove();
-              previousPoint = null;
-          }
-      });
-/////
-
-      });
-
+      setupAnalyticsReady();
+    });
   </script>
 <% end %>
-
 
 
 <%###############%>
@@ -258,7 +48,7 @@ Group By:
     <option value="month">Month</option>
     <option value="quarter">Quarter</option>
     <option value="year">Year</option>
-    <option value="repository">Repository</option>
+    <option value="repo">Repository</option>
     <option value="state">State</option>
     <option value="company" selected>Company</option>
     <option value="user">User</option>
@@ -266,7 +56,7 @@ Group By:
   </select>
 
 <br><br>
-
+<% @filter_changed_function = 'analyticsFilterChanged' %>
 <%= render 'shared/search_criteria' %>
 
 

@@ -1,142 +1,146 @@
+DATE_PICKER_OPTIONS = {
+    showOn: "button",
+    buttonImage: "<%= image_path "calendar.png" %>",
+    buttonImageOnly: true
+  };
+
 //
-// Search Criteria Box Functions
+// Filter Local Storage
 //
-function initializeSearchCriteria() {
-  $("#metric_filter").change(function () {
-    filterUpdate()
-  });
-
-  $("#group_by_filter").change(function () {
-    filterUpdate()
-  });
-
-  $("#month_filter").change(function () {
-    filterUpdate()
-  });
-
-  $("#quarter_filter").change(function () {
-    filterUpdate()
-  });
-
-  $("#year_filter").change(function () {
-    filterUpdate()
-  });
-
-  $("#repo_filter").change(function () {
-    filterUpdate()
-  });
-
-  $("#state_filter").change(function () {
-    filterUpdate()
-  });
-
-  $("#company_filter").change(function () {
-    filterUpdate()
-  });
-
-  $("#user_filter").change(function () {
-    filterUpdate()
-  });
-
-  $("#name_filter").change(function () {
-    filterUpdate()
-  });
-
-  $("#org_filter").change(function () {
-    filterUpdate()
-  });
-
-  $("#start_date_filter").change(function () {
-    filterUpdate()
-  });
-
-  $("#end_date_filter").change(function () {
-    filterUpdate()
-  });
-
-  $("#clear_search_criteria_button").click(function () {
-    clearSearchCriteria();
-  });
-
-  $(function() {
-    $( "#start_date_filter" ).datepicker({
-      showOn: "button",
-      buttonImage: "<%= image_path "calendar.png" %>",
-      buttonImageOnly: true
-    });
-  });
-
-  $(function() {
-    $( "#end_date_filter" ).datepicker({
-      showOn: "button",
-      buttonImage: "<%= image_path "calendar.png" %>",
-      buttonImageOnly: true
-    });
-  });
-}
-
-function loadLocalStorage() {
+function loadFiltersFromLocalStorage() {
   // Load and parse local storage
   var values = window.localStorage.getItem('vals');
-  values = jQuery.parseJSON(values);
+  values = $.parseJSON(values);
   for (v in values){
     $("#" + toUnderscore(v) + "_filter").val(values[v]);
   }
 }
 
+function storeFiltersToLocalStorage() {
+  // TODO?: This will not save state if commits is selected
+  values = createSearchCriteriaJSON();
+  localStorage.setItem('vals', JSON.stringify(values));
+}
+
+//
+// Search Criteria Box Functions
+//
+function initializeSearchCriteria(filterChanged) {
+  // Initialize the multi-select filters
+  $.each(FILTERS, function(filterName, filterDetails) {
+    if (filterDetails.type == "multiselect") {
+      $("#" + filterName + "_filter").multiselect(MULTI_SELECT_OPTIONS).multiselectfilter();
+    }
+  });
+
+  // Initialize the change events on filters
+  $.each(FILTERS, function(filterName, filterDetails) {
+    $("#" + filterName + "_filter").change(function () {
+      filterChanged();
+    });
+  });
+
+  $("#clear_search_criteria_button").click(function () {
+    clearSearchCriteria(filterChanged);
+  });
+
+  //
+  // Setup the date pickers
+  //
+  $(function() {
+    $("#start_date_filter").datepicker(DATE_PICKER_OPTIONS);
+  });
+
+  $(function() {
+    $("#end_date_filter").datepicker(DATE_PICKER_OPTIONS);
+  });
+}
+
 function sanitizeSearchValue(input) {
   if (input == null) {
     var arr = new Array();
-    arr[0] = ""
-    return arr
+    arr[0] = "";
+    return arr;
   }
   else {
-    return input  
+    return input;
   }
 }
 
 function createSearchCriteriaJSON() {
-  
-  values = {
-          month: sanitizeSearchValue($("#month_filter").val()),
-          quarter: sanitizeSearchValue($("#quarter_filter").val()),
-          year: sanitizeSearchValue($("#year_filter").val()),
-          start_date: ($("#start_date_filter").val()),
-          end_date: ($("#end_date_filter").val()),
-          repo: sanitizeSearchValue($("#repo_filter").val()),
-          state: sanitizeSearchValue($("#state_filter").val()),
-          company: sanitizeSearchValue($("#company_filter").val()),
-          user: sanitizeSearchValue($("#user_filter").val()),
-          name: sanitizeSearchValue($("#name_filter").val()),
-          org: sanitizeSearchValue($("#org_filter").val())
-        };
-  //console.log("Values");      
-  //console.log(values);
-  // for (i in values) {
-  //   id = "#" + i + "_filter";
-  //   console.log($(id).val())
-  //   console.log(typeof $(id).val())
-  //   if ( typeof $(id).val() == null) {      
-  //     $(id).val("");
-  //   }
-  //}
+  values = {};
+  filters = METRICS.base_metrics[METRICS.metrics[$("#metric_filter").val()].base_metric].filters;
+  $.each(filters, function(index, filterName) {
+    values[filterName] = sanitizeSearchValue($("#" + filterName + "_filter").val());
+  });
 
-  return values
+  return values;
 }
 
-
-function clearSearchCriteria() {
+function clearSearchCriteria(filterChanged) {
+  // Turn off auto updates on a filter change since we will be clearing all of them
+  // in a serialize fashion which would trigger multiple updates.
+  allowDataRefresh = false;
   
-  // Clear all the dropdowns
-  // for ( id in whereDropDownIds ) {
-  //   $("#" + whereDropDownIds[id]).multiselect("uncheckAll");
-  // }
-  $("select").multiselect("uncheckAll");
+  // Clear all the filters
+  $.each(FILTERS, function(filterName, filterDetails) {
+    clearFilter(filterName, filterDetails.type);
+  });
 
-  // Clear the date range
-  $("#start_date_filter").val("");
-  $("#end_date_filter").val("");
+  // Turn automatice filter updates back on
+  allowDataRefresh = true;
 
   // Update chart now that values have been reset
-  filterUpdate();
+  filterChanged();
+}
+
+function restrictFilters() {
+  var validFilters = METRICS.base_metrics[METRICS.metrics[$("#metric_filter").val()].base_metric].filters;
+
+  $.each(FILTERS, function(filterName, filterDetails) {
+    var indexOf = validFilters.indexOf(filterName);
+    if (indexOf >= 0) {
+      enableFilter(filterName, filterDetails.type);
+    }
+    else {
+      clearFilter(filterName, filterDetails.type);
+      disableFilter(filterName, filterDetails.type);
+    }
+  });
+}
+
+function clearFilter(filterName, filterType) {
+  if (filterType == "multiselect") {
+    $("#" + filterName + "_filter").multiselect("uncheckAll");
+  }
+  else if (filterType == "datepicker") {
+    $("#" + filterName + "_filter").val("");
+  }
+  else {
+    alert('Unknown filterType = ' + filterType);
+  }
+}
+
+function disableFilter(filterName, filterType) {
+  if (filterType == "multiselect") {
+    $("#" + filterName + "_filter").multiselect(MULTI_SELECT_OPTIONS).multiselect('disable');
+  }
+  else if (filterType == "datepicker") {
+    $("#" + filterName + "_filter").prop('disabled', true);
+  }
+  else {
+    alert('Unknown filterType = ' + filterType);
+  }
+}
+
+function enableFilter(filterName, filterType) {
+  if (filterType == "multiselect") {
+    $("#" + filterName + "_filter").multiselect(MULTI_SELECT_OPTIONS).multiselect('enable');
+  }
+  else if (filterType == "datepicker") {
+    $("#" + filterName + "_filter").prop('disabled', false);
+  }
+  else {
+    alert('Unknown filterType = ' + filterType);
+  }
 }

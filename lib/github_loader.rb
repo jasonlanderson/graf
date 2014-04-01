@@ -42,7 +42,19 @@ class GithubLoader
     #if load.initial_load
       # Initial load
       load.log_msg("***Doing an initial load", LogLevel::INFO)
-      (InitialLoad.new).execute
+      begin
+        (InitialLoad.new).execute
+      # Catch all exceptions, even out of memory exceptions
+      # Otherwise just get rid of Exception below
+      rescue Exception => e
+        load.log_msg("The following error occured...", LogLevel::ERROR)
+        load.log_msg(e.message, LogLevel::ERROR)
+        load.log_msg(e.backtrace.join("\n"), LogLevel::ERROR)
+
+        # Reraise the exception to pass it on
+        raise
+      end
+      
     # else
     #   # Delta load
     #   load.log_msg("***Doing an delta load", LogLevel::INFO)

@@ -1,0 +1,37 @@
+{
+  "filters": {
+    "org": {
+      "type": "multiselect"
+    },
+    "month": {
+      "type": "multiselect"
+    },
+    "quarter": {
+      "type": "multiselect"
+    },
+    "year": {
+      "type": "multiselect"
+    },
+    "start_date": {
+      "type": "datepicker"
+    },
+    "end_date": {
+      "type": "datepicker"
+    },
+    "state": {
+      "type": "multiselect"
+    },
+    "repo": {
+      "type": "multiselect"
+    },
+    "company": {
+      "type": "multiselect"
+    },
+    "user": {
+      "type": "multiselect"
+    },
+    "name": {
+      "type": "multiselect"
+    }
+  }
+}

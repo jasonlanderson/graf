@@ -11,97 +11,7 @@
     // Initial Page Load Activities
     //
     $(document).ready(function () {
-       
-      // Load local values 
-      loadLocalStorage();
-      
-      // Run the filter update on load to get the data      
-      filterUpdate();
-    });
-
-
-    function filterUpdate() {
-
-      values = createSearchCriteriaJSON()
-      localStorage.setItem('vals', JSON.stringify(values));
-
-      data = {
-        report: 'prs',
-        searchCriteria: values
-        // Add summary
-      }
-      // Make API calls to update the data
-      reportAJAX(data, 'text', updateTableCallback);
-      data = {
-        report: 'summary',
-        searchCriteria: createSearchCriteriaJSON()
-        // Add summary
-      }
-      // Make API calls to update the data
-      reportAJAX(data, 'text', updateSummaryTableCallback);
-    }
-
-    function updateTableCallback(result){
-      $("#table_container").empty();
-      $("#table_container").html(result);
-      $("#report_table").dataTable(REPORT_TABLE_OPTIONS);
-    }
-    function updateSummaryTableCallback(result){
-      $("#table_summary_container").empty();
-      $("#table_summary_container").html(result);
-      $("#summary_report_table").dataTable(MIN_TABLE_OPTIONS);
-      
-      // Couldn't get working with regular tables, uncomment below to see example 
-      //$("#summary_report_table").empty();
-      //$("#summary_report_table").html(result);
-    }
-
-    function printStuff(result){
-      alert(result);
-
-    }
-    function downloadCSV(result){
-      //alert("RESULT!");
-      console.log(result);
-      var CSV = result;
-      window.URL = window.webkitURL || window.URL;
-      var contentType = 'text/csv';
-      var csvFile = new Blob([CSV], {type: contentType});
-      var a = document.createElement('a');
-      a.download = 'graf_output.csv';
-      a.href = window.URL.createObjectURL(csvFile);//
-      //a.textContent = 'Download CSV';
-      a.onclick = destroyClickedElement;
-      a.dataset.downloadurl = [contentType, a.download, a.href];
-      console.log(a.dataset.downloadurl)
-      console.log(a.href)
-      document.body.appendChild(a);
-      a.click();
-      //window.location = a.href;
-      //window.open($("#download_button").attr('href'),'_blank')
-      
-    }
-
-    function destroyClickedElement(event)
-    {
-      document.body.removeChild(event.target);
-    }
-
-    $(document).ready(function () {
-
-       $("#download").click(function () {
-        data = {
-          /*metric: $("#metric_filter").val(),
-          groupBy: $("#group_by_filter").val(),
-          rollupCount: $("#rollup").val(),
-          searchCriteria: createSearchCriteriaJSON()*/
-          report: 'prs',
-          file: 'csv',
-          searchCriteria: createSearchCriteriaJSON()
-        }
-        reportAJAX(data, 'text', downloadCSV);
-        //analyticsAJAX(data, 'csv', 'text', printStuff);
-      });
+      setupReportReady();
     });
   </script>
 <% end %>
@@ -112,7 +22,7 @@
 <%###############%>
 <%= render 'shared/last_load' %>
 
-<h2>Organizations</h2>
+<h2>Organizations:</h2>
 <div style="float:left">
   <% @drop_down_id = "org_filter" %>
   <% @drop_down_data = @organizations %>
@@ -124,7 +34,14 @@
 </div>
 
 <br><br>
+<h2>Metric:</h2>
+ <select id="metric_filter">
+    <option value="prs">Pull Requests</option>
+  </select>
 
+<br><br>
+
+<% @filter_changed_function = 'reportFilterChanged' %>
 <%= render 'shared/search_criteria' %>
 <br>
 <hr>

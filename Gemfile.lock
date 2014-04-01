@@ -65,6 +65,11 @@ GEM
       json (~> 1.8)
       multi_xml (>= 0.5.2)
     i18n (0.6.9)
+    jasmine (2.0.0)
+      jasmine-core (~> 2.0.0)
+      phantomjs
+      rack (>= 1.2.1)
+      rake
     jasmine-core (2.0.0)
     jasmine-jquery-rails (2.0.2)
     jasmine-rails (0.6.0)
@@ -198,6 +203,7 @@ DEPENDENCIES
   faker
   flot-rails (~> 0.0.4)
   httparty
+  jasmine
   jasmine-jquery-rails
   jasmine-rails
   jbuilder (~> 1.2)

@@ -45,6 +45,7 @@ group :development, :test do
   gem 'capybara', :git => 'git://github.com/jnicklas/capybara.git'
   gem 'rspec-rails', '~> 3.0.0.beta'
   gem 'selenium-webdriver'
+  gem 'jasmine'
   gem 'jasmine-rails'
   gem 'jasmine-jquery-rails'
   #gem "capybara-webkit"

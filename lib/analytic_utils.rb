@@ -31,7 +31,6 @@ class AnalyticUtils
                             rollup_method, rollup_count, show_rollup_remainder,
                             order_via_group_bys, search_criteria, false) 
 
-      # TODO: Change SUM to other rollup_aggregation_method
       others_query = "SELECT 'others' as #{label_columns[0][:alias]}, " \
         "#{data_column[:aggregation_method]}(#{data_column[:alias]}) #{data_column[:alias]}, " \
         "2 as ordering " \
@@ -225,11 +224,9 @@ class AnalyticUtils
       where_stmt += " AND " + get_state_criteria_clause(search_criteria[:state])
     end
 
-    # TODO, See if 
     if search_criteria[:company] && search_criteria[:company].join != ''
       where_stmt += "AND c.name IN ('#{(search_criteria[:company]).join("', '")}') "
     end
-
 
     if search_criteria[:user] && search_criteria[:user].join != ''
       where_stmt += "AND u.login IN ('#{(search_criteria[:user]).join("', '")}') "
