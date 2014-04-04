@@ -156,9 +156,11 @@ function refreshAnalyticsTableData() {
 function restrictGroupBys() {
   // Restrict the group by
   var validGroupBys = METRICS.base_metrics[METRICS.metrics[$("#metric_filter").val()].base_metric].group_by;
-
   // Set value to the first group by
-  $("#group_by_filter").val(validGroupBys[0]);
+  // TODO Do this correctly
+  if ($("#group_by_filter").val() == "state") {
+    $("#group_by_filter").val("company"); //validGroupBys[0]);
+  }
 
   $(function() {
     $("#group_by_filter option").each(function(i){
@@ -173,9 +175,9 @@ function restrictGroupBys() {
       }
     });
   });
-
   // Refresh the group by filter
   $("#group_by_filter").multiselect(SINGLE_SELECT_OPTIONS).multiselect('refresh');
+
 }
 
 function disableGroupBy(groupBy) {
