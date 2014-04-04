@@ -1,0 +1,18 @@
+<h1>Release Notes for 2014-01-24</h1>
+<br>
+
+<u>Key Additions</u>
+<ul>
+  <li>Reimplemented Multiselect widget to improve performance.</li>
+  <li>Wrote RSpec unit tests to validate GRAF's load process and user interface.</li>
+
+</ul>
+
+<u>Fixed Issues</u>
+<ul>
+  <li>Excel files were only showing top 5 contributors, fixed this to show all contributors.</li>
+  <li>Merged pull requests were being shown as closed, and vice versa. </li>
+  <li>Pressing the "Clear Search Criteria" button would initiate a ajax call for each filter, severely impacting performance. We refactored this logic to make a single ajax call.
+</ul>
+
+<%= render 'system_notes' %>
