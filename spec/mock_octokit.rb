@@ -134,21 +134,21 @@ class MockOctokit
   #   length = 40
   #   c = Hash.new
   #   c = {
-  #         :attrs => {
+  #         
   #           :login => "username",  
   #           :repo_id => 1,
   #           :sha => rand(36**length).to_s(36),
   #           :message => "message",
   #           :date_created => Time.now,
   #           :commit => {
-  #             :attrs => {
+  #             
   #               :author => {
   #                 :email => "user@company.com",
   #                 :name => "name"
   #               }
-  #             }
+  #             
   #           }
-  #         }
+  #         
   #       }
   #   return c
   # end

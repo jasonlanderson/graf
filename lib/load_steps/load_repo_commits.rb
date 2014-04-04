@@ -33,11 +33,11 @@ class LoadRepoCommits < LoadStep
         :message => commit_info[:message],#commit[:attrs][:commit][:attrs][:message],
         :date_created => commit_info[:date_created] #commit[:attrs][:commit][:attrs][:author][:date]
       )
-
+      users = []
       if commit[:author]
-        users = [User.find_by(login: commit_info[:login]) || LoadHelpers.create_user_if_not_exist(client.user(commit_info[:login]))]
+        users << (User.find_by(login: commit_info[:login]) || LoadHelpers.create_user_if_not_exist(client.user(commit_info[:login])))
       else
-        users = LoadHelpers.process_authors(c, commit_info[:email], commit_info[:names])
+        users = LoadHelpers.process_authors(commit_info[:email], commit_info[:names])
       end
       users.each {|user| c.users << user}
       c.save()

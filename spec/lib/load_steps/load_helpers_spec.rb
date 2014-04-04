@@ -41,8 +41,10 @@ context LoadHelpers do
       expect(User.find_by(name: name)).to be
     end
 
-    xit "should validate results" do
-
+    it "ensures search results match exactly" do
+      search_results = LoadHelpers.search("Kalonji Bankole")
+      expect(LoadHelpers.name_match(search_results, "Kalonji Bankole")).to match true
+      expect(LoadHelpers.name_match(search_results, "Kalon Bankole")).to match false
     end
   end
 
@@ -121,15 +123,30 @@ context LoadHelpers do
       expect(User.find_by(name: "Kalonji Bankole")).to be
 
       DBUtils.delete_all_data
-      input = "Kalonji Bankole", "kkbankol@us.ibm.com"
-      LoadHelpers.create_user(input)
-      expect(User.find_by(name: "Kalonji Bankole")).to be
       
+      LoadHelpers.create_user("Kalonji Bankole", "kkbankol@us.ibm.com")
+      expect(User.find_by(name: "Kalonji Bankole")).to be      
+      LoadHelpers.create_user("Unknown User", "user@unknown.com")      
+      expect(User.find_by(name: "Unknown User")).to be
     end
 
     # Test that there are no companies without users
-    it 'all companies have users' do
+    it 'ensures all companies have users' do
       expect(Company.where("NOT EXISTS (SELECT * FROM users where companies.id = users.company_id)").length).to match(0)
+    end
+
+    it 'fetches users from database' do
+      user1 = LoadHelpers.create_user("Ryan Morgan", "rmorgan@gopivotal.com")
+      user2 = LoadHelpers.create_user("tlang", "tlang@pivotallabs.com")
+      expect(LoadHelpers.check_db_for_user("Ryan Morgan")).to be
+      expect(LoadHelpers.check_db_for_user("tlang")).to be
+    end
+
+
+    it 'does not process "bots"' do
+      # TODO Unsure if this is the best course of action. Do we want always want to skip commits that have no reference to a human author?
+      expect(LoadHelpers.skip?("Jenkins Bot", "jenkins@jenkins-slave2.sf.pivotallabs.com")).to match true
+      expect(LoadHelpers.skip?("Kalonji Bankole", "kkbankol@us.ibm.com")).to match false
     end
   end
 
@@ -139,7 +156,25 @@ context LoadHelpers do
     end
   end
 
+  describe "can process authors" do
+    it "can process a single user" do
+      email = "kkbankol@us.ibm.com"
+      names = ["Kalonji Bankole"]
+      result = LoadHelpers.process_authors(email, names)
+      expect( result.class ).to match Array
+      expect( result[0].class).to match User
+    end
 
+    it "can process an array of users" do
+      email = "pair+ryan+slevine@pivotallabs.com"
+      names = ["Ryan Spore", "Stephen Lavine"]
+      result = LoadHelpers.process_authors(email, names)
+      expect(User.find_by(name: names[0])).to be
+      expect(User.find_by(name: names[1])).to be
+      expect( result.class ).to match Array
+      expect( result[0].class).to match User
+    end
+  end
 
   xdescribe LoadHelpers do   
 
