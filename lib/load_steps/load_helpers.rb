@@ -222,6 +222,7 @@ class LoadHelpers
 
 
   # Kalonji Bankole, kkbankol@us.ibm.com
+  # Unknown User, user@unknown.com
 
   def self.create_user(name, email)
     # If we can id user by email

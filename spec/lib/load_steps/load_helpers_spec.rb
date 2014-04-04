@@ -8,7 +8,6 @@ require 'mock_octokit'
 context LoadHelpers do
   before(:each) do
     DBUtils.delete_all_data
-
     class OctokitUtils
       def self.get_octokit_client()
         puts "Returning MOCK object"
@@ -111,7 +110,7 @@ context LoadHelpers do
       expect(Company.all.length).to match 0
       expect(Company.find_by(name: "IBM")).to match nil
       LoadHelpers.create_company_if_not_exist(company)
-      expect(Company.find_by(name: "IBM").name).to match "IBM" 
+      expect(Company.find_by(name: "IBM").name).to be
     end
 
     it "can create a user record" do
@@ -119,8 +118,13 @@ context LoadHelpers do
       expect(User.all.length).to match 0
       expect(User.find_by(name: "Kalonji Bankole")).to match nil
       LoadHelpers.create_user_if_not_exist(user)
-      #expect(User.find_by(name: "Kalonji Bankole")).to exist # This is the correct way to do it
-      expect(User.find_by(name: "Kalonji Bankole").login).to match "kkbankol"
+      expect(User.find_by(name: "Kalonji Bankole")).to be
+
+      DBUtils.delete_all_data
+      input = "Kalonji Bankole", "kkbankol@us.ibm.com"
+      LoadHelpers.create_user(input)
+      expect(User.find_by(name: "Kalonji Bankole")).to be
+      
     end
 
     # Test that there are no companies without users
