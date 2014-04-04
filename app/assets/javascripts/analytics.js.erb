@@ -123,6 +123,11 @@ function refreshAnalyticsChartData() {
     return;
   }
 
+  // TODO, shouldn't have to place this here, is a temporary hack like in restrictGroupBys
+  if ($("#group_by_filter").val() == "state") {
+    $("#group_by_filter").val("company");
+  }
+
   data = {
     metric: $("#metric_filter").val(),
     groupBy: $("#group_by_filter").val(),
