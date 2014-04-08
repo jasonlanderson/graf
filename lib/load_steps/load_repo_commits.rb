@@ -20,8 +20,16 @@ class LoadRepoCommits < LoadStep
     GithubLoad.log_current_msg("Loading Commits for #{repo.full_name}", LogLevel::INFO)
 
     client = OctokitUtils.get_octokit_client
-    commits = client.commits(repo.full_name)
-               
+
+    begin
+      commits = client.commits(repo.full_name)
+    # TODO, try to only catch Octokit Error  
+    rescue => e
+      GithubLoad.log_current_msg("The following error occured...", LogLevel::ERROR)
+      GithubLoad.log_current_msg(e.message, LogLevel::ERROR)
+      GithubLoad.log_current_msg(e.backtrace.join("\n"), LogLevel::ERROR)
+      return nil
+    end
     commits.each { |commit|
       commit_info = Constants.get_commit_info(commit)
       #email = commit[:attrs][:commit][:attrs][:author][:email]
