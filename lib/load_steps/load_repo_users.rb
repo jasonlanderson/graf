@@ -22,7 +22,7 @@ class LoadRepoUsers < LoadStep
     # Contributors are those who have submitted at least one commit to the repo
     begin
       contributors = client.contributors(repo.full_name)        
-    rescue
+    rescue => e
       GithubLoad.log_current_msg("The following error occured...", LogLevel::ERROR)
       GithubLoad.log_current_msg(e.message, LogLevel::ERROR)
       GithubLoad.log_current_msg(e.backtrace.join("\n"), LogLevel::ERROR)
