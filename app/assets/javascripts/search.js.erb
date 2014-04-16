@@ -95,6 +95,9 @@ function clearSearchCriteria(filterChanged) {
 }
 
 function restrictFilters() {
+  // allowDataRefresh param false to prevent any data refreshes from happening until done
+  allowDataRefresh = false;
+  
   var validFilters = METRICS.base_metrics[METRICS.metrics[$("#metric_filter").val()].base_metric].filters;
 
   $.each(FILTERS, function(filterName, filterDetails) {
@@ -107,6 +110,9 @@ function restrictFilters() {
       disableFilter(filterName, filterDetails.type);
     }
   });
+
+  // re-enabling data refreshing
+  allowDataRefresh = true;
 }
 
 function clearFilter(filterName, filterType) {

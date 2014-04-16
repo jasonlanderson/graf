@@ -107,9 +107,7 @@ function metricChanged() {
   restrictFilters();
   restrictGroupBys();
   restrictChartViews();
-
   storeFiltersToLocalStorage();
-
   refreshAnalyticsData();
 }
 
@@ -121,11 +119,6 @@ function refreshAnalyticsData() {
 function refreshAnalyticsChartData() {
   if (!allowDataRefresh) {
     return;
-  }
-
-  // TODO, shouldn't have to place this here, is a temporary hack like in restrictGroupBys
-  if ($("#group_by_filter").val() == "state") {
-    $("#group_by_filter").val("company");
   }
 
   data = {
@@ -159,14 +152,15 @@ function refreshAnalyticsTableData() {
 }
 
 function restrictGroupBys() {
+  // allowDataRefresh param false to prevent any data refreshes from happening until done
+  allowDataRefresh = false;
+
   // Restrict the group by
   var validGroupBys = METRICS.base_metrics[METRICS.metrics[$("#metric_filter").val()].base_metric].group_by;
-  // Set value to the first group by
-  // TODO Do this correctly
-  if ($("#group_by_filter").val() == "state") {
-    $("#group_by_filter").val("company"); //validGroupBys[0]);
-  }
 
+  if ( validGroupBys.indexOf($("#group_by_filter").val()) < 0) {
+    $("#group_by_filter").val(validGroupBys[0]);
+  }
   $(function() {
     $("#group_by_filter option").each(function(i){
       var indexOf = validGroupBys.indexOf($(this).val());
@@ -183,6 +177,8 @@ function restrictGroupBys() {
   // Refresh the group by filter
   $("#group_by_filter").multiselect(SINGLE_SELECT_OPTIONS).multiselect('refresh');
 
+  // re-enabling data refreshing
+  allowDataRefresh = true;
 }
 
 function disableGroupBy(groupBy) {
@@ -220,6 +216,9 @@ ANALYTICS_TABLE_OPTIONS = {
 // Charts
 //
 function restrictChartViews() {
+  // allowDataRefresh param false to prevent any data refreshes from happening until done
+  allowDataRefresh = false;
+  
   var curMetric = METRICS.metrics[$("#metric_filter").val()];
 
   // Set the view to the first value in the list so that it is valid
@@ -238,6 +237,10 @@ function restrictChartViews() {
   });
 
   $("#view_type").multiselect('refresh');
+
+  // re-enabling data refreshing
+  allowDataRefresh = true;
+
 }
 
 function disableChartView(viewName) {
