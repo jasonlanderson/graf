@@ -69,7 +69,7 @@ class DBUtils
 
   def self.get_quarter_by_name(date)
     if get_current_db_type == RDMS::SQLITE
-        return "case strftime('%m', #{date}) when '01' then 'Q1' when '02' then 'Q1' when '03' then 'Q1' when '04' then 'Q2' when '05' then 'Q2' when '06' then 'Q2' when '07' then 'Q3' when '08' then 'Q3' when '09' then 'Q3' when '10' then 'Q4' when '11' then 'Q4' when '12' then 'Q4' else '' end"
+      return "case strftime('%m', #{date}) when '01' then 'Q1' when '02' then 'Q1' when '03' then 'Q1' when '04' then 'Q2' when '05' then 'Q2' when '06' then 'Q2' when '07' then 'Q3' when '08' then 'Q3' when '09' then 'Q3' when '10' then 'Q4' when '11' then 'Q4' when '12' then 'Q4' else '' end"
     elsif get_current_db_type == RDMS::MYSQL
       return "case QUARTER(#{date}) when '1' then 'Q1' when '2' then 'Q2' when '3' then 'Q3' when '4' then 'Q4' else '' end"
     else
