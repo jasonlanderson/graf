@@ -174,7 +174,6 @@ class ApiController < ApplicationController
       prs_data_pie_str = JavascriptUtils.get_pull_request_stats(data, LABEL_MAPPING[group_by][:alias], METRIC_DETAILS[metric][:alias])
       render :json => prs_data_pie_str
     when 'line'
-      puts "LINE JSON #{data.inspect}"
       line_graph = JavascriptUtils.get_flot_line_chart_json(data, LABEL_MAPPING[group_by][:alias], LABEL_MAPPING["timestamp"][:alias], METRIC_DETAILS[metric][:alias])
       render :json => "{\"response\": #{line_graph}}"
     when 'table'

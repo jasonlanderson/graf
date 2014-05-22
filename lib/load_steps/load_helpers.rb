@@ -114,6 +114,7 @@ class LoadHelpers
       end
   end
 
+  # Done
   def self.name_match(search_results, name)
     # After searching for an author's name, we should iterate through the results. The 
     client = OctokitUtils.get_octokit_client
@@ -126,13 +127,15 @@ class LoadHelpers
     end
   end
 
-  def self.check_db_for_user(name, email)
+  def self.check_db_for_user(name, email = nil)
+    # Check our db for user by checking: full name, first name, email
     user = ( User.find_by(name: name ) \
           || User.find_by(login: name) \
-          || User.find_by(name: name.split(' ')[0]) \
           || User.find_by(email: email) \
-          || User.find_by(login: email.gsub(".", "").split("@")[0]) \
-          || User.find_by(login: email.gsub(".", "").split("@")[0].chop) \
+          #|| User.find_by(name: name.split(' ')[0]) \
+          
+          #|| User.find_by(login: email.gsub(".", "").split("@")[0]) if email \
+          #|| User.find_by(login: email.gsub(".", "").split("@")[0].chop) if email \
     )
     return user
   end
@@ -146,25 +149,21 @@ class LoadHelpers
     }
   end
 
-  def self.skip?(n, email)    
+  # TODO, every name/entry should be processed. Skip should only bypass the search function, not skip the name altogether 
+  # Done
+  def self.skip?(n, email) 
+    # Name shouldn't be processed if it's unknown, a bot, etc.         
     if  (  n.include?("unknown") \
         || n.include?("jenkins") \
         || n.include?("Bot") \
         || email.include?("jenkins") \
         || email.include?("-bot") \
-        # || (email.length > 25) \
         )
       return true
     else
       return false
     end
   end
-
-  # jenkins@jenkins-slave2.sf.pivotallabs.com
-  # Jenkins Bot
-  # 
-
-
 
   # Done
   def self.process_search_results(search_results, name, email)
@@ -188,36 +187,30 @@ class LoadHelpers
     return user
   end
 
-
-# names = ["Kalonji Bankole"]
-# email = "kkbankol@us.ibm.com"
-# c = {
-#   :sha => ,
-#   :message => ,
-#   :repo_id => ,
-#   :date_created =>
-# }
-
-
-  #TODO
-  # This should take a array of names and return an array of user objects
-  def self.process_authors(c, email, names) 
+  def self.process_authors(email, names) 
     client = OctokitUtils.get_octokit_client
+    users = []
+    if names.length < 1
+      multiple_names = false
+    else
+      multiple_names = true
+    end
+
     names.each do |n| 
-      # Name shouldn't be processed if it's unknown, a bot, etc.
       next if skip?(name, email)
       start = Time.now        
       user, user_type, login, user_id, search_results = nil
       name = format_name(n)
-      # Check our db for user by checking: full name, first name, email
-      user = check_db_for_user(name, email) || create_user(name, email)
+      user = ( check_db_for_user(name, multiple_names ? nil : email) || create_user(name, email))
       puts "Took #{Time.now - start}s to process #{name} / #{email} " if ((Time.now - start) > 6.0)
-      c.users << user # Maps user to commit
-      c.save()
+      users << user
+      #c.users << user # Maps user to commit
+      #c.save()
     end
+    return users
   end
 
-
+  # Done
   def self.create_user(name, email)
     # If we can id user by email
     company_name = associate_company_email(email) || associate_company_email(name)
@@ -230,16 +223,13 @@ class LoadHelpers
     # Else try searching by email, and then by name
     else
       # Search by email, unless commit has multiple contributors
-      search_results = search(email) unless (email.include?("pair") || email.include?("none") || (email.length > 25))
+      search_results = search(email) unless (email.include?("pair") || email.include?("none"))
       # Search by name if commit submitted by pair, or if email not in github db
       search_results = search(name) if ( !search_results || (search_results[:total_count] == 0))
       user = process_search_results(search_results, c_name, email)
     end
+    return user
   end
-
-
-
-
 
   # Done
   def self.get_search_type(identifier)

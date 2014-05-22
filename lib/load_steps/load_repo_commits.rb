@@ -20,8 +20,15 @@ class LoadRepoCommits < LoadStep
     GithubLoad.log_current_msg("Loading Commits for #{repo.full_name}", LogLevel::INFO)
 
     client = OctokitUtils.get_octokit_client
-    commits = client.commits(repo.full_name)
-               
+    begin
+      commits = client.commits(repo.full_name)
+    # TODO, try to only catch Octokit Error  
+    rescue => e
+      GithubLoad.log_current_msg("The following error occured...", LogLevel::ERROR)
+      GithubLoad.log_current_msg(e.message, LogLevel::ERROR)
+      GithubLoad.log_current_msg(e.backtrace.join("\n"), LogLevel::ERROR)
+      return nil
+    end
     commits.each { |commit|
       commit_info = Constants.get_commit_info(commit)
       #email = commit[:attrs][:commit][:attrs][:author][:email]
@@ -33,14 +40,14 @@ class LoadRepoCommits < LoadStep
         :message => commit_info[:message],#commit[:attrs][:commit][:attrs][:message],
         :date_created => commit_info[:date_created] #commit[:attrs][:commit][:attrs][:author][:date]
       )
-      
+      users = []
       if commit[:author]
-        user = User.find_by(login: commit_info[:login]) || LoadHelpers.create_user_if_not_exist(client.user(commit_info[:login]))
-        c.users << user
-        c.save()
+        users << (User.find_by(login: commit_info[:login]) || LoadHelpers.create_user_if_not_exist(client.user(commit_info[:login])))
       else
-        LoadHelpers.process_authors(c, commit_info[:email], commit_info[:names])
+        users = LoadHelpers.process_authors(commit_info[:email], commit_info[:names])
       end
+      users.each {|user| c.users << user}
+      c.save()
       # if commit[:author]
       #   # find_by email?
       #    #user = User.find_by(login: commit[:author][:login].downcase) if commit[:author][:login]

@@ -23,7 +23,7 @@ function utcToLocal(input) {
 }
 
 function convertToDate(time) {
-  timestamp = time * 1000
+  timestamp = time //* 1000
   var newDate = new Date(timestamp);
   var month = newDate.getMonth() + 1;
   var year = newDate.getYear() + 1900;
