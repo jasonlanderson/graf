@@ -4,6 +4,8 @@ require 'load_steps/load_orgs'
 require 'load_steps/post_fix_users_without_companies'
 require 'load_steps/post_delete_companies_without_users'
 require 'load_steps/post_delete_users_without_contribs'
+require 'load_steps/delta_load_repo_pull_requests'
+
 
 class Constants
 
@@ -16,10 +18,21 @@ class Constants
     PostDeleteCompaniesWithoutUsers.new
   ]
 
+  LOAD_STEPS_DELTA = [
+    LoadOrgs.new,    
+    DeltaLoadRepoPullRequests.new
+  ]
+
   LOAD_STEPS_REPO = [
     LoadRepoUsers.new,
     LoadRepoPullRequests.new,
     LoadRepoCommits.new
+  ]
+
+  DELTA_LOAD_STEPS_REPO = [
+    #LoadRepoUsers.new,
+    DeltaLoadRepoPullRequests.new,
+    #DeltaLoadRepoCommits.new
   ]
 
   @@settings = nil
