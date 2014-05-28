@@ -65,7 +65,7 @@ Group By:
 <div style="margin-bottom: 0; padding-bottom: 0; font-weight:normal;" >
   <p id="chart_title" style="display:inline; margin-bottom: 0; padding-bottom: 0; font-size:20px"> Pull Requests Grouped By Company</p>
   <a href="#" class="tooltip"><%= image_tag "tooltip.gif" %><span style="font-size: 15px;">  
-  This pie chart represents all pull requests submitted to the Cloud Foundry Github repositories during the specifed time period. <br> Each slice represents a separate company, and the size of each slice is proportional to the company's quantity of contributions. 
+  This pie chart represents all pull requests submitted to the Cloud Foundry Github repositories during the specifed time period. <br> Each slice represents a separate company, and the size of each slice is proportional to the company's quantity of contributions.
   <br>
   Each of the top 5 contributers have their own slice of the pie chart. The remaining contributers are then merged together into the "Others" slice.
   </span></a>
@@ -87,6 +87,13 @@ Group By:
         <option value="15">15</option>
         <option value="20">20</option>
     </select>    
+
+    Timeframe:
+    <select id="timeframe" > 
+        <option value="month">Month</option>
+        <option value="quarter">Quarter</option>
+        <option value="year">Year</option>
+    </select>
   </div>
 </div>
 

@@ -18,6 +18,10 @@
       startLoad()
     });
 
+    $("#deltaLoadButton").click(function () {
+      deltaLoad()
+    });
+
     $("#getLoadStatusButton").click(function () {
       getLoadStatus()
     });
@@ -80,7 +84,7 @@
   function startLoad() {
     // Disable start button
     $("#startLoadButton").attr("disabled", "disabled");
-
+    $("#deltaLoadButton").attr("disabled", "disabled");
     // Show the spinner
     $("#spinnerCtr").css("visibility","visible");
 
@@ -107,6 +111,37 @@
     });
   }
 
+  function startLoad() {
+    // Disable start button
+    $("#startLoadButton").attr("disabled", "disabled");
+    $("#deltaLoadButton").attr("disabled", "disabled");
+
+    // Show the spinner
+    $("#spinnerCtr").css("visibility","visible");
+
+    // Clear the log section
+    clearLoadLog()
+
+    function onDataReceived(response) {
+      // Set the runningLoadId
+      runningLoadId = response
+
+      // TODO: Add the load entry to the top table
+
+      // Do an initial getLoadStatus
+      getLoadStatus()
+
+      // Start the getLoadStatus (10 seconds)
+      checkInterval = setInterval(getLoadStatus, CHECK_INTERVAL_TIME);
+    }
+
+    $.ajax({
+        url: "delta_load",
+        method: 'GET',
+        success: onDataReceived
+    });
+  }
+
   //
   // Method to finish a completed load
   //
@@ -116,6 +151,7 @@
 
     // Enable button
     $("#startLoadButton").removeAttr("disabled");
+    $("#deltaLoadButton").removeAttr("disabled");
 
     // Hide spinner
     $("#spinnerCtr").css("visibility","hidden");
@@ -179,6 +215,7 @@
 <hr>
 
 <button id="startLoadButton" <%= @running_load ? raw("disabled='disabled'") : "" %>>Start Load</button>
+<button id="deltaLoadButton" <%= @running_load ? raw("disabled='disabled'") : "" %>>Delta Load</button>
 <div id="spinnerCtr" style="<%= @running_load ? "" : raw("visibility: hidden;") %>display: inline;"><%= image_tag "spinner_small.gif" %></div>
 <button id="getLoadStatusButton" style="visibility: hidden">Get Load Status</button>
 

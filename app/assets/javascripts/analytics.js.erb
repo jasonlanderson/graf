@@ -24,8 +24,40 @@ function analyticsAJAX(data, format, responseType, callback){
   });
 }
 
+function setVisibility(element_id){
+  if ($("#view_type").val() == "line") {
+    //document.getElementById(element_id).style.visibility = 'visible' ;
+    $("#" + element_id).multiselect('enable')
+  }
+  else {
+    //document.getElementById(element_id).style.visibility = 'hidden' ;  
+    $("#" + element_id).multiselect('disable')
+  }
+}
+
+function setTimeFrame(){
+  if ( $("#timeframe").val() == "month" ) {
+      LINE_OPTIONS.xaxis.minTickSize = [1, "month"] ; 
+  } 
+  else if ( $("#timeframe").val() == "quarter" ) {
+      LINE_OPTIONS.xaxis.minTickSize = [1, "quarter"] ; 
+  } 
+  else if ( $("#timeframe").val() == "year" ) {
+      LINE_OPTIONS.xaxis.minTickSize = [1, "year"] ; 
+  }
+  refreshAnalyticsChartData();
+}
+
+
 function setupAnalyticsReady() {
   // Setup Controls
+
+  $("#timeframe").multiselect(SINGLE_SELECT_OPTIONS);
+  $("#rollup").multiselect(SINGLE_SELECT_OPTIONS);
+  $("#metric_filter").multiselect(SINGLE_SELECT_OPTIONS);
+  $("#group_by_filter").multiselect(SINGLE_SELECT_OPTIONS);
+  $("#view_type").multiselect(SINGLE_SELECT_OPTIONS);
+
   $("#metric_filter").change(function () {
     metricChanged();
   });
@@ -34,18 +66,21 @@ function setupAnalyticsReady() {
     refreshAnalyticsData();
   });
 
+  setVisibility('timeframe'); // TODO, Shouldn't have to run this twice
+  
   $("#view_type").change(function () {
     refreshAnalyticsChartData();
+    setVisibility('timeframe');
   });
 
   $("#rollup").change(function () {
     refreshAnalyticsChartData();
   });
 
-  $("#rollup").multiselect(SINGLE_SELECT_OPTIONS);
-  $("#metric_filter").multiselect(SINGLE_SELECT_OPTIONS);
-  $("#group_by_filter").multiselect(SINGLE_SELECT_OPTIONS);
-  $("#view_type").multiselect(SINGLE_SELECT_OPTIONS);
+  $("#timeframe").change(function() {
+    setTimeFrame();
+  });
+
 
   // Setup CSV links
   $("#download").click(function () {
@@ -331,7 +366,6 @@ PIE_OPTIONS = {
 };
 PIE_OPTIONS.colors = CHART_COLORS;
 
-
 LINE_OPTIONS = {
   series: {
     lines: {
@@ -342,7 +376,8 @@ LINE_OPTIONS = {
     }
   },
   xaxis: {
-    mode: "time"
+    mode: "time",
+    minTickSize: [1, "month"]
   },
   legend: {
     position: "nw",

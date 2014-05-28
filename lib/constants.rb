@@ -1,6 +1,7 @@
 require 'load_steps/pre_load_stackalytics'
 require 'load_steps/pre_load_user_cache'
 require 'load_steps/load_orgs'
+require 'load_steps/delta_load_orgs'
 require 'load_steps/post_fix_users_without_companies'
 require 'load_steps/post_delete_companies_without_users'
 require 'load_steps/post_delete_users_without_contribs'
@@ -19,8 +20,8 @@ class Constants
   ]
 
   LOAD_STEPS_DELTA = [
-    LoadOrgs.new,    
-    DeltaLoadRepoPullRequests.new
+    PreLoadStackalytics.new,
+    DeltaLoadOrgs.new
   ]
 
   LOAD_STEPS_REPO = [
@@ -30,7 +31,7 @@ class Constants
   ]
 
   DELTA_LOAD_STEPS_REPO = [
-    #LoadRepoUsers.new,
+    #DeltaLoadRepoUsers.new,
     DeltaLoadRepoPullRequests.new,
     #DeltaLoadRepoCommits.new
   ]

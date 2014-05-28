@@ -22,15 +22,15 @@ class DeltaLoadOrgs < LoadStep
       org_load_time = Time.now
       
       organization = client.user(org_hash["name"])
-
-      org = Org.create(
-        :git_id => organization[:attrs][:id].to_i,
-        :name => organization[:attrs][:name],
-        :login => organization[:attrs][:login],
-        :date_created => organization[:attrs][:date_created],
-        :date_updated => organization[:attrs][:date_updated],
-        :org_type => org_hash["org_type"]
-      )
+      org = Org.find_by(git_id: organization[:attrs][:id].to_i) || \
+        Org.create(
+          :git_id => organization[:attrs][:id].to_i,
+          :name => organization[:attrs][:name],
+          :login => organization[:attrs][:login],
+          :date_created => organization[:attrs][:date_created],
+          :date_updated => organization[:attrs][:date_updated],
+          :org_type => org_hash["org_type"]
+        )
       
       (DeltaLoadOrgRepos.new).execute(org, org_hash["repos_to_skip"])
       GithubLoad.log_current_msg("Organization '#{org.login}' took #{Time.now - org_load_time} to load", LogLevel::INFO)

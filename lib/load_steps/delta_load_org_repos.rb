@@ -1,7 +1,7 @@
 require 'load_steps/load_step'
 require 'load_steps/load_repo_users'
 require 'load_steps/delta_load_repo_pull_requests'
-require 'load_steps/delta_load_repo_commits'
+#require 'load_steps/delta_load_repo_commits'
 require 'octokit_utils'
 require 'log_level'
 require 'constants'
@@ -28,8 +28,9 @@ class DeltaLoadOrgRepos < LoadStep
         
     total_repo_count = repos.count
     repos.each_with_index { |repo, index|
-      unless repos_to_skip.include?(repo[:attrs][:name])
-        repo = Repo.create(
+      unless repos_to_skip.include?(repo[:attrs][:name]) 
+        repo = Repo.find_by(git_id: repo[:attrs][:id].to_i) || \
+        Repo.create(
           :git_id => repo[:attrs][:id].to_i,
           :org_id => org.id,
           :name => repo[:attrs][:name],
@@ -39,7 +40,8 @@ class DeltaLoadOrgRepos < LoadStep
           :date_updated => repo[:attrs][:date_updated],
           :date_pushed => repo[:attrs][:date_pushed]
         )
-        GithubLoad.log_current_msg("Loading Commits By Repo (#{index+1} / #{total_repo_count})", LogLevel::INFO)
+        # This log message should be written at the beginning of the commits step
+        #GithubLoad.log_current_msg("Processing Repo (#{index+1} / #{total_repo_count})", LogLevel::INFO)
           execute_load_steps(Constants::DELTA_LOAD_STEPS_REPO, repo)
       end
     }

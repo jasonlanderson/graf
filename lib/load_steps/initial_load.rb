@@ -13,7 +13,6 @@ class InitialLoad < LoadStep
     puts "Start Step: #{name}"
 
     execute_load_steps(Constants::LOAD_STEPS_INITIAL)
-    #execute_load_steps(Constants::LOAD_STEPS_DELTA) # TODO, remove this
     puts "Finish Step: #{name}"
   end
 
