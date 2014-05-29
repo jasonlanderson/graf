@@ -18,36 +18,55 @@ class LoadRepoCommits < LoadStep
     puts "--- Loading Commits for #{repo.full_name}"
     puts "---------"
     GithubLoad.log_current_msg("Loading Commits for #{repo.full_name}", LogLevel::INFO)
-    pid, size = `ps ax -o pid,rss | grep -E "^[[:space:]]*#{$$}"`.strip.split.map(&:to_i)
-    GithubLoad.log_current_msg("Initial memory #{size} KB", LogLevel::INFO)
 
     client = OctokitUtils.get_octokit_client
-    commits = client.commits(repo.full_name)
-               
-    commits.each { |commit|
-      email = commit[:attrs][:commit][:attrs][:author][:email]
 
+    begin
+      commits = client.commits(repo.full_name)
+    # TODO, try to only catch Octokit Error  
+    rescue => e
+      GithubLoad.log_current_msg("The following error occured...", LogLevel::ERROR)
+      GithubLoad.log_current_msg(e.message, LogLevel::ERROR)
+      GithubLoad.log_current_msg(e.backtrace.join("\n"), LogLevel::ERROR)
+      return nil
+    end
+    commits.each { |commit|
+      commit_info = Constants.get_commit_info(commit)
+      #email = commit[:attrs][:commit][:attrs][:author][:email]
+      email = commit_info[:email]
       # Create record of commit
       c = Commit.create(
         :repo_id => repo.id,
-        :sha => commit[:sha], # Change sha to string
-        :message => commit[:attrs][:commit][:attrs][:message],
-        :date_created => commit[:attrs][:commit][:attrs][:author][:date]
+        :sha => commit_info[:sha], # Change sha to string
+        :message => commit_info[:message],#commit[:attrs][:commit][:attrs][:message],
+        :date_created => commit_info[:date_created] #commit[:attrs][:commit][:attrs][:author][:date]
       )
-
+      users = []
       if commit[:author]
-         user = User.find_by(login: commit[:author][:attrs][:login].downcase) if commit[:author][:attrs][:login]
-         if user
-           c.users << user
-         else
-           user_obj = client.user(commit[:author][:attrs][:login]) 
-           user = LoadHelpers.create_user_if_not_exist(user_obj)
-           c.users << user 
-         end
+        users << (User.find_by(login: commit_info[:login]) || LoadHelpers.create_user_if_not_exist(client.user(commit_info[:login])))
       else
-         names = commit[:attrs][:commit][:attrs][:author][:name].gsub(" and ", "|").gsub(", ","|").gsub(" & ", '|').split('|')
-         LoadHelpers.process_authors(c, email, names)
+        users = LoadHelpers.process_authors(commit_info[:email], commit_info[:names])
       end
+      users.each {|user| c.users << user}
+      c.save()
+      # if commit[:author]
+      #   # find_by email?
+      #    #user = User.find_by(login: commit[:author][:login].downcase) if commit[:author][:login]
+      #    user = User.find_by(login: commit_info[:login])
+      #    if user
+      #      c.users << user
+      #    else
+      #      user_obj = client.user(commit[:author][:attrs][:login]) 
+      #      user = LoadHelpers.create_user_if_not_exist(client.user(commit_info[:login]))
+      #      c.users << user 
+      #    end
+      # else
+      #    #names = commit[:attrs][:commit][:attrs][:author][:name].gsub(" and ", "|").gsub(", ","|").gsub(" & ", '|').split('|')
+      #    # TODO should only pass the commit
+      #    # TODO 
+      #    #LoadHelpers.process_authors(c, email, names)
+      #    LoadHelpers.process_authors(c, commit_info[:email], commit_info[:names])
+      # end
     }
     pid, size = `ps ax -o pid,rss | grep -E "^[[:space:]]*#{$$}"`.strip.split.map(&:to_i)
     GithubLoad.log_current_msg("Memory before cleanup #{size} KB", LogLevel::INFO)

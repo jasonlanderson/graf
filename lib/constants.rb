@@ -28,6 +28,8 @@ class Constants
   @@company_names = nil
   @@metrics = nil
   @@filters = nil
+  @@email_matches = nil
+
 
   def self.clear_constants
     @@settings = nil
@@ -36,6 +38,7 @@ class Constants
     @@company_names = nil
     @@metrics = nil
     @@filters = nil
+    @@email_matches = nil
   end
 
   def self.get_settings
@@ -69,6 +72,15 @@ class Constants
     return @@orgs
   end
 
+  def self.email_to_company
+    if @@email_matches
+      return @@email_matches
+    end
+
+    @@email_matches = JSON.parse(File.read('config/graf/email_to_company.json'))["emails"]
+    return @@email_matches    
+  end
+
   def self.merge_companies
     if @@company_names
       return @@company_names
@@ -94,6 +106,17 @@ class Constants
 
     @@filters = JSON.parse(File.read('config/graf/filters.json'))["filters"]
     return @@filters
+  end
+
+  def self.get_commit_info(commit)
+    return {
+      :email => commit[:commit][:author][:email],
+      :sha => commit[:sha],
+      :message => commit[:commit][:message],
+      :date_created => commit[:commit][:author][:date],
+      :login => (commit[:author] ? commit[:author][:login].downcase : nil),
+      :names => commit[:commit][:author][:name].gsub(" and ", "|").gsub(", ","|").gsub(" & ", '|').split('|')
+    }      
   end
 
 end

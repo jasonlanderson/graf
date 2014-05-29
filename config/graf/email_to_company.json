@@ -17,7 +17,7 @@
      "alias": ["ibm"]
     },
     {
-     "name": "Rbcon",
+     "name": "Mongo",
      "alias": ["mongo", "10gen"]
     },
     {

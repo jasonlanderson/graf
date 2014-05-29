@@ -20,7 +20,14 @@ class LoadRepoUsers < LoadStep
     GithubLoad.log_current_msg("***Loading Users", LogLevel::INFO)
     
     # Contributors are those who have submitted at least one commit to the repo
-    contributors = client.contributors(repo.full_name)
+    begin
+      contributors = client.contributors(repo.full_name)        
+    rescue => e
+      GithubLoad.log_current_msg("The following error occured...", LogLevel::ERROR)
+      GithubLoad.log_current_msg(e.message, LogLevel::ERROR)
+      GithubLoad.log_current_msg(e.backtrace.join("\n"), LogLevel::ERROR)
+      return nil
+    end    
     if contributors     
       contributors.each {|user| 
         unless User.find_by(login: user[:login].downcase) 

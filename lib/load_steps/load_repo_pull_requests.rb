@@ -22,8 +22,14 @@ class LoadRepoPullRequests < LoadStep
     client = OctokitUtils.get_octokit_client
     pid, size = `ps ax -o pid,rss | grep -E "^[[:space:]]*#{$$}"`.strip.split.map(&:to_i)
     GithubLoad.log_current_msg("Initial memory before cleanup #{size} KB", LogLevel::INFO)
-
-    pull_requests = client.pulls(repo.full_name, state = "open")
+    begin
+      pull_requests = client.pulls(repo.full_name, state = "open")
+    rescue => e
+      GithubLoad.log_current_msg("The following error occured...", LogLevel::ERROR)
+      GithubLoad.log_current_msg(e.message, LogLevel::ERROR)
+      GithubLoad.log_current_msg(e.backtrace.join("\n"), LogLevel::ERROR)
+      return nil  
+    end
     pull_requests.concat(client.pulls(repo.full_name, state = "closed"))
     pull_requests.each { |pr|
       # Get user and insert if doesn't already exist
