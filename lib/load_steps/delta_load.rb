@@ -3,7 +3,7 @@ require 'octokit_utils'
 require 'log_level'
 require 'constants'
 
-class InitialLoad < LoadStep
+class DeltaLoad < LoadStep
 
   def name
     "Initial Load"

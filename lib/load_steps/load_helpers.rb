@@ -187,6 +187,30 @@ class LoadHelpers
     return user
   end
 
+  def self.update_pr(pr_record, pr)
+    pr_record.state = (pr[:merged_at].nil? ? pr[:state] : "merged")
+    pr_record.date_merged = pr[:merged_at]
+    pr_record.date_updated = Time.now.utc
+    pr_record.date_closed = pr[:date_closed] 
+    pr_record.save              
+  end
+
+  def self.create_pr(repo, user, pr)
+    PullRequest.create(
+      :repo_id => repo.id,
+      :user_id => (user.nil? ? nil : user.id),
+      :git_id => pr[:id].to_i,
+      :pr_number => pr[:number],
+      :body => pr[:body],
+      :title => pr[:title],
+      :date_created => pr[:created_at],
+      :date_closed => pr[:closed_at],
+      :date_updated => pr[:updated_at],
+      :date_merged => pr[:merged_at],
+      :state => (pr[:merged_at].nil? ? pr[:state] : "merged")
+    )
+  end
+
   def self.process_authors(email, names) 
     client = OctokitUtils.get_octokit_client
     users = []

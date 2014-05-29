@@ -46,29 +46,32 @@ class DeltaLoadRepoPullRequests < LoadStep
         # Get user and insert if doesn't already exist
         user = LoadHelpers.create_user_if_not_exist(pr[:user]) if pr[:user]
         # Determine whether PR exists in our records
-        record = PullRequest.find_by(git_id: pull[:id].to_i)
+        record = PullRequest.find_by(git_id: pr[:id].to_i)
+        puts "RECORD #{record}, ID #{pr[:id]} "
         if record
-          puts "Updating PR #{pull[:number]} from #{repo[:full_name]}"
-          record.state = (date_merged.nil? ? pull[:state] : "merged")
-          record.date_merged = date_merged
-          record.date_updated = Time.now.utc
-          record.date_closed = pull[:date_closed] 
-          record.save              
+          puts "PR found! Updating #{pr[:number]} from #{repo[:full_name]}"
+          # record.state = (date_merged.nil? ? pull[:state] : "merged")
+          # record.date_merged = date_merged
+          # record.date_updated = Time.now.utc
+          # record.date_closed = pr[:date_closed] 
+          # record.save
+          LoadHelpers.update_pr(record, pr)              
         elsif !record
-          puts "Adding new PR #{pull[:number]} from #{repo[:full_name]}"
-          PullRequest.create(
-            :repo_id => repo.id,
-            :user_id => (user.nil? ? nil : user.id),
-            :git_id => pr[:id].to_i,
-            :pr_number => pr[:number],
-            :body => pr[:body],
-            :title => pr[:title],
-            :date_created => pr[:created_at],
-            :date_closed => pr[:closed_at],
-            :date_updated => pr[:updated_at],
-            :date_merged => pr[:merged_at],
-            :state => (pr[:merged_at].nil? ? pr[:state] : "merged")
-            )
+          puts "Adding new PR #{pr[:number]} from #{repo[:full_name]}"
+          LoadHelpers.create_pr(repo, user, pr)
+          # PullRequest.create(
+          #   :repo_id => repo.id,
+          #   :user_id => (user.nil? ? nil : user.id),
+          #   :git_id => pr[:id].to_i,
+          #   :pr_number => pr[:number],
+          #   :body => pr[:body],
+          #   :title => pr[:title],
+          #   :date_created => pr[:created_at],
+          #   :date_closed => pr[:closed_at],
+          #   :date_updated => pr[:updated_at],
+          #   :date_merged => pr[:merged_at],
+          #   :state => (pr[:merged_at].nil? ? pr[:state] : "merged")
+          #   )
         end
       }
     end

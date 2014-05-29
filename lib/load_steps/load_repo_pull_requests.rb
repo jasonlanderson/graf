@@ -34,20 +34,20 @@ class LoadRepoPullRequests < LoadStep
     pull_requests.each { |pr|
       # Get user and insert if doesn't already exist
       user = LoadHelpers.create_user_if_not_exist(pr[:attrs][:user]) if pr[:attrs][:user]
-
-      PullRequest.create(
-        :repo_id => repo.id,
-        :user_id => (user.nil? ? nil : user.id),
-        :git_id => pr[:attrs][:id].to_i,
-        :pr_number => pr[:attrs][:number],
-        :body => pr[:attrs][:body],
-        :title => pr[:attrs][:title],
-        :date_created => pr[:attrs][:created_at],
-        :date_closed => pr[:attrs][:closed_at],
-        :date_updated => pr[:attrs][:updated_at],
-        :date_merged => pr[:attrs][:merged_at],
-        :state => (pr[:attrs][:merged_at].nil? ? pr[:attrs][:state] : "merged")
-        )
+      LoadHelpers.create_pr(repo, user, pr)
+      # PullRequest.create(
+      #   :repo_id => repo.id,
+      #   :user_id => (user.nil? ? nil : user.id),
+      #   :git_id => pr[:attrs][:id].to_i,
+      #   :pr_number => pr[:attrs][:number],
+      #   :body => pr[:attrs][:body],
+      #   :title => pr[:attrs][:title],
+      #   :date_created => pr[:attrs][:created_at],
+      #   :date_closed => pr[:attrs][:closed_at],
+      #   :date_updated => pr[:attrs][:updated_at],
+      #   :date_merged => pr[:attrs][:merged_at],
+      #   :state => (pr[:attrs][:merged_at].nil? ? pr[:attrs][:state] : "merged")
+      #   )
     }
     pid, size = `ps ax -o pid,rss | grep -E "^[[:space:]]*#{$$}"`.strip.split.map(&:to_i)
     GithubLoad.log_current_msg("Memory before cleanup #{size} KB", LogLevel::INFO)
