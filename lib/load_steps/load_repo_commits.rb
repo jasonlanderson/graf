@@ -30,6 +30,7 @@ class LoadRepoCommits < LoadStep
       return nil
     end
     commits.each { |commit|
+      #LoadHelpers.process_commit(commit) # Can comment out everything below 
       commit_info = Constants.get_commit_info(commit)
       #email = commit[:attrs][:commit][:attrs][:author][:email]
       email = commit_info[:email]
