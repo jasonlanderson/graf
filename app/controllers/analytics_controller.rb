@@ -1,6 +1,5 @@
 require "analytic_utils"
 require "javascript_utils"
-require "rollup_methods"
 
 class AnalyticsController < ApplicationController
 
