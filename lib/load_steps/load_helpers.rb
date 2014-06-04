@@ -281,4 +281,13 @@ class LoadHelpers
     return JSON.parse(HTTParty.get("http://raw.github.com/stackforge/stackalytics/master/etc/default_data.json"))
   end
 
+  def self.parse_last_load_date
+    last_completed = GithubLoad.last_completed.load_complete_time
+    year = last_completed.year
+    month = (last_completed.month.to_i < 10 ? "0#{last_completed.month}" : "#{last_completed.month}" )
+    day = last_completed.day.to_i - 1
+    day = (day < 10 ? "0#{day}" : "#{day}" )
+    return "#{year}-#{month}-#{day}"
+  end
+
 end
