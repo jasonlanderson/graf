@@ -46,7 +46,7 @@ class DeltaLoadRepoPullRequests < LoadStep
         # Get user and insert if doesn't already exist
         user = LoadHelpers.create_user_if_not_exist(pr[:user]) if pr[:user]
         # Determine whether PR exists in our records
-        record = PullRequest.find_by(git_id: pr[:id].to_i)
+        record = PullRequest.find_by(pr_number: pr[:number], repo_id: Repo.find_by(full_name: repo.full_name).id) #git_id: pr[:id].to_i)
         puts "RECORD #{record}, ID #{pr[:id]} "
         if record
           puts "PR found! Updating #{pr[:number]} from #{repo[:full_name]}"
