@@ -241,7 +241,7 @@ function updateAnalyticsTableCallback(result) {
     // TODO, find a way to convert HTML entities back to plaintext
     //console.log(String.fromCharCode(id));
     console.log(id); 
-    $("#company_filter").val(String.fromCharCode(id))
+    $("#" + $("#group_by_filter").val() + "_filter").val(id)
     storeFiltersToLocalStorage() 
     window.location.assign('/report')
   });

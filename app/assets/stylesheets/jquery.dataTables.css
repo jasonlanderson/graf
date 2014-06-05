@@ -410,6 +410,15 @@ td.highlight {
   background-color: #99FFFF;
 }
 
+#table_container tbody tr.even:hover, #metric_table tbody tr.even td.highlighted {
+  background-color: #99FFFF;
+}
+
+#table_container tbody tr.odd:hover, #metric_table tbody tr.odd td.highlighted {
+  background-color: #99FFFF;
+}
+
+
 #metric_table tr.even:hover {
   background-color: #ECFFB3;
 }
