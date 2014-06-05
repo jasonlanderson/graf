@@ -232,7 +232,19 @@ function enableGroupBy(groupBy) {
 function updateAnalyticsTableCallback(result) {
   $("#table_container").empty();
   $("#table_container").html(result);
-  $("#metric_table").dataTable(ANALYTICS_TABLE_OPTIONS);
+  //var metric = $("#metric_table").dataTable();
+  var metric = $("#metric_table").dataTable(ANALYTICS_TABLE_OPTIONS);
+
+  // TODO, this is probably in the wrong place
+  $("#metric_table tbody").on( 'click', 'tr', function(){
+    var id = metric.fnGetData(this)[0];
+    // TODO, find a way to convert HTML entities back to plaintext
+    //console.log(String.fromCharCode(id));
+    console.log(id); 
+    $("#company_filter").val(String.fromCharCode(id))
+    storeFiltersToLocalStorage() 
+    window.location.assign('/report')
+  });
 }
 
 ANALYTICS_TABLE_OPTIONS = {
@@ -242,6 +254,7 @@ ANALYTICS_TABLE_OPTIONS = {
   "bAutoWidth" : true,
   "bFilter": true,
   "bSort" : false,
+
   //"aaSorting": [[ 1, "desc" ]]
 };
 

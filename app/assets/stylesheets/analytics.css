@@ -67,6 +67,10 @@ a.tooltip span { border-radius:4px; -moz-border-radius: 4px; -webkit-border-radi
     border-radius: 5px;
 }
 
+td.highlight {
+    background-color: whitesmoke !important;
+}
+
 /* 
 TODO: Auto resize based on browser size all the analytics page
  */

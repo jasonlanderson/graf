@@ -6,7 +6,7 @@ gem 'rails', '4.0.2'
 # User added
 gem 'octokit'
 gem "flot-rails", "~> 0.0.4"
-gem "jquery-datatables-rails"
+#gem "jquery-datatables-rails"
 gem "jquery-ui-rails"
 gem "httparty"
 gem 'jquery-rails'
