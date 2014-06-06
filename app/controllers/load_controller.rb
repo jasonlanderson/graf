@@ -5,8 +5,10 @@ require 'db_utils'
 class LoadController < ApplicationController
   def load_status
     # Check to see what the status of the load is
-    load_id = params[:load]
-    load = GithubLoad.find(load_id)
+    #load_id = params[:load]
+    load_id = GithubLoad.last.id
+    #load = GithubLoad.find(load_id)
+    load = GithubLoad.last # TODO, Debate this, Shouldn't we continue on from last load since we're only using a single DB? 
     last_msg_id = params[:last_msg]
 
     # Get messages since we last checked

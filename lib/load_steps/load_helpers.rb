@@ -187,6 +187,30 @@ class LoadHelpers
     return user
   end
 
+  def self.update_pr(pr_record, pr)
+    pr_record.state = (pr[:merged_at].nil? ? pr[:state] : "merged")
+    pr_record.date_merged = pr[:merged_at]
+    pr_record.date_updated = Time.now.utc
+    pr_record.date_closed = pr[:date_closed] 
+    pr_record.save              
+  end
+
+  def self.create_pr(repo, user, pr)
+    PullRequest.create(
+      :repo_id => repo.id,
+      :user_id => (user.nil? ? nil : user.id),
+      :git_id => pr[:id].to_i,
+      :pr_number => pr[:number],
+      :body => pr[:body],
+      :title => pr[:title],
+      :date_created => pr[:created_at],
+      :date_closed => pr[:closed_at],
+      :date_updated => pr[:updated_at],
+      :date_merged => pr[:merged_at],
+      :state => (pr[:merged_at].nil? ? pr[:state] : "merged")
+    )
+  end
+
   def self.process_authors(email, names) 
     client = OctokitUtils.get_octokit_client
     users = []
@@ -255,6 +279,15 @@ class LoadHelpers
   # Done
   def self.get_stackalytics_JSON()
     return JSON.parse(HTTParty.get("http://raw.github.com/stackforge/stackalytics/master/etc/default_data.json"))
+  end
+
+  def self.parse_last_load_date
+    last_completed = GithubLoad.last_completed.load_complete_time
+    year = last_completed.year
+    month = (last_completed.month.to_i < 10 ? "0#{last_completed.month}" : "#{last_completed.month}" )
+    day = last_completed.day.to_i - 1
+    day = (day < 10 ? "0#{day}" : "#{day}" )
+    return "#{year}-#{month}-#{day}"
   end
 
 end

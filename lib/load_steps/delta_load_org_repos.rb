@@ -45,8 +45,6 @@ class DeltaLoadOrgRepos < LoadStep
           execute_load_steps(Constants::DELTA_LOAD_STEPS_REPO, repo)
       end
     }
-    repos = nil
-    GC.start
 
     puts "Finish Step: #{name}" 
   end

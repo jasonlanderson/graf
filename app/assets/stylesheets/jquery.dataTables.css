@@ -403,19 +403,19 @@ td.highlight {
 }
 
 #metric_table tbody tr.even:hover, #metric_table tbody tr.even td.highlighted {
-  background-color: #99FFFF;
+  background-color: #99CCFF;
 }
 
 #metric_table tbody tr.odd:hover, #metric_table tbody tr.odd td.highlighted {
-  background-color: #99FFFF;
+  background-color: #99CCFF;
 }
 
 #table_container tbody tr.even:hover, #metric_table tbody tr.even td.highlighted {
-  background-color: #99FFFF;
+  background-color: #99CCFF;
 }
 
 #table_container tbody tr.odd:hover, #metric_table tbody tr.odd td.highlighted {
-  background-color: #99FFFF;
+  background-color: #99CCFF;
 }
 
 

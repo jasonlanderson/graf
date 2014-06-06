@@ -30,6 +30,7 @@ class LoadRepoCommits < LoadStep
       return nil
     end
     commits.each { |commit|
+      #LoadHelpers.process_commit(commit) # Can comment out everything below 
       commit_info = Constants.get_commit_info(commit)
       #email = commit[:attrs][:commit][:attrs][:author][:email]
       email = commit_info[:email]
@@ -48,32 +49,7 @@ class LoadRepoCommits < LoadStep
       end
       users.each {|user| c.users << user}
       c.save()
-      # if commit[:author]
-      #   # find_by email?
-      #    #user = User.find_by(login: commit[:author][:login].downcase) if commit[:author][:login]
-      #    user = User.find_by(login: commit_info[:login])
-      #    if user
-      #      c.users << user
-      #    else
-      #      user_obj = client.user(commit[:author][:attrs][:login]) 
-      #      user = LoadHelpers.create_user_if_not_exist(client.user(commit_info[:login]))
-      #      c.users << user 
-      #    end
-      # else
-      #    #names = commit[:attrs][:commit][:attrs][:author][:name].gsub(" and ", "|").gsub(", ","|").gsub(" & ", '|').split('|')
-      #    # TODO should only pass the commit
-      #    # TODO 
-      #    #LoadHelpers.process_authors(c, email, names)
-      #    LoadHelpers.process_authors(c, commit_info[:email], commit_info[:names])
-      # end
     }
-    pid, size = `ps ax -o pid,rss | grep -E "^[[:space:]]*#{$$}"`.strip.split.map(&:to_i)
-    GithubLoad.log_current_msg("Memory before cleanup #{size} KB", LogLevel::INFO)
-    commits = nil
-    GC.start
-    pid, size = `ps ax -o pid,rss | grep -E "^[[:space:]]*#{$$}"`.strip.split.map(&:to_i)
-    GithubLoad.log_current_msg("Memory after cleanup #{size} KB", LogLevel::INFO)
-
 
     puts "Finish Step: #{name}" 
   end
