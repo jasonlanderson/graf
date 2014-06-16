@@ -257,6 +257,24 @@ class AnalyticUtils
     return state_where_stmt + ")"
   end
 
+  # TODO, we need to see why the below function is inaccurate
+
+  # def self.get_state_stats(data)
+  #   total = 0
+  #   open = 0
+  #   closed = 0
+  #   merged = 0
+  #   data.each { |x|
+  #     total += 1
+  #     if x['date_merged']
+  #       merged += 1
+  #     elsif x['date_closed']
+  #       closed += 1
+  #     else
+  #       open += 1
+  #     end
+  #   }
+
   def self.get_state_stats(data)
     total = 0
     open = 0
@@ -264,11 +282,11 @@ class AnalyticUtils
     merged = 0
     data.each { |x|
       total += 1
-      if x['date_merged']
+      if x['state'] == "merged"
         merged += 1
-      elsif x['date_closed']
+      elsif x['state'] == "closed"
         closed += 1
-      else
+      elsif x['state'] == "open"
         open += 1
       end
     }
