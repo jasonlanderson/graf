@@ -46,35 +46,12 @@ class DeltaLoadRepoPullRequests < LoadStep
         # Determine whether PR exists in our records
         record = PullRequest.find_by(pr_number: pr[:number], repo_id: Repo.find_by(full_name: repo.full_name).id)
         puts "RECORD #{record}, ID #{pr[:id]} "
-        # if record
-        #   puts "PR found! Updating #{pr[:number]} from #{repo[:full_name]}"
-        #   LoadHelpers.update_pr(record, pr)              
-        # else
-        #   puts "Adding new PR #{pr[:number]} from #{repo[:full_name]}"
-        #   LoadHelpers.create_pr(repo, user, pr)
-        # end
         if record
-          puts "Updating PR #{pr[:number]} from #{repo[:full_name]}"
-          record.state = (pr[:merged_at].nil? ? pr[:state] : "merged")
-          record.date_merged = pr[:merged_at]
-          record.date_closed = pr[:closed_at]
-          record.save
-          puts "STATE UPDATED #{PullRequest.find_by(pr_number: pr[:number], repo_id: Repo.find_by(full_name: repo.full_name).id).state}"
-        elsif !record
+          puts "PR found! Updating #{pr[:number]} from #{repo[:full_name]}"
+          LoadHelpers.update_pr(record, pr)              
+        else
           puts "Adding new PR #{pr[:number]} from #{repo[:full_name]}"
-          PullRequest.create(
-            :repo_id => repo.id,
-            :user_id => (user.nil? ? nil : user.id),
-            :git_id => pr[:id].to_i,
-            :pr_number => pr[:number],
-            :body => pr[:body],
-            :title => pr[:title],
-            :date_created => pr[:created_at],
-            :date_closed => pr[:closed_at],
-            :date_updated => pr[:updated_at],
-            :date_merged => pr[:merged_at],
-            :state => (pr[:merged_at].nil? ? pr[:state] : "merged")
-            )
+          LoadHelpers.create_pr(repo, user, pr)
         end
       }
     else

@@ -31,7 +31,6 @@ class DeltaLoadOrgs < LoadStep
           :date_updated => organization[:attrs][:date_updated],
           :org_type => org_hash["org_type"]
         )
-      
       (DeltaLoadOrgRepos.new).execute(org, org_hash["repos_to_skip"])
       GithubLoad.log_current_msg("Organization '#{org.login}' took #{Time.now - org_load_time} to load", LogLevel::INFO)
     }

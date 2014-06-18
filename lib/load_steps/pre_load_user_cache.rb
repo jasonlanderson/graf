@@ -18,7 +18,7 @@ class PreLoadUserCache < LoadStep
 
    users["users"].each { |u|
       GithubLoad.log_current_msg("Loading User From Cache: #{u['login'] || u['name']}", LogLevel::INFO)
-      company = LoadHelpers.create_company_if_not_exist(company)
+      company = LoadHelpers.create_company_if_not_exist(u['company'])
       user = User.create(
         :company_id => company.id,
         :git_id => u["git_id"].to_i,

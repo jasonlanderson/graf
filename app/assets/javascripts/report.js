@@ -19,10 +19,20 @@ MIN_TABLE_OPTIONS = {
 
 function reportAJAX(data, responseType, callback){
   $.ajax({
+    beforeSend: function() {
+      $('#loader').show();
+      $('#table_summary_container').hide();
+      $('#table_container').hide();
+    },
     url: "report_data",
     data: data,
     method: 'POST',
     dataType: responseType,
+    complete: function(){
+      $('#loader').hide();
+      $('#table_summary_container').show();
+      $('#table_container').show();
+    },
     success: callback
   });
 }

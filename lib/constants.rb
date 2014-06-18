@@ -20,7 +20,6 @@ class Constants
   ]
 
   LOAD_STEPS_DELTA = [
-    PreLoadStackalytics.new,
     DeltaLoadOrgs.new,
     PostFixUsersWithoutCompanies.new,
     #PostDeleteUsersWithoutContribs.new,
@@ -34,7 +33,7 @@ class Constants
   ]
 
   DELTA_LOAD_STEPS_REPO = [
-    #DeltaLoadRepoUsers.new,
+    DeltaLoadRepoUsers.new,
     DeltaLoadRepoPullRequests.new,
     #DeltaLoadRepoCommits.new
   ]

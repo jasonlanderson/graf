@@ -13,10 +13,22 @@ MONTH_NAMES = [ "Jan", "Feb", "Mar", "Apr", "May", "Jun",
 function analyticsAJAX(data, format, responseType, callback){
   data.format = format
   $.ajax({
+      beforeSend: function() {
+        $('#loader').show();
+        $('#loader_1').show();
+        $('#metric_chart').hide();
+        $('#table_container').hide();
+      },
       url: "analytics_data",
       data: data,
       method: 'POST',
       dataType: responseType,
+      complete: function(){
+       $('#loader').hide();
+       $('#loader_1').hide();
+       $('#metric_chart').show();
+       $('#table_container').show();
+      },
       success: callback,
       error: function(XMLHttpRequest, textStatus, errorThrown) { 
         alert("Status: " + textStatus); alert("Error: " + errorThrown); 

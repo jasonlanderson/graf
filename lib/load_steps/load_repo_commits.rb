@@ -30,17 +30,12 @@ class LoadRepoCommits < LoadStep
       return nil
     end
     commits.each { |commit|
-      #LoadHelpers.process_commit(commit) # Can comment out everything below 
       commit_info = Constants.get_commit_info(commit)
+
       #email = commit[:attrs][:commit][:attrs][:author][:email]
       email = commit_info[:email]
       # Create record of commit
-      c = Commit.create(
-        :repo_id => repo.id,
-        :sha => commit_info[:sha], # Change sha to string
-        :message => commit_info[:message],#commit[:attrs][:commit][:attrs][:message],
-        :date_created => commit_info[:date_created] #commit[:attrs][:commit][:attrs][:author][:date]
-      )
+      c = LoadHelpers.create_commit(commit_info, repo.id)      
       users = []
       if commit[:author]
         users << (User.find_by(login: commit_info[:login]) || LoadHelpers.create_user_if_not_exist(client.user(commit_info[:login])))
