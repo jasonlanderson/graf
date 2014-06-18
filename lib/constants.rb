@@ -68,6 +68,11 @@ class Constants
     get_settings["chart_colors"]
   end
 
+  def self.get_github_conn_info
+    get_settings["github_conn_info"]
+  end
+
+
   def self.get_org_to_company_mapping
     if @@org_to_company_mapping
       return @@org_to_company_mapping

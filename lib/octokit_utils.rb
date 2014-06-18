@@ -1,17 +1,21 @@
 require 'octokit'
+require 'constants'
 
 class OctokitUtils
   @@_client = nil
 
   def self.get_octokit_client()
   	return @@_client unless @@_client == nil
+
+    github_conn_info = Constants.get_github_conn_info
+
   	@@_client = Octokit::Client.new \
-	  client_id: '949149798908ec942301',
-	  client_secret: '70563cd761fafd0df22b5f4cb40a68b2b9afc9f4',
-	  access_token: "1dd6279ced24c313519c3065e6260955ae94e94d",
+	  client_id: github_conn_info['client_id'],
+	  client_secret: github_conn_info['client_secret'],
+	  access_token: github_conn_info['access_token'],
 	  auto_paginate: true,
 	  auto_traversal: true # Specify authentication information
-  	user = @@_client.user 'kkbankol' # Login as user
+  	user = @@_client.user github_conn_info['user'] # Login as user
   	user.login
   	user.create_authorization
   	return @@_client
