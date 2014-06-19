@@ -1,4 +1,5 @@
 class GithubLoadsController < ApplicationController
+  skip_before_filter :require_login
   before_action :set_github_load, only: [:show, :edit, :update, :destroy]
 
   # GET /github_loads

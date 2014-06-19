@@ -23,6 +23,9 @@ rails g scaffold Company name:string
 rails g scaffold GithubLoad  load_start_time:datetime load_complete_time:datetime initial_load:boolean
 rails g scaffold GithubLoadMsg github_load:references msg:text log_level:integer log_date:datetime
 
+rails g model graf_user email:string password_digest:string
+rails g controller graf_users
+
 ###
 # Tips
 ###
@@ -61,34 +64,20 @@ DROP TABLE commits_users;
 ###
 # Setup the database
 
-From the app's root directory do a push (see following command) and create an mysql db service.
-
-   cf push --command 'bundle exec rake db:create db:migrate' graf
-
-This command will fail but will setup your database.  Now delete your application using but do NOT delete your orphan database
-
-   cf delete graf
-
-Now do another push and bind to the mysql database you created in the first push:
-
-   cf push graf
-
-Your app should now be up and running.
-
 
 
 ###
 # Upgrading on BlueMix with DB Changes
 ###
-cf delete graf
-cf create-service mysql graf-db --plan 300
-cf push graf
-http://graf.ng.w3.bluemix.net/info
-cf delete graf
-cf push --command 'bundle exec rake db:create db:migrate' graf
-cf delete graf
-cf push graf
-cf push graf
+cf delete graf-mongo
+cf create-service mysql 300 graf-mongo-db
+cf push graf-mongo
+http://graf-mongo.stage1.ng.bluemix.net/info
+cf delete graf-mongo
+cf push -c 'bundle exec rake db:create db:migrate' graf-mongo
+cf delete graf-mongo
+cf push graf-mongo
+cf push graf-mongo
 
 
 

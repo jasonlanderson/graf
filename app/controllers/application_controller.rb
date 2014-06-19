@@ -1,7 +1,20 @@
 class ApplicationController < ActionController::Base
-  # Prevent CSRF attacks by raising an exception.
-  # For APIs, you may want to use :null_session instead.
+  protect_from_forgery
+  # TODO: Need to add back in
+  #force_ssl
+  before_filter :require_login
 
-  # TODO: Add this back in perhaps
-  # protect_from_forgery with: :exception
+  private
+
+  def require_login
+    unless current_user
+      redirect_to login_url
+    end
+  end
+
+  def current_user
+    @current_user ||= GrafUser.find(session[:user_id]) if session[:user_id]
+  end
+
+  helper_method :current_user
 end

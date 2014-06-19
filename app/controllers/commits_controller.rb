@@ -1,4 +1,5 @@
 class CommitsController < ApplicationController
+  skip_before_filter :require_login
   before_action :set_commit, only: [:show, :edit, :update, :destroy]
 
   # GET /commits

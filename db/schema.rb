@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140222190023) do
+ActiveRecord::Schema.define(version: 20140619022802) do
 
   create_table "commits", force: true do |t|
     t.integer  "repo_id"
@@ -50,6 +50,13 @@ ActiveRecord::Schema.define(version: 20140222190023) do
     t.datetime "load_start_time"
     t.datetime "load_complete_time"
     t.boolean  "initial_load"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "graf_users", force: true do |t|
+    t.string   "email"
+    t.string   "password_digest"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

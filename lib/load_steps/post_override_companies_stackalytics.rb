@@ -40,6 +40,6 @@ class PostOverrideCompaniesStackalytics < LoadStep
               end
           }
       }
-    } 
+    }
   end
 end

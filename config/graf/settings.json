@@ -1,4 +1,10 @@
 {
+  "github_conn_info": {
+    "user": "kkbankol",
+    "client_id": "949149798908ec942301",
+    "client_secret": "70563cd761fafd0df22b5f4cb40a68b2b9afc9f4",
+    "access_token": "1dd6279ced24c313519c3065e6260955ae94e94d"
+  },
   "chart_colors": [
     "#B82E2E",
     "#2EB82E",
@@ -8,4 +14,3 @@
     "#649ED8"
   ]
 }
-

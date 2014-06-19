@@ -1,26 +1,9 @@
----
 applications:
-- name: graf
-  memory: 1G
-  instances: 1
-  host: graf
-  domain: stage1.ng.bluemix.net
-  path: .
+- name: graf-cf
+  memory: 1024M
   services:
-    graf-db:
-      label: mysql
-      provider: core
-      version: '5.5'
-      plan: '300'
-- name: graf-stage
-  memory: 1G
-  instances: 1
-  host: graf-stage
-  domain: stage1.ng.bluemix.net
-  path: .
+  - graf-cf-db
+- name: graf-mongo
+  memory: 1024M
   services:
-    graf-stage-db:
-      label: mysql
-      provider: core
-      version: '5.5'
-      plan: '300'
+  - graf-mongo-db

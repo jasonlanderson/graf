@@ -1,4 +1,5 @@
 class GithubLoadMsgsController < ApplicationController
+  skip_before_filter :require_login
   before_action :set_github_load_msg, only: [:show, :edit, :update, :destroy]
 
   # GET /github_load_msgs

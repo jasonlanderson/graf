@@ -3,6 +3,7 @@ require 'log_level'
 require 'db_utils'
 
 class LoadController < ApplicationController
+  
   def load_status
     # Check to see what the status of the load is
     #load_id = params[:load]

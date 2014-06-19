@@ -2,6 +2,7 @@ require "analytic_utils"
 require "javascript_utils"
 
 class AnalyticsController < ApplicationController
+  skip_before_filter :require_login
 
   def index
     # Get the search criteria options
