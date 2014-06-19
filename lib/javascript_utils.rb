@@ -14,7 +14,7 @@ class JavascriptUtils
       	label = "Independent"
       end
 
-      result += "{ \"label\": \"#{label}\", \"data\": #{rec[val_index]} }"
+      result += "{ \"label\": #{label.to_json}, \"data\": #{rec[val_index]} }"
     }
     result += ']}'
     return result
