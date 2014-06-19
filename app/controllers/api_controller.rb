@@ -124,6 +124,7 @@ ROLLUP_METHODS = {
 }
 
 class ApiController < ApplicationController
+  skip_before_filter :require_login
 
   def analytics_data
     metric = params[:metric]

@@ -1,4 +1,5 @@
 class PullRequestsController < ApplicationController
+  skip_before_filter :require_login
   before_action :set_pull_request, only: [:show, :edit, :update, :destroy]
 
   # GET /pull_requests

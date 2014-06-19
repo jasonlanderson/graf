@@ -8,10 +8,7 @@ require 'mock_octokit'
 context LoadHelpers do
   before(:each) do
     DBUtils.delete_all_data
-<<<<<<< HEAD
-
-=======
->>>>>>> 870c36a97436c8fbfc5d51fa72e1b8ff29024ca3
+    
     class OctokitUtils
       def self.get_octokit_client()
         puts "Returning MOCK object"
@@ -45,131 +42,6 @@ context LoadHelpers do
       expect(User.find_by(name: name)).to be
     end
 
-<<<<<<< HEAD
-    xit "should validate results" do
-
-    end
-  end
-
-  describe "get_search_type" do
-    it 'can identify name' do
-      identifier = "Kalonji Bankole"
-      expect(LoadHelpers.get_search_type(identifier)).to match "name"
-
-      # TODO set this as a constant
-      identifier = "No Name Listed"
-      expect(LoadHelpers.get_search_type(identifier)).to match "name"    
-    end
-
-    it 'can identify login' do
-      identifier = "kkbankol"
-      expect(LoadHelpers.get_search_type(identifier)).to match "login"
-    end
-
-    it 'can identify email' do
-      identifier = "kkbankol@us.ibm.com"
-      expect(LoadHelpers.get_search_type(identifier)).to match "email"
-    end
-  end
-
-  describe "format names" do
-    it 'removes initial' do
-      name = "Kalonji K. bankole"
-      expect(LoadHelpers.format_name(name)).to match "Kalonji Bankole"
-    end
-    
-    it 'titleized?' do
-      name = "kalonji BANKOLE"
-      expect(LoadHelpers.format_name(name)).to match "Kalonji Bankole"
-    end
-
-    it 'catches unnamed users' do
-      name = "        "
-      expect(LoadHelpers.format_name(name)).to match "No Name Listed"
-      name = nil
-      expect(LoadHelpers.format_name(name)).to match "No Name Listed"
-    end 
-  end
-
-  describe 'merges similar companies' do
-    it 'merge' do
-      # This merge function should be more generic by removing "Corporation", ".Inc", etc from all companies
-       company = "IBM Corporation"
-       expect(LoadHelpers.merge(company)).to match "IBM"
-    end
-
-    it "identifies company based on email" do
-      email = "user@us.ibm.com"
-      expect(LoadHelpers.associate_company_email(email)).to match "IBM"
-      email = "user@10gen.com"
-      expect(LoadHelpers.associate_company_email(email)).to match "Mongo"
-      email = "user@ebay.com"
-      expect(LoadHelpers.associate_company_email(email)).to match "eBay Inc."
-    end
-  end
-
-
-  describe 'can query db' do
-    it "can create a company record" do
-      company = "IBM"
-      expect(Company.all.length).to match 0
-      expect(Company.find_by(name: "IBM")).to match nil
-      LoadHelpers.create_company_if_not_exist(company)
-      expect(Company.find_by(name: "IBM").name).to match "IBM" 
-    end
-
-    it "can create a user record" do
-      user = { :attrs => { :company => "IBM", :login => "kkbankol", :name => "Kalonji Bankole" }}
-      expect(User.all.length).to match 0
-      expect(User.find_by(name: "Kalonji Bankole")).to match nil
-      LoadHelpers.create_user_if_not_exist(user)
-      #expect(User.find_by(name: "Kalonji Bankole")).to exist # This is the correct way to do it
-      expect(User.find_by(name: "Kalonji Bankole").login).to match "kkbankol"
-    end
-
-    # Test that there are no companies without users
-    it 'all companies have users' do
-      expect(Company.where("NOT EXISTS (SELECT * FROM users where companies.id = users.company_id)").length).to match(0)
-    end
-  end
-
-  describe "can fetch external data" do
-    it "can fetch and parse stackalytics data" do
-        expect(LoadHelpers.get_stackalytics_JSON().class).to match Hash
-    end
-  end
-
-
-
-  xdescribe LoadHelpers do   
-
-    it 'can extract login' do
-      
-      # Octokit.pulls("repo")[0][:user][:attrs][:login]
-      user = {
-                :attrs => {
-                :company => "IBM",
-                :login => "kkbankol",
-                :name => "Kalonji Bankole"
-            }
-      }
-      expect(LoadHelpers.get_login(user)).to match "kkbankol"
-
-      # Octokit.search_users(username)[:items][0][:attrs][:login]
-      user = {
-            :attrs => {            
-              :items => [{
-                :attrs => {
-                  :login => "kkbankol"
-                }
-              }]  
-            }
-      }
-
-      expect(LoadHelpers.get_login(user)).to match "kkbankol"
-
-
-=======
     it "ensures search results match exactly" do
       search_results = LoadHelpers.search("Kalonji Bankole")
       expect(LoadHelpers.name_match(search_results, "Kalonji Bankole")).to match true
@@ -332,8 +204,6 @@ context LoadHelpers do
 
       expect(LoadHelpers.get_login(user)).to match "kkbankol"
 
-
->>>>>>> 870c36a97436c8fbfc5d51fa72e1b8ff29024ca3
       user = {
                 :company => "IBM",
                 :login => "kkbankol",

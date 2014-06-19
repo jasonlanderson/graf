@@ -152,7 +152,17 @@
 </script>
 
 
+<div style="float: right">
+    <% if current_user %>
+      Logged in as: <%= current_user.email %> | <%= link_to("Logout", logout_path) %>
+    <% else %>
+      You are not logged in!  You shouldn't be here...
+    <% end %>
+</div>
+
+
 <h1>GitHub API Data Load</h1>
+
 
 <table style="width: 600px">
   <thead>

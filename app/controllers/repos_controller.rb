@@ -1,4 +1,5 @@
 class ReposController < ApplicationController
+  skip_before_filter :require_login
   before_action :set_repo, only: [:show, :edit, :update, :destroy]
 
   # GET /repos

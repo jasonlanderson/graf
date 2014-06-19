@@ -2,6 +2,7 @@ require 'octokit_utils'
 require 'constants'
 
 class ConstantsController < ApplicationController
+  skip_before_filter :require_login
 
   def index
     begin

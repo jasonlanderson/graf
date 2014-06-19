@@ -27,6 +27,12 @@ Graf::Application.routes.draw do  resources :github_loads
   get '/release_notes', to: 'release_notes#index'
   get '/release_notes/:action', to: 'release_notes#:action'
 
+  # GRAF User Resources
+  resources :graf_users
+  resources :sessions
+  get 'login' => 'sessions#new'
+  get 'logout' => 'sessions#destroy'
+  get 'signup' => 'graf_users#new'
 
   # Cache Paths
   get '/cache', to: 'cache#index'

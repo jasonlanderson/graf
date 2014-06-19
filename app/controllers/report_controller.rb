@@ -2,6 +2,7 @@ require "analytic_utils"
 require "date_utils"
 
 class ReportController < ApplicationController
+  skip_before_filter :require_login
 
   def index
     @metric_data = AnalyticUtils.get_pull_request_data()
