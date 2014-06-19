@@ -6,6 +6,7 @@ require 'load_steps/post_fix_users_without_companies'
 require 'load_steps/post_delete_companies_without_users'
 require 'load_steps/post_delete_users_without_contribs'
 require 'load_steps/delta_load_repo_pull_requests'
+require 'load_steps/delta_load_repo_commits'
 
 
 class Constants

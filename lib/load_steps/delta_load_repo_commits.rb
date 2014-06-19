@@ -3,7 +3,7 @@ require 'octokit_utils'
 require 'log_level'
 require 'load_steps/load_helpers'
 
-class LoadRepoCommits < LoadStep
+class DeltaLoadRepoCommits < LoadStep
 
   def name
     "Load Repo Commits"

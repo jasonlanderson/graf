@@ -37,7 +37,7 @@ ActiveRecord::Schema.define(version: 20140619022802) do
 
   create_table "github_load_msgs", force: true do |t|
     t.integer  "github_load_id"
-    t.text     "msg"
+    t.string   "msg"
     t.integer  "log_level"
     t.datetime "log_date"
     t.datetime "created_at"
