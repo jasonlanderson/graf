@@ -25,7 +25,7 @@ class LoadHelpers
     # Get "login" value from user object.
     if pr_user[:attrs]
       user_login = (pr_user[:attrs][:login] || pr_user[:attrs][:items][0][:attrs][:login]) 
-    # If not a Sawyer resource
+    # If not a Sawyer resource, pulled directly from api curl
     else
       user_login = pr_user[:login] 
     end

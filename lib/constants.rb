@@ -21,7 +21,10 @@ class Constants
 
   LOAD_STEPS_DELTA = [
     PreLoadStackalytics.new,
-    DeltaLoadOrgs.new
+    DeltaLoadOrgs.new,
+    PostFixUsersWithoutCompanies.new,
+    #PostDeleteUsersWithoutContribs.new,
+    PostDeleteCompaniesWithoutUsers.new
   ]
 
   LOAD_STEPS_REPO = [

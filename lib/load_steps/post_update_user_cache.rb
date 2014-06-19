@@ -31,7 +31,7 @@ class PostUpdateUserCache < LoadStep
         "company" => (company_name ? company_name.name : "Independent")
       }
     }
-    File.open("db/test.json","w+") {|f| f.write(JSON.pretty_generate(u_hash)) }
+    File.open("db/user_cache_test.json","w+") {|f| f.write(JSON.pretty_generate(u_hash)) }
     puts "Finish Step: #{name}"    
   end
 

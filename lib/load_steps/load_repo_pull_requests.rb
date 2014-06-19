@@ -28,7 +28,7 @@ class LoadRepoPullRequests < LoadStep
       GithubLoad.log_current_msg("The following error occured...", LogLevel::ERROR)
       GithubLoad.log_current_msg(e.message, LogLevel::ERROR)
       GithubLoad.log_current_msg(e.backtrace.join("\n"), LogLevel::ERROR)
-      return nil  
+      #return nil  
     end
     pull_requests.concat(client.pulls(repo.full_name, state = "closed"))
     pull_requests.each { |pr|

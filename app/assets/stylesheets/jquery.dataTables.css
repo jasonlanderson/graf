@@ -402,6 +402,7 @@ td.highlight {
     background-color: whitesmoke !important;
 }
 
+/* TODO, Below are user added, should move to a seperate css file */
 #metric_table tbody tr.even:hover, #metric_table tbody tr.even td.highlighted {
   background-color: #99CCFF;
 }
@@ -417,7 +418,16 @@ td.highlight {
 #table_container tbody tr.odd:hover, #metric_table tbody tr.odd td.highlighted {
   background-color: #99CCFF;
 }
+/* TODO Colors for every other tr, works for reports but not analytics
+table.dataTable.stripe tbody tr.odd, table.dataTable.display tbody tr.odd {
+  background-color: #F9F9F9;
+}
+table.dataTable.stripe tbody tr.even, table.dataTable.display tbody tr.even {
+  background-color: #DDDDFF;
+}
+*/
 
+/* End of user added props */
 
 #metric_table tr.even:hover {
   background-color: #ECFFB3;
