@@ -31,8 +31,6 @@ class LoadRepoCommits < LoadStep
     end
     commits.each { |commit|
       commit_info = Constants.get_commit_info(commit)
-
-      #email = commit[:attrs][:commit][:attrs][:author][:email]
       email = commit_info[:email]
       # Create record of commit
       c = LoadHelpers.create_commit(commit_info, repo.id)      

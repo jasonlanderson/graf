@@ -51,7 +51,7 @@ class LoadHelpers
       GithubLoad.log_current_msg("Creating User: #{user_login}", LogLevel::INFO)
 
       # Ensure we have the full user object (Which we don't when using HTTParty api requests)
-      pr_user = client.user(user_login) if !pr_user[:_rels]
+      pr_user = client.user(user_login) if !pr_user.fields.include?(:company)
       
       # Run GET request to get rest of user data
       user_details = pr_user[:_rels][:self].get.data
@@ -140,7 +140,7 @@ class LoadHelpers
     return user
   end
 
-  # Done
+  # Load Stackalytics emails
   def self.associate_company_email(email)
     Constants.email_to_company.each {|co_email|
       if co_email["alias"].any? {|v| email.include?(v)}
@@ -209,6 +209,15 @@ class LoadHelpers
       :date_merged => pr[:merged_at],
       :state => (pr[:merged_at].nil? ? pr[:state] : "merged")
     )
+  end
+
+  def self.create_commit(commit, repo_id)
+    return Commit.create(
+        :repo_id => repo.id,
+        :sha => commit_info[:sha], # Change sha to string
+        :message => commit_info[:message],#commit[:attrs][:commit][:attrs][:message],
+        :date_created => commit_info[:date_created] #commit[:attrs][:commit][:attrs][:author][:date]
+      )
   end
 
   def self.process_authors(email, names) 

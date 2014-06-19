@@ -16,10 +16,10 @@ class PreLoadUserCache < LoadStep
     json = File.read('db/user_cache.json')
     users = JSON.parse(json)
 
-   users["users"].each { |u|
+    users["users"].each { |u|
       GithubLoad.log_current_msg("Loading User From Cache: #{u['login'] || u['name']}", LogLevel::INFO)
       company = LoadHelpers.create_company_if_not_exist(u['company'])
-      user = User.create(
+      user = User.find_by(login: u["login"]) || User.create(
         :company_id => company.id,
         :git_id => u["git_id"].to_i,
         :login => u["login"],

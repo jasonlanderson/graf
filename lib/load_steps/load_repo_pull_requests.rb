@@ -23,17 +23,17 @@ class LoadRepoPullRequests < LoadStep
     pid, size = `ps ax -o pid,rss | grep -E "^[[:space:]]*#{$$}"`.strip.split.map(&:to_i)
     GithubLoad.log_current_msg("Initial memory before cleanup #{size} KB", LogLevel::INFO)
     begin
-      # Fetch all open pull requests for repo from Github
+      # Fetch all pull requests for current repo from Github
       pull_requests = client.pulls(repo.full_name, state = "open")
       pull_requests.concat(client.pulls(repo.full_name, state = "closed"))     
     rescue Exception => e
-      #GithubLoad.log_current_msg("The following error occured...", LogLevel::ERROR)
-      #GithubLoad.log_current_msg(e.message, LogLevel::ERROR)
-      #GithubLoad.log_current_msg(e.backtrace.join("\n"), LogLevel::ERROR)
+      GithubLoad.log_current_msg("The following error occured...", LogLevel::INFO)
+      GithubLoad.log_current_msg(e.message, LogLevel::INFO)
+      GithubLoad.log_current_msg(e.backtrace.join("\n"), LogLevel::INFO)
       #return nil  
     end
     pull_requests.each { |pr|
-      # Get user and insert if doesn't already exist
+      # Get user and create a record, if it doesn't already exist
       user = LoadHelpers.create_user_if_not_exist(pr[:attrs][:user]) if pr[:attrs][:user]
       LoadHelpers.create_pr(repo, user, pr)
     }

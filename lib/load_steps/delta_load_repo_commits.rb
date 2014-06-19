@@ -34,7 +34,15 @@ class LoadRepoCommits < LoadStep
       # TODO, hacky, find a cleaner way to do this
       # Same commit can be in two repositories apparently 
       if !Commit.find_by(sha: commit[:sha], repo_id: Repo.find_by(full_name: repo.full_name).id)
-        process_commit(commit)
+        c = LoadHelpers.create_commit(commit, repo.id)
+        users = []
+        if commit[:author]
+          users << (User.find_by(login: commit_info[:login]) || LoadHelpers.create_user_if_not_exist(client.user(commit_info[:login])))
+        else
+          users = LoadHelpers.process_authors(commit_info[:email], commit_info[:names])
+        end
+        users.each {|user| c.users << user}
+        c.save()
       end
     }
 

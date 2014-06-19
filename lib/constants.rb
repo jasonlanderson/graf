@@ -33,9 +33,8 @@ class Constants
   ]
 
   DELTA_LOAD_STEPS_REPO = [
-    DeltaLoadRepoUsers.new,
     DeltaLoadRepoPullRequests.new,
-    #DeltaLoadRepoCommits.new
+    DeltaLoadRepoCommits.new
   ]
 
   @@settings = nil
