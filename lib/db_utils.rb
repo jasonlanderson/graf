@@ -1,4 +1,5 @@
 require "rdms"
+require "mysql2"
 
 class DBUtils
   
@@ -91,6 +92,14 @@ class DBUtils
     Repo.delete_all
     User.delete_all
     Org.delete_all    
+  end
+
+  def self.esc(input)
+    return Mysql2::Client.escape(input)
+  end
+
+  def self.esc_list(list)
+    return list.map { |x| esc(x) }
   end
 
 end

@@ -140,10 +140,6 @@ class AnalyticUtils
     return ActiveRecord::Base.connection.exec_query(sql_stmt)
   end
 
-  def self.clean()
-
-  end
-
   def self.where_clause_stmt(search_criteria, metric = nil)
 
     # If there is no search criteria, just return
@@ -171,13 +167,13 @@ class AnalyticUtils
     # }
 
     if search_criteria[:month] && search_criteria[:month].join != ''
-      where_stmt += "AND #{DBUtils.get_month('pr.date_created')} IN ('#{search_criteria[:month].join("', '")}') "
+      where_stmt += "AND #{DBUtils.get_month('pr.date_created')} IN ('#{DBUtils.esc_list(search_criteria[:month]).join("', '")}') "
     end
 
     if search_criteria[:quarter] && search_criteria[:quarter].join != ''
       where_stmt += "AND #{DBUtils.get_month('pr.date_created')} IN ("
       search_criteria[:quarter].each {|quarter|
-        case quarter
+        case quarter.downcase
           when "q1"
             where_stmt += "'01', '02', '03',"
           when "q2"
@@ -192,7 +188,7 @@ class AnalyticUtils
     end
 
     if search_criteria[:year] && search_criteria[:year].join != ''
-      where_stmt += "AND #{DBUtils.get_year('pr.date_created')} IN ('#{search_criteria[:year].join("', '")}') "
+      where_stmt += "AND #{DBUtils.get_year('pr.date_created')} IN ('#{DBUtils.esc_list(search_criteria[:year]).join("', '")}') "
     end
 
     if search_criteria[:start_date] && search_criteria[:start_date] != ''
@@ -202,7 +198,7 @@ class AnalyticUtils
         start_date = DateUtils.human_slash_date_format_to_db_format(start_date)
       end
       
-      where_stmt += "AND pr.date_created >= '#{start_date}' "
+      where_stmt += "AND pr.date_created >= '#{DBUtils.esc(start_date)}' "
     end
 
     if search_criteria[:end_date] && search_criteria[:end_date] != ''
@@ -212,11 +208,11 @@ class AnalyticUtils
         end_date = DateUtils.human_slash_date_format_to_db_format(end_date)
       end
 
-      where_stmt += "AND pr.date_created <= '#{end_date}'  "
+      where_stmt += "AND pr.date_created <= '#{DBUtils.esc(end_date)}'  "
     end
 
     if search_criteria[:repo] && search_criteria[:repo].join != ''
-      where_stmt += "AND r.name IN ('#{search_criteria[:repo].join("', '")}') "
+      where_stmt += "AND r.name IN ('#{DBUtils.esc_list(search_criteria[:repo]).join("', '")}') "
     end
 
     if search_criteria[:state] && search_criteria[:state].join != ''
@@ -224,20 +220,20 @@ class AnalyticUtils
     end
 
     if search_criteria[:company] && search_criteria[:company].join != ''
-      where_stmt += "AND c.name IN ('#{(search_criteria[:company]).join("', '")}') "
+      where_stmt += "AND c.name IN ('#{DBUtils.esc_list(search_criteria[:company]).join("', '")}') "
     end
 
     if search_criteria[:user] && search_criteria[:user].join != ''
-      where_stmt += "AND u.login IN ('#{(search_criteria[:user]).join("', '")}') "
+      where_stmt += "AND u.login IN ('#{DBUtils.esc_list(search_criteria[:user]).join("', '")}') "
     end
 
     #search_criteria[:name] = [search_criteria[:name]] if search_criteria[:name].class == "String"
     if search_criteria[:name] && search_criteria[:name].join != ''
-      where_stmt += "AND u.name IN ('#{(search_criteria[:name]).join("', '")}') "
+      where_stmt += "AND u.name IN ('#{DBUtils.esc_list(search_criteria[:name]).join("', '")}') "
     end
 
     if search_criteria[:org] && search_criteria[:org].join != ''
-      where_stmt += "AND o.login IN ('#{(search_criteria[:org]).join("', '")}') "
+      where_stmt += "AND o.login IN ('#{DBUtils.esc_list(search_criteria[:org]).join("', '")}') "
     end
     return where_stmt
   end
