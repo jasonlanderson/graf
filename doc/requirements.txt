@@ -7,7 +7,6 @@ Metrics
  - # Days Elapsed
  - Distinct User Count?
 
-
 Group Bys
  - User
  - Company
@@ -66,22 +65,3 @@ PR Days Open average by month and quarter (measure time between (re)open and clo
  - Look into mining the mailing list for metrics
  - Look into mining the twitter for metrics
  - Vince about getting some metrics from the cloudfoundry.org site
-
-
-
-
-###
-# Statistics
-###
-
-Charts
-- PRs by User
-- PRs by Company
-
-Tables
-- PRs by User
-- PRs by Company
-
-Single Statistics
-- Avg days to merge a PR
-- Avg concurrent PR
