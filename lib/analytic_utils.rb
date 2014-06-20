@@ -223,13 +223,12 @@ class AnalyticUtils
       where_stmt += "AND c.name IN ('#{DBUtils.esc_list(search_criteria[:company]).join("', '")}') "
     end
 
-    if search_criteria[:user] && search_criteria[:user].join != ''
-      where_stmt += "AND u.login IN ('#{DBUtils.esc_list(search_criteria[:user]).join("', '")}') "
+    if search_criteria[:user_login] && search_criteria[:user_login].join != ''
+      where_stmt += "AND u.login IN ('#{DBUtils.esc_list(search_criteria[:user_login]).join("', '")}') "
     end
 
-    #search_criteria[:name] = [search_criteria[:name]] if search_criteria[:name].class == "String"
-    if search_criteria[:name] && search_criteria[:name].join != ''
-      where_stmt += "AND u.name IN ('#{DBUtils.esc_list(search_criteria[:name]).join("', '")}') "
+    if search_criteria[:user_name] && search_criteria[:user_name].join != ''
+      where_stmt += "AND u.name IN ('#{DBUtils.esc_list(search_criteria[:user_name]).join("', '")}') "
     end
 
     if search_criteria[:org] && search_criteria[:org].join != ''

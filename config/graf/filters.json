@@ -27,10 +27,10 @@
     "company": {
       "type": "multiselect"
     },
-    "user": {
+    "user_login": {
       "type": "multiselect"
     },
-    "name": {
+    "user_name": {
       "type": "multiselect"
     }
   }

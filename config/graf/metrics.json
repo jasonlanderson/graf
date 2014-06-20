@@ -2,13 +2,13 @@
   "base_metrics": {
     "prs": {
       "filters": ["org", "month", "quarter", "year", "start_date", "end_date",
-                  "state", "repo", "company", "user", "name"],
-      "group_by": ["month", "quarter", "year", "state", "repo", "company", "user", "name"]
+                  "state", "repo", "company", "user_login", "user_name"],
+      "group_by": ["month", "quarter", "year", "state", "repo", "company", "user_login", "user_name"]
     },
     "commits": {
       "filters": ["org", "month", "quarter", "year", "start_date", "end_date",
-                  "repo", "company", "user", "name"],
-      "group_by": ["month", "quarter", "year", "repo", "company", "user", "name"]
+                  "repo", "company", "user_login", "user_name"],
+      "group_by": ["month", "quarter", "year", "repo", "company", "user_login", "user_name"]
     }
   },
   "metrics": {
