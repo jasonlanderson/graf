@@ -97,11 +97,11 @@
       <input type="text" id="end_date_filter" size="20">
     </td>
     <td>
-      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;User:
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;User Login:
     </td>
     <td>
-      <% @drop_down_id = "user_filter" %>
-      <% @drop_down_data = @users %>
+      <% @drop_down_id = "user_login_filter" %>
+      <% @drop_down_data = @user_logins %>
       <% @drop_down_data_index = "login" %>
       <% @drop_down_empty_label = "All" %>
       <% @drop_down_selected = nil %>
@@ -115,12 +115,12 @@
     <td></td>
 
     <td>
-      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Name:
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;User Name:
     </td>
     
     <td>
-      <% @drop_down_id = "name_filter" %>
-      <% @drop_down_data = @names %>
+      <% @drop_down_id = "user_name_filter" %>
+      <% @drop_down_data = @user_names %>
       <% @drop_down_data_index = "name" %>
       <% @drop_down_empty_label = "All" %>
       <% @drop_down_selected = nil %>

@@ -42,13 +42,13 @@ LABEL_MAPPING = {
     sort_by: 'metric',
     time_based: false
   },
-  'user' => {
+  'user_login' => {
     sql_select: 'u.login',
     alias: 'user_login',
     sort_by: 'metric',
     time_based: false
   },
-  'name' => {
+  'user_name' => {
     sql_select: 'u.name',
     alias: 'user_name',
     sort_by: 'metric',
