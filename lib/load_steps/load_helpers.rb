@@ -211,9 +211,9 @@ class LoadHelpers
     )
   end
 
-  def self.create_commit(commit, repo_id)
+  def self.create_commit(commit_info, repo_id)
     return Commit.create(
-        :repo_id => repo.id,
+        :repo_id => repo_id,
         :sha => commit_info[:sha], # Change sha to string
         :message => commit_info[:message],#commit[:attrs][:commit][:attrs][:message],
         :date_created => commit_info[:date_created] #commit[:attrs][:commit][:attrs][:author][:date]
