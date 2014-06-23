@@ -29,21 +29,21 @@ class LoadRepoCommits < LoadStep
       GithubLoad.log_current_msg(e.backtrace.join("\n"), LogLevel::ERROR)
       return nil
     end
-    commits.each { |commit|
-      commit_info = Constants.get_commit_info(commit)
-      email = commit_info[:email]
-      # Create record of commit
-      c = LoadHelpers.create_commit(commit_info, repo.id)      
-      users = []
-      if commit[:author]
-        users << (User.find_by(login: commit_info[:login]) || LoadHelpers.create_user_if_not_exist(client.user(commit_info[:login])))
-      else
-        users = LoadHelpers.process_authors(commit_info[:email], commit_info[:names])
-      end
-      users.each {|user| c.users << user}
-      c.save()
-    }
-
+    if commits && commits.length > 0
+      commits.each { |commit|
+        commit_info = Constants.get_commit_info(commit)
+        # Create record of commit
+        c = LoadHelpers.create_commit(commit_info, repo.id)      
+        users = []
+        if commit[:author]
+          users << (User.find_by(login: commit_info[:login]) || LoadHelpers.create_user_if_not_exist(client.user(commit_info[:login])))
+        else
+          users = LoadHelpers.process_authors(commit_info[:email], commit_info[:names])
+        end
+        users.each {|user| c.users << user}
+        c.save()
+      }
+    end
     puts "Finish Step: #{name}" 
   end
 

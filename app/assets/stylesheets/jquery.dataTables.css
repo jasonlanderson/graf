@@ -418,11 +418,14 @@ td.highlight {
 #table_container tbody tr.odd:hover, #metric_table tbody tr.odd td.highlighted {
   background-color: #99CCFF;
 }
-/* TODO Colors for every other tr, works for reports but not analytics
-table.dataTable.stripe tbody tr.odd, table.dataTable.display tbody tr.odd {
+ /*TODO Colors for every other tr, works for reports but not analytics*/
+table.dataTable tbody tr.odd, table.dataTable.display tbody tr.odd {
   background-color: #F9F9F9;
 }
-table.dataTable.stripe tbody tr.even, table.dataTable.display tbody tr.even {
+table.dataTable tbody tr.even, table.dataTable.display tbody tr.even {
+  background-color: #DDDDFF;
+}
+/*table.dataTable tbody tr.even, table.dataTable.display tbody tr.even {
   background-color: #DDDDFF;
 }
 */

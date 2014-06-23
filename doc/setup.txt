@@ -1,3 +1,28 @@
+Set up a Github Oauth token:
+- Login to your github account at https://github.com/login/oauth/authorize
+- Go to Github's Settings page at https://github.com/settings/applications
+- Register an application (https://github.com/settings/applications/new) to get a Client ID and a Client Secret
+- Generate a token (https://github.com/settings/tokens/new)
+- Place the Client ID, Client Secret, and Access token into the settings.json file, which is located in the root directory (graf/config/graf/settings.json)
+
+
+- Install Ruby 2.1.0 and Rubygems
+   $ \curl -sSL https://get.rvm.io | bash -s stable --rails
+- Install bundler
+   $ gem install bundle
+- Enter root directory of graf project and install bundled gems 
+   $ bundle install
+- Set up mysql databases
+   $ bundle exec rake db:migrate
+- Start rails server
+   $ rails s
+- Open graf's login user interface in browser, and enter a username/password. This only needs to be done once
+   $ http://localhost:3000/login
+- Modify the json file at "graf/lib/orgs.json" to determine which organizations will be loaded by graf
+- Begin an initial load at 
+   $ http://localhost:3000/load
+
+
 ###
 # Setup Script
 ###
