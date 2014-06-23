@@ -21,31 +21,32 @@ class DeltaLoadRepoCommits < LoadStep
 
     client = OctokitUtils.get_octokit_client
     begin
-      last_completed = LoadHelpers.get_last_completed_date
+      last_completed = LoadHelpers.parse_last_load_date
       commits = client.commits_since(repo.full_name, last_completed)
-    # TODO, try to only catch Octokit Error  
-    rescue => e
-      GithubLoad.log_current_msg("The following error occured...", LogLevel::ERROR)
-      GithubLoad.log_current_msg(e.message, LogLevel::ERROR)
-      GithubLoad.log_current_msg(e.backtrace.join("\n"), LogLevel::ERROR)
+    rescue Exception
+      # GithubLoad.log_current_msg("The following error occured...", LogLevel::ERROR)
+      # GithubLoad.log_current_msg(e.message, LogLevel::ERROR)
+      # GithubLoad.log_current_msg(e.backtrace.join("\n"), LogLevel::ERROR)
       return nil
     end
-    commits.each { |commit|
-      # TODO, hacky, find a cleaner way to do this
-      # Same commit can be in two repositories apparently 
-      if !Commit.find_by(sha: commit[:sha], repo_id: Repo.find_by(full_name: repo.full_name).id)
-        c = LoadHelpers.create_commit(commit, repo.id)
-        users = []
-        if commit[:author]
-          users << (User.find_by(login: commit_info[:login]) || LoadHelpers.create_user_if_not_exist(client.user(commit_info[:login])))
-        else
-          users = LoadHelpers.process_authors(commit_info[:email], commit_info[:names])
+    if commits && (commits.length > 0)
+      commits.each { |commit|
+        # TODO, hacky, find a cleaner way to do this
+        # Same commit can be in two repositories apparently 
+        repo_id = Repo.find_by(full_name: repo.full_name).id
+        if !Commit.find_by(sha: commit[:sha], repo_id: repo_id)
+          c = LoadHelpers.create_commit(commit, repo.id)
+          users = []
+          if commit[:author]
+            users << (User.find_by(login: commit_info[:login]) || LoadHelpers.create_user_if_not_exist(client.user(commit_info[:login])))
+          else
+            users = LoadHelpers.process_authors(commit_info[:email], commit_info[:names])
+          end
+          users.each {|user| c.users << user}
+          c.save()
         end
-        users.each {|user| c.users << user}
-        c.save()
-      end
-    }
-
+      }
+    end
     puts "Finish Step: #{name}" 
   end
 

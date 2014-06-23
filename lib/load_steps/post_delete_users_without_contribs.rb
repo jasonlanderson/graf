@@ -11,6 +11,7 @@ class PostDeleteUsersWithoutContribs < LoadStep
   def execute(*args)
     puts "Start Step: #{name}"
 
+    # Fails since likely takes too long with the EXISTS clauses, is there an easier way?
     User.where("(NOT EXISTS (SELECT * FROM pull_requests where pull_requests.user_id = users.id)) AND (NOT EXISTS (SELECT * FROM commits_users where commits_users.user_id = users.id)) ").destroy_all
 
     puts "Finish Step: #{name}"    

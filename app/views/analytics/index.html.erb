@@ -52,8 +52,8 @@ Group By:
     <option value="repo">Repository</option>
     <option value="state">State</option>
     <option value="company" selected>Company</option>
-    <option value="user">User</option>
-    <option value="name">Name</option>
+    <option value="user_login">User Login</option>
+    <option value="user_name">User Name</option>
   </select>
 
 <br><br>
@@ -106,7 +106,6 @@ Group By:
 <br>
 <div>
 <!-- TODO, make this image local -->
-<div id="loader"><img style="margin-left:200px" src="http://www.mytreedb.com/uploads/mytreedb/loader/ajax_loader_gray_512.gif"/></div>
 <div id="metric_chart"></div>
 </div>
 <%# ----------------- %>
@@ -123,5 +122,5 @@ This table displays the amount of pull requests submitted by each contributer.
 </span></a>
 <button onclick="window.location = '/report'">Drill Down</button>
 <button id="download">Download to CSV</button>
-<div id="loader_1"><img style="margin-left:200px" src="http://www.mytreedb.com/uploads/mytreedb/loader/ajax_loader_gray_512.gif"/></div>
-<div id="table_container"><%= image_tag "spinner.gif" %></div>
+<div id="loader_1" style="height:600px"><%= image_tag "spinner.gif" %></div>
+<div id="table_container"></div>
