@@ -11,9 +11,9 @@
 <body>
 
 <div class="banner">GitHub Repository Analytics with Filtering</div><a href="#" class="tooltip"> <%= image_tag "tooltip.gif" %> <span style="font-size: 12px;">  
-GitHub Repository Analytics with Filtering (GRAF) is a web service that has the ability to collect and visually represent useful statistics on various Github repositories. At the moment, this application is only collecting data on repositories hosted by the "CloudFoundry" Github organization. We plan to expand this application to collect data on repositories from other organizations (Openstack, Openshift, etc.) in the near future.
+GitHub Repository Analytics with Filtering (GRAF) is a web service that has the ability to collect and visually represent useful statistics on various Github repositories. At the moment, this application is only collecting data on repositories hosted by the "Cloud Foundry" Github organization. We plan to expand this application to collect data on repositories from other organizations (Openstack, Openshift, etc.) in the near future.
 <br><br>
-These statistics are collected through the Github API. We use the API's functions to gather information on every "Pull Request" that has been contributed to the CloudFoundry repositories. Once this data has been successfully collected and stored into our database, our application allows the user to generate figures that are customized by timeframe, repository, company, etc.
+These statistics are collected through the Github API. We use the API's functions to gather information on every "Pull Request" that has been contributed to the Cloud Foundry repositories. Once this data has been successfully collected and stored into our database, our application allows the user to generate figures that are customized by timeframe, repository, company, etc.
 <br><br>
 Company affiliation is determined by polling each Github user's profile. If a user does not have an affliated company listed on their profile, the application then checks to see whether the user is a member of any corporate Github organizations. If they are not, the user is assumed to be independent.
 <br>
