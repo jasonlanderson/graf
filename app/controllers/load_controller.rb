@@ -52,7 +52,6 @@ class LoadController < ApplicationController
     @error_log_level = LogLevel::ERROR
   end
 
-  # TODO Take this out after development
   def delete_load_history
     GithubLoad.delete_all
     GithubLoadMsg.delete_all
@@ -60,7 +59,6 @@ class LoadController < ApplicationController
     render :text => "Load History Deleted"
   end
 
-  # TODO Take this out after development
   def delete_all_data
     DBUtils.delete_all_data
     render :text => "All Data Deleted"
