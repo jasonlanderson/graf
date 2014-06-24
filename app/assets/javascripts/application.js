@@ -24,3 +24,4 @@
 //= require_tree .
 //= require jquery.multiselect
 //= require jquery.multiselect.filter
+//= require jquery.dataTables

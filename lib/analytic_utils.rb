@@ -2,7 +2,6 @@ require "db_utils"
 
 class AnalyticUtils
 
-  # TODO: Change to use parameterized queries
   # NOTE: You cannot have multiple group_by's and also have show_rollup_remainder = true
   #
   # Table of possible analytics queries
@@ -253,7 +252,6 @@ class AnalyticUtils
   end
 
   # TODO, we need to see why the below function is inaccurate
-
   # def self.get_state_stats(data)
   #   total = 0
   #   open = 0

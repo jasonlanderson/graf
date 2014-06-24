@@ -28,7 +28,7 @@ test:
   database: graf_db_test
   pool: 10 
   username: graf_user 
-  password: graf_password
+  password: graf_password 
   socket: /tmp/mysql.sock
   reconnect: true
 
