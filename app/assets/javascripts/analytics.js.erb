@@ -12,6 +12,8 @@ MONTH_NAMES = [ "Jan", "Feb", "Mar", "Apr", "May", "Jun",
 //
 function analyticsAJAX(data, format, responseType, callback){
   data.format = format
+  data.timeframe = $("#timeframe").val()
+  console.log(data)
   $.ajax({
       beforeSend: function() {
         $('#loader').show();
@@ -91,6 +93,7 @@ function setupAnalyticsReady() {
 
   $("#timeframe").change(function() {
     setTimeFrame();
+    refreshAnalyticsChartData();
   });
 
 

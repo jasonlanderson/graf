@@ -27,8 +27,8 @@ class DeltaLoadRepoPullRequests < LoadStep
       pull_requests = client.pulls(repo.full_name, state = "open")
       pull_requests.concat(client.pulls(repo.full_name, state = "closed"))
     #rescue => e
-    rescue Exception #=> e #=> Octokit::NotFound
-      # TODO, these have been commented out because they'll crash 
+    rescue Exception 
+      # TODO, these have been commented out because they'll crash and stop the load if given repo has no contribs
       #GithubLoad.log_current_msg("The following error occured...", LogLevel::INFO)
       #GithubLoad.log_current_msg(e, LogLevel::INFO)
       #GithubLoad.log_current_msg(e.backtrace.join("\n"), LogLevel::INFO)
@@ -41,9 +41,11 @@ class DeltaLoadRepoPullRequests < LoadStep
         user = LoadHelpers.create_user_if_not_exist(pr[:user]) if pr[:user]
         # Determine whether PR exists in our records
         record = PullRequest.find_by(pr_number: pr[:number], repo_id: Repo.find_by(full_name: repo.full_name).id)
+        # If our search determines the current pull request is already in our database
         if record
           # Update pr record's state, dates, etc if record else
           LoadHelpers.update_pr(record, pr)              
+        # If we do not find the current pull request in our records, insert it  
         else
           # Create new record of pr
           LoadHelpers.create_pr(repo, user, pr)

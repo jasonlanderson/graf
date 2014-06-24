@@ -132,6 +132,7 @@ class ApiController < ApplicationController
     group_by = params[:groupBy]
     rollup_count = params[:rollupCount].to_i if params[:rollupCount]
     search_criteria = params[:searchCriteria]
+    timeframe = params[:timeframe]
     order_via_group_bys = false
     rollup_method_name = METRIC_DETAILS[metric][:rollup_method]
 
@@ -174,7 +175,7 @@ class ApiController < ApplicationController
       prs_data_pie_str = JavascriptUtils.get_pull_request_stats(data, LABEL_MAPPING[group_by][:alias], METRIC_DETAILS[metric][:alias])
       render :json => prs_data_pie_str
     when 'line'
-      line_graph = JavascriptUtils.get_flot_line_chart_json(data, LABEL_MAPPING[group_by][:alias], LABEL_MAPPING["timestamp"][:alias], METRIC_DETAILS[metric][:alias])
+      line_graph = JavascriptUtils.get_flot_line_chart_json(data, LABEL_MAPPING[group_by][:alias], LABEL_MAPPING["timestamp"][:alias], METRIC_DETAILS[metric][:alias], timeframe)
       render :json => "{\"response\": #{line_graph}}"
     when 'table'
       @table_handle = "metric_table"

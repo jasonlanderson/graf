@@ -1,5 +1,5 @@
 ## Welcome to GRAF
-GitHub Repository Analytics with Filtering (GRAF) is a web application that has the ability to collect and visually represent useful statistics on various GitHub repositories.
+GitHub Repository Analytics with Filtering (GRAF) is a Rails web application that has the ability to collect and visually represent useful statistics on various GitHub repositories.
 
 
 ## How it works?
@@ -7,13 +7,14 @@ GRAF collects and stores GitHub information in its local data warehouse using a 
 
 Company affiliation is determined by querying each GitHub user's profile. If a user does not have an affliated company listed on their profile, the application then checks to see whether the user is a member of any corporate Github organizations. If they are not, the user email is used to determine company affiliation.
 
+
 ## What statistics are available?
 These are the available metrics and options through the Analytics page:
 
 **Metrics**
 * Commits
 * Pull requests
-* Avgerage number of days a pull request is open
+* Average number of days a pull request is open
 * Percent of pull requests merged
 
 **Views**
@@ -23,7 +24,7 @@ These are the available metrics and options through the Analytics page:
  * Table
 
 **Group By / Filters**
- * Org
+ * Organization
  * Month
  * Quarter
  * Year
@@ -61,8 +62,9 @@ Your app should now be up and running.
 ## Initialing the data
 1. Modify the "config/graf/orgs.json" JSON file to select the organizations to load.
 1. Open GRAF's /login page in a browser and enter a username / password.
-1. Begin an initial load by going to /load and click the "Start Load" button
-1. Once the load is complete, the user can view the data on the /analytics and /report page
+1. Begin an initial load by going to /load and click the "Start Load" button.
+1. Once the load is complete, the user can view the data on the /analytics and /report page.
+1. Subsequent loads can be executed using "Start Load" button /load (Ensure there are enough api requests at /info)
 
 ## Updating a GRAF instance on [BlueMix]
 ```sh
@@ -76,6 +78,24 @@ cf delete graf
 cf push graf
 cf push graf
 ```
+
+## Deploying GRAF on local machine
+1. Install Rails and MySQL
+2. Install bundled gems
+3. Create database in mysql console
+```sh
+CREATE DATABASE graf_db CHARACTER SET utf8 COLLATE utf8_general_ci;
+GRANT ALL PRIVILEGES ON graf_db.* TO 'graf_user'@'localhost' IDENTIFIED BY 'graf_password';
+```
+4. Setup tables
+```sh
+bundle exec rake db:migrate
+```
+5. Start server
+```sh
+rails s
+```
+
 
 ## Setting up GitHub API access
 Set up a Github Oauth token:
