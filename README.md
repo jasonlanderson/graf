@@ -99,11 +99,12 @@ rails s
 
 ## Setting up GitHub API access
 Set up a Github Oauth token:
+
 1. Login to your github account at https://github.com/login
-1. Go to Github's Settings page at https://github.com/settings/applications
-1. Register an application (https://github.com/settings/applications/new) to get a Client ID and a Client Secret
-1. Generate a token (https://github.com/settings/tokens/new)
-1. Place the Client ID, Client Secret, and Access token into the settings.json file, which is located in the root directory (graf/config/graf/settings.json) 
+2. Go to Github's Settings page at https://github.com/settings/applications
+3. Register an application (https://github.com/settings/applications/new) to get a Client ID and a Client Secret
+4. Generate a token (https://github.com/settings/tokens/new)
+5. Place the Client ID, Client Secret, and Access token into the settings.json file, which is located in the root directory (graf/config/graf/settings.json) 
 
 
 [BlueMix]:http://bluemix.net
