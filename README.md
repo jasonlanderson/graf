@@ -5,11 +5,11 @@ GitHub Repository Analytics with Filtering (GRAF) is a Rails web application tha
 ## How it works?
 GRAF collects and stores GitHub information in its local data warehouse using a GitHub API wrapper called Octokit. Through Octokit, GRAF gathers information on every *Pull Request* and *Commit* for the selected repositories. Once this data has been successfully collected, our application allows the user to generate figures that are customized by timeframe, repository, company, etc.
 
-Company affiliation is determined by querying each GitHub user's profile. If a user does not have an affliated company listed on their profile, the application then checks to see whether the user is a member of any corporate Github organizations. If they are not, the user email is used to determine company affiliation.
+Company affiliation is determined by querying each GitHub user's profile. If a user does not have an affiliated company listed on their profile, the application then checks to see whether the user is a member of any corporate Github organizations. If they are not, the user email is used to determine company affiliation.
 
 
 ## What statistics are available?
-These are the available metrics and options through the Analytics page:
+These are the available metrics and options found on the Analytics page:
 
 **Metrics**
 * Commits
@@ -59,11 +59,11 @@ Now do another push and bind to the mysql database you created in the first push
 
 Your app should now be up and running.
 
-## Initialing the data
-1. Modify the "config/graf/orgs.json" JSON file to select the organizations to load.
-1. Open GRAF's /login page in a browser and enter a username / password.
-1. Begin an initial load by going to /load and click the "Start Load" button.
-1. Once the load is complete, the user can view the data on the /analytics and /report page.
+## Initializing the data
+1. Modify the "config/graf/orgs.json" JSON file to select the organizations to load
+1. Open GRAF's /login page in a browser and enter a username / password
+1. Begin an initial load by going to /load and click the "Start Load" button
+1. Once the load is complete, the user can view the data on the /analytics and /report page
 1. Subsequent loads can be executed using "Start Load" button /load (Ensure there are enough api requests at /info)
 
 ## Updating a GRAF instance on [BlueMix]
