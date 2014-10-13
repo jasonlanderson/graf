@@ -17,6 +17,10 @@
      "alias": ["ibm"]
     },
     {
+      "company": "Rackspace",
+      "alias": ["rackspace", "cloudkick"]
+    },
+    {
      "name": "Mongo",
      "alias": ["mongo", "10gen"]
     },
@@ -33,6 +37,10 @@
      "alias": ["coreos"]
     },
     {
+     "name": "Citrix",
+     "alias": ["citrix", "citrix", "scalextreme", "Framehawk"]
+    },
+    {
      "name": "eBay Inc.",
      "alias": ["ebay"]
     },
@@ -45,13 +53,240 @@
      "alias": ["github"]
     },
     {
+     "name": "Docker, Inc.",
+     "alias": ["docker", "dotcloud", "orchardup", "cloudcontrol"]
+    },
+    {
      "name": "NTT Laboratory",
      "alias": ["ntt"]
     },
     {
      "name": "Rakuten, Inc.",
      "alias": ["rakuten"]
+    },
+    {
+     "name": "Red Hat",
+     "alias": ["redhat"]
+    },
+    {
+     "name": "Google",
+     "alias": ["google"]
+    },
+    {
+     "name": "GOV.UK",
+     "alias": ["gov.uk"]
+    },
+    {
+     "name": "Globo",
+     "alias": ["globo", "tsuru"]
+    },
+    {
+     "name": "coreOS",
+     "alias": ["coreos", "quay"]
+    },
+    {
+      "name": "SAP",
+      "alias": ["sap"]
+    },
+    {
+      "name": "HP",
+      "alias": ["hp", "hpcloud"]
+    },
+    {
+      "name": "ActiveState",
+      "alias": ["activestate"]
+    },
+    {
+      "name": "GE",
+      "alias": ["ge"]
+    },
+    {
+      "name": "Ericsson",
+      "alias": ["Ericsson"]
+    },
+    {
+      "name": "Capgemini",
+      "alias": ["capgemini"]
+    },
+    {
+      "name": "Accenture",
+      "alias": ["accenture"]
+    },
+    {
+      "name": "EMC",
+      "alias": ["emc"]
+    },
+    {
+      "name": "CenturyLink",
+      "alias": ["CenturyLink", "CenturyLinkCloud"]
+    },
+    {
+      "name": "Canonical Ltd",
+      "alias": ["canonical", "ubunto"]
+    },
+    {
+      "name": "Code Climate",
+      "alias": ["condclimate"]
+    },
+    {
+      "name": "Flynn",
+      "alias": ["flynn"]
+    },
+    {
+      "name": "Intel",
+      "alias": ["putdotio"]
+    },
+    {
+      "name": "naxuat",
+      "alias": ["naxuat"]
+    },
+    {
+      "name": "OpenID Foundation Japan",
+      "alias": ["openid.or"]
+    },
+    {
+      "name": "Pocket PaaS",
+      "alias": ["endot"]
+    },
+    {
+      "name": "Put.io",
+      "alias": ["putdotio"]
+    },
+    {
+      "name": "SoundCloud",
+      "alias": ["soundcloud"]
+    },
+    {
+      "name": "Tes Global",
+      "alias": ["tesg"]
+    },
+    {
+      "name": "Yelp",
+      "alias": ["yelp"]
+    },
+    {
+      "name": "Software Carpentry",
+      "alias": ["software-carpentry"]
+    },
+    {
+      "name": "stormpath",
+      "alias": ["stormpath"]
+    },
+    {
+      "name": "Uniqush",
+      "alias": ["uniqush"]
+    },
+    {
+      "name": "xebia",
+      "alias": ["xebia"]
+    },
+    {
+      "name": "Altoros",
+      "alias": ["altoros"]
+    },   
+    {
+      "name": "AnyNines",
+      "alias": ["anynines"]
+    },
+    {
+      "name": "Blue Box",
+      "alias": ["blueboxgroup"]
+    },
+    {
+      "name": "Cisco",
+      "alias": ["cisco"]
+    },
+    {
+      "name": "CloudCredo",
+      "alias": ["cloudcredo"]
+    },
+    {
+      "name": "CloudSoft Corp",
+      "alias": ["cloudsoftcorp"]
+    },
+    {
+      "name": "DTS Corporation",
+      "alias": ["dts.co"]
+    },
+    {
+      "name": "Forio",
+      "alias": ["forio"]
+    },
+    {
+      "name": "Huawei",
+      "alias": ["huawei"]
+    },
+    {
+      "name": "Innovation Factory",
+      "alias": ["innovationfactory"]
+    },
+    {
+      "name": "Intalio",
+      "alias": ["intalio"]
+    },
+    {
+      "name": "iron.io",
+      "alias": ["iron.io"]
+    },
+    {
+      "name": "Load Impact",
+      "alias": ["loadimpact"]
+    },
+    {
+      "name": "Mendix",
+      "alias": ["mendix"]
+    },
+    {
+      "name": "Neo Technology",
+      "alias": ["neo4j"]
+    },
+    {
+      "name": "OGIS-RI",
+      "alias": ["ogis-ri"]
+    },
+    {
+      "name": "Orange",
+      "alias": ["orange"]
+    },
+    {
+      "name": "Piston Cloud",
+      "alias": ["pistoncloud"]
+    },
+    {
+      "name": "Rakuten",
+      "alias": ["rakuten"]
+    },
+    {
+      "name": "Redis Labs",
+      "alias": ["edislabs"]
+    },
+    {
+      "name": "SendGrid",
+      "alias": ["sendgrid"]
+    },
+    {
+      "name": "Swisscom",
+      "alias": ["swisscom"]
+    },
+    {
+      "name": "Symantec",
+      "alias": ["symantec"]
+    },
+    {
+      "name": "Tier 3",
+      "alias": ["centurylinkcloud"]
+    },
+    {
+      "name": "Uhuru Software",
+      "alias": ["uhurusoftware"]
+    },
+    {
+      "name": "Velankani Information Systems",
+      "alias": ["velankani"]
+    },
+    {
+      "name": "ZephirWorks",
+      "alias": ["zephirworks"]
     }
-
   ]
 }

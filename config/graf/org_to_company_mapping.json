@@ -14,7 +14,7 @@
     },
     {
       "company": "Rackspace",
-      "orgs": ["rackspace", "rackerlabs", "racker"]
+      "orgs": ["rackspace", "rackerlabs", "racker", "cloudkick"]
     },
     {
       "company": "Foursquare",
@@ -35,6 +35,239 @@
     {
       "company": "Github",
       "orgs": ["github"]
+    },
+    {
+      "company": "Docker, Inc.",
+      "orgs": ["docker", "dotcloud", "docker-library", "orchardup", "cloudcontrol" ]
+    },
+    {
+      "company": "Red Hat",
+      "orgs": ["projectatomic", "fedora-cloud", "OpenShift"]
+    },
+    {
+      "company": "Google",
+      "orgs": ["GoogleCloudPlatform"]
+    },
+    {
+     "company": "GOV.UK",
+     "orgs": ["AlphaGov", "alphagov"]
+    },
+    {
+     "company": "Globo",
+     "orgs": ["tsuru"]
+    },
+    {
+     "company": "coreOS",
+     "orgs": ["coreos"]
+    },
+    {
+     "company": "citrix",
+     "orgs": ["citrix"]
+    },
+    {
+      "company": "SAP",
+      "orgs": ["sap"]
+    },
+    {
+      "company": "HP",
+      "orgs": ["hpcloud"]
+    },
+    {
+      "company": "ActiveState",
+      "orgs": ["ActiveState"]
+    },
+    {
+      "company": "GE",
+      "orgs": ["generalelectric"]
+    },
+    {
+      "company": "Ericsson",
+      "orgs": ["Ericsson"]
+    },
+    {
+      "company": "Capgemini",
+      "orgs": ["Capgemini"]
+    },
+    {
+      "company": "EMC",
+      "orgs": ["emcvipr"]
+    },
+    {
+      "company": "CenturyLink",
+      "orgs": ["CenturyLink", "CenturyLinkCloud"]
+    },
+    {
+      "company": "Canonical Ltd",
+      "orgs": ["CanonicalLtd", "Ubuntu-Solutions-Engineering"]
+    },
+    {
+      "company": "Code Climate",
+      "orgs": ["codeclimate"]
+    },
+    {
+      "company": "Flynn",
+      "orgs": ["Flynn"]
+    },
+    {
+      "company": "Intel",
+      "orgs": ["intel-cloud"]
+    },
+    {
+      "company": "naxuat",
+      "orgs": ["naxuat"]
+    },
+    {
+      "company": "OpenID Foundation Japan",
+      "orgs": ["openid-foundation-japan"]
+    },
+    {
+      "company": "Pocket PaaS",
+      "orgs": ["pocketpaas"]
+    },
+    {
+      "company": "Put.io",
+      "orgs": ["putdotio"]
+    },
+    {
+      "company": "Yelp",
+      "orgs": ["Yelp"]
+    },
+    {
+      "company": "SoundCloud",
+      "orgs": ["soundcloud"]
+    },    
+    {
+      "company": "stormpath",
+      "orgs": ["stormpath"]
+    },
+    {
+      "company": "Tes Global",
+      "orgs": ["tes"]
+    },
+    {
+      "company": "Uniqush",
+      "orgs": ["uniqush"]
+    },
+    {
+      "company": "Software Carpentry",
+      "orgs": ["swcarpentry"]
+    },
+    {
+      "company": "xebia",
+      "orgs": ["xebia"]
+    },
+    {
+      "company": "Altoros",
+      "orgs": ["Altoros"]
+    },
+    {
+      "company": "AnyNines",
+      "orgs": ["AnyNines"]
+    },
+    {
+      "company": "Blue Box",
+      "orgs": ["blueboxgroup"]
+    },
+    {
+      "company": "Canopy",
+      "orgs": ["canopy-project"]
+    },
+    {
+      "company": "Cisco",
+      "orgs": ["Cisco"]
+    },
+    {
+      "company": "CloudCredo",
+      "orgs": ["CloudCredo"]
+    },
+    {
+      "company": "CloudSoft Corp",
+      "orgs": ["cloudsoft"]
+    },
+    {
+      "company": "DTS Corporation",
+      "orgs": ["bounscale"]
+    },
+    {
+      "company": "Forio",
+      "orgs": ["forio"]
+    },
+    {
+      "company": "Huawei",
+      "orgs": ["huawei-cloud"]
+    },
+    {
+      "company": "Innovation Factory",
+      "orgs": ["innovationfactory"]
+    },
+    {
+      "company": "Intalio",
+      "orgs": ["Intalio"]
+    },
+    {
+      "company": "iron.io",
+      "orgs": ["iron-io"]
+    },
+    {
+      "company": "Load Impact",
+      "orgs": ["loadimpact"]
+    },
+    {
+      "company": "Mendix",
+      "orgs": ["mendix"]
+    },
+    {
+      "company": "Neo Technology",
+      "orgs": ["neo4j-contrib"]
+    },
+    {
+      "company": "OGIS-RI",
+      "orgs": ["OGIS-RI-EOS"]
+    },
+    {
+      "company": "Orange",
+      "orgs": ["Orange-OpenSource"]
+    },
+    {
+      "company": "Piston Cloud",
+      "orgs": ["piston"]
+    },
+    {
+      "company": "Rakuten",
+      "orgs": ["rakutentech"]
+    },
+    {
+      "company": "Redis Labs",
+      "orgs": ["RedisLabs"]
+    },
+    {
+      "company": "SendGrid",
+      "orgs": ["sendgrid"]
+    },
+    {
+      "company": "Swisscom",
+      "orgs": ["swisscom"]
+    },
+    {
+      "company": "Symantec",
+      "orgs": ["Symantec"]
+    },
+    {
+      "company": "Tier 3",
+      "orgs": ["Tier3"]
+    },
+    {
+      "company": "Uhuru Software",
+      "orgs": ["UhuruSoftware"]
+    },
+    {
+      "company": "Velankani Information Systems",
+      "orgs": ["velankanisys"]
+    },
+    {
+      "company": "ZephirWorks",
+      "orgs": ["zephirworks"]
     }
+    
   ]
 }

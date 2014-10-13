@@ -1,0 +1,10 @@
+{
+  "orgs": [
+    {
+      "name": "docker",
+      "org_type": "org",
+      "load": true,
+      "repos_to_skip": []
+    }
+  ]
+}
