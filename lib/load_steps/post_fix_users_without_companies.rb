@@ -20,18 +20,23 @@ class PostFixUsersWithoutCompanies < LoadStep
 
       # For each org which maps to this company
       mapping['orgs'].each { |org_name|
-
-        orgMembers = client.organization_members(org_name)
-        orgMembers.each { |member|
-          user = User.find_by(login: member[:attrs][:login])
-
-          # Only put in a company if they don't already have one
-          if user && (!user.company || user.company == Company.find_by(name: "Independent"))
-            GithubLoad.log_current_msg("#{user} is in #{company}", LogLevel::INFO)
-            user.company = company
-            user.save
-          end
-        }
+        begin
+          orgMembers = client.organization_members(org_name)
+          orgMembers.each { |member|
+            user = User.find_by(login: member[:attrs][:login])
+  
+            # Only put in a company if they don't already have one
+            if user && (!user.company || user.company == Company.find_by(name: "Independent"))
+              GithubLoad.log_current_msg("#{user} is in #{company}", LogLevel::INFO)
+              user.company = company
+              user.save
+            end
+          } if orgMembers
+        rescue => e
+          GithubLoad.log_current_msg("The following error occured with org_name being #{ org_name } when fixing users without companies ...", LogLevel::ERROR)
+          GithubLoad.log_current_msg(e.message, LogLevel::ERROR)
+          GithubLoad.log_current_msg(e.backtrace.join("\n"), LogLevel::ERROR)
+        end
       }
     }
     GithubLoad.log_current_msg("Finish Step: #{name}", LogLevel::INFO)

@@ -24,7 +24,7 @@ class LoadRepoCommits < LoadStep
       commits = client.commits(repo.full_name)
     # TODO, try to only catch Octokit Error  
     rescue => e
-      GithubLoad.log_current_msg("The following error occured...", LogLevel::ERROR)
+      GithubLoad.log_current_msg("The following error occured when processing repo #{ repo.full_name } ...", LogLevel::ERROR)
       GithubLoad.log_current_msg(e.message, LogLevel::ERROR)
       GithubLoad.log_current_msg(e.backtrace.join("\n"), LogLevel::ERROR)
       return nil

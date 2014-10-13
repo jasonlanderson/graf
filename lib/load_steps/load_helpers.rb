@@ -4,7 +4,11 @@ require 'json'
 require 'constants'
 
 class LoadHelpers
-
+  @last_lookup_time = Time.now
+  @MAX_API_CALLS_PER_BLOCK = 25
+  @SECONDS_UNIT_TIME = 36
+  @api_calls_per_unit_time = @MAX_API_CALLS_PER_BLOCK
+  
   # Done
   def self.merge(company_name)
     Constants.merge_companies.each { |company|
@@ -54,7 +58,7 @@ class LoadHelpers
       pr_user = client.user(user_login) if !pr_user.fields.include?(:company)
       
       # Run GET request to get rest of user data
-      user_details = pr_user[:_rels][:self].get.data
+      user_details = lookup_user_details(pr_user)
 
       # "Clean" company name, removing initial, capitilzing, etc
       company_name = merge(user_details[:attrs][:company])
@@ -81,6 +85,22 @@ class LoadHelpers
     return user
   end
 
+  def self.lookup_user_details(pr_user)
+    if @api_calls_per_unit_time == 0 && Time.now  <= (@last_lookup_time + @SECONDS_UNIT_TIME)
+      wait_time = (Time.now.to_i - @last_lookup_time.to_i)
+      wait_time = 0.1 if wait_time == 0
+      puts "Reached max API calls per minute limit.  Need to wait for #{ wait_time } seconds."
+      sleep(wait_time)
+      @api_calls_per_unit_time = @MAX_API_CALLS_PER_BLOCK
+      @last_lookup_time = Time.now
+    elsif Time.now  > (@last_lookup_time + @SECONDS_UNIT_TIME)
+      @last_lookup_time = Time.now
+      @api_calls_per_unit_time = @MAX_API_CALLS_PER_BLOCK
+    end
+    
+    @api_calls_per_unit_time -= 1
+    pr_user[:_rels][:self].get.data
+  end
 
   # Done
   def self.create_company_if_not_exist(company_name)
@@ -291,7 +311,8 @@ class LoadHelpers
   end
 
   def self.parse_last_load_date
-    last_completed = GithubLoad.last_completed.load_complete_time
+    last_completed = GithubLoad.last_completed
+    last_completed = Time.now if last_completed.nil?
     year = last_completed.year
     month = (last_completed.month.to_i < 10 ? "0#{last_completed.month}" : "#{last_completed.month}" )
     day = last_completed.day.to_i - 1
