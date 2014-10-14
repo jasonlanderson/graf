@@ -53,6 +53,10 @@
      "alias": ["github"]
     },
     {
+     "name": "Runnable",
+     "alias": ["runnable"]
+    },
+    {
      "name": "Docker, Inc.",
      "alias": ["docker", "dotcloud", "orchardup", "cloudcontrol"]
     },
@@ -133,8 +137,16 @@
       "alias": ["flynn"]
     },
     {
+      "name": "Imaginary Landscape, LLC.",
+      "alias": ["imagescape"]
+    },
+    {
       "name": "Intel",
-      "alias": ["putdotio"]
+      "alias": ["intel"]
+    },
+    {
+      "name": "Jumpbox",
+      "alias": ["jumbox"]
     },
     {
       "name": "naxuat",
@@ -155,6 +167,10 @@
     {
       "name": "SoundCloud",
       "alias": ["soundcloud"]
+    },
+    {
+      "name": "Spotify",
+      "alias": ["spotify"]
     },
     {
       "name": "Tes Global",
@@ -179,6 +195,10 @@
     {
       "name": "xebia",
       "alias": ["xebia"]
+    },
+    {
+      "name": "ZoomSystems",
+      "alias": ["zoomsystems"]
     },
     {
       "name": "Altoros",

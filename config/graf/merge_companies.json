@@ -73,6 +73,10 @@
      "alias": ["redhat", "red hat", "projectatomic", "fedora-cloud", "openshift"]
     },
     {
+     "name": "Runnable",
+     "alias": ["runnable"]
+    },
+    {
      "name": "Google",
      "alias": ["google"]
     },
@@ -95,6 +99,10 @@
     {
       "name": "SAP",
       "alias": ["sap"]
+    },
+    {
+      "name": "Spotify",
+      "alias": ["spotfiy"]
     },
     {
       "name": "HP",
@@ -141,8 +149,16 @@
       "alias": ["flynn"]
     },
     {
+      "name": "Imaginary Landscape, LLC.",
+      "alias": ["ImaginaryLandscape"]
+    },
+    {
       "name": "Intel",
       "alias": ["intel"]
+    },
+    {
+      "name": "Jumpbox",
+      "alias": ["jumpbox"]
     },
     {
       "name": "naxuat",
@@ -183,6 +199,10 @@
      {
       "name": "Uniqush",
       "alias": ["uniqush"]
+    },
+    {
+      "name": "ZoomSystems",
+      "alias": ["zoomsystems"]
     },
     {
       "name": "xebia",

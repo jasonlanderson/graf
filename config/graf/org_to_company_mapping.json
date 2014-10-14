@@ -45,6 +45,10 @@
       "orgs": ["projectatomic", "fedora-cloud", "OpenShift"]
     },
     {
+      "company": "Runnable",
+      "orgs": ["runnable"]
+    },
+    {
       "company": "Google",
       "orgs": ["GoogleCloudPlatform"]
     },
@@ -67,6 +71,10 @@
     {
       "company": "SAP",
       "orgs": ["sap"]
+    },
+    {
+      "company": "Spotify",
+      "orgs": ["spotify"]
     },
     {
       "company": "HP",
@@ -109,8 +117,16 @@
       "orgs": ["Flynn"]
     },
     {
+      "company": "Imaginary Landscape, LLC.",
+      "orgs": ["ImaginaryLandscape", "imagescape"]
+    },
+    {
       "company": "Intel",
       "orgs": ["intel-cloud"]
+    },
+    {
+      "company": "Jumpbox",
+      "orgs": ["toscanini"]
     },
     {
       "company": "naxuat",
@@ -155,6 +171,10 @@
     {
       "company": "xebia",
       "orgs": ["xebia"]
+    },
+    {
+      "company": "ZoomSystems",
+      "orgs": ["zoomsystems"]
     },
     {
       "company": "Altoros",
