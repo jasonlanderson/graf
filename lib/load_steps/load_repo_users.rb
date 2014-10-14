@@ -1,7 +1,7 @@
+require 'load_steps/load_helpers'
 require 'load_steps/load_step'
 require 'octokit_utils'
 require 'log_level'
-require 'load_steps/load_helpers'
 
 class LoadRepoUsers < LoadStep
 
@@ -26,7 +26,7 @@ class LoadRepoUsers < LoadStep
         contributors.each {|user| 
           unless User.find_by(login: user[:login].downcase) 
             puts "Creating record for User #{user[:login]}"
-            user_obj = client.user(user[:login]) 
+            user_obj = LoadHelpers.github_user(client, user[:login]) 
             LoadHelpers.create_user_if_not_exist(user_obj)
           end  
         } if contributors.kind_of? Array 
@@ -37,7 +37,7 @@ class LoadRepoUsers < LoadStep
         collaborators.each {|user| 
           unless User.find_by(login: user[:login].downcase) 
             puts "Creating record for User #{user[:login]}"
-            user_obj = client.user(user[:login]) 
+            user_obj = LoadHelpers.github_user(client, user[:login]) 
             LoadHelpers.create_user_if_not_exist(user_obj)
           end  
         } if collaborators.kind_of? Array

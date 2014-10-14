@@ -55,7 +55,7 @@ class LoadHelpers
       GithubLoad.log_current_msg("Creating User: #{user_login}", LogLevel::INFO)
 
       # Ensure we have the full user object (Which we don't when using HTTParty api requests)
-      pr_user = client.user(user_login) if !pr_user.fields.include?(:company)
+      pr_user = github_user(client, user_login) if !pr_user.fields.include?(:company)
       
       # Run GET request to get rest of user data
       user_details = lookup_user_details(pr_user)
@@ -86,6 +86,16 @@ class LoadHelpers
   end
 
   def self.lookup_user_details(pr_user)
+    api_call_speed_regulator
+    pr_user[:_rels][:self].get.data
+  end
+
+  def self.github_user(client, user_name)
+    api_call_speed_regulator
+    client.user(user_name)
+  end
+
+  def self.api_call_speed_regulator
     if @api_calls_per_unit_time == 0 && Time.now  <= (@last_lookup_time + @SECONDS_UNIT_TIME)
       wait_time = (Time.now.to_i - @last_lookup_time.to_i)
       wait_time = 0.1 if wait_time == 0
@@ -99,7 +109,6 @@ class LoadHelpers
     end
     
     @api_calls_per_unit_time -= 1
-    pr_user[:_rels][:self].get.data
   end
 
   # Done
@@ -139,7 +148,7 @@ class LoadHelpers
     # After searching for an author's name, we should iterate through the results. The 
     client = OctokitUtils.get_octokit_client
     top_result = search_results[:items][0][:attrs][:login]
-    user_obj = client.user(top_result)
+    user_obj = github_user(client, top_result)
     if (user_obj[:name] and (format_name(user_obj[:name]) == name)) or (user_obj[:login] and (user_obj[:login].downcase == name) )
       return true
     else
@@ -193,7 +202,7 @@ class LoadHelpers
     # This is done by ensuring result name (or login) directly matches with given commit author name
     if search_results && (num_results > 0) && name_match(search_results, name)
       login = search_results[:items][0][:attrs][:login]
-      user_obj = client.user(login)
+      user_obj = github_user(client, login)
       puts "Successfully found reference of '#{name}' / #{email} in github db"
       user = create_user_if_not_exist(user_obj) 
     else
