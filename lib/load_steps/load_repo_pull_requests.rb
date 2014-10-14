@@ -25,18 +25,18 @@ class LoadRepoPullRequests < LoadStep
     begin
       # Fetch all pull requests for current repo from Github
       pull_requests = client.pulls(repo.full_name, state = "open")
-      pull_requests.concat(client.pulls(repo.full_name, state = "closed"))     
+      pull_requests.concat(client.pulls(repo.full_name, state = "closed"))
     rescue Exception
       # GithubLoad.log_current_msg("The following error occured...", LogLevel::INFO)
       # GithubLoad.log_current_msg(e.message, LogLevel::INFO)
       # GithubLoad.log_current_msg(e.backtrace.join("\n"), LogLevel::INFO)
       #return nil  
     end
-    pull_requests.each { |pr|
+    pull_requests.each do |pr|
       # Get user and create a record, if it doesn't already exist
       user = LoadHelpers.create_user_if_not_exist(pr[:attrs][:user]) if pr[:attrs][:user]
       LoadHelpers.create_pr(repo, user, pr)
-    }
+    end if pull_requests
 
     puts "Finish Step: #{name}" 
   end

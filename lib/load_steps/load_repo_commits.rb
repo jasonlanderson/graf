@@ -1,7 +1,7 @@
+require 'load_steps/load_helpers'
 require 'load_steps/load_step'
 require 'octokit_utils'
 require 'log_level'
-require 'load_steps/load_helpers'
 
 class LoadRepoCommits < LoadStep
 
@@ -36,7 +36,8 @@ class LoadRepoCommits < LoadStep
         c = LoadHelpers.create_commit(commit_info, repo.id)      
         users = []
         if commit[:author]
-          users << (User.find_by(login: commit_info[:login]) || LoadHelpers.create_user_if_not_exist(client.user(commit_info[:login])))
+          users << (User.find_by(login: commit_info[:login]) || 
+            LoadHelpers.create_user_if_not_exist(LoadHelpers.github_user(client, commit_info[:login])))
         else
           users = LoadHelpers.process_authors(commit_info[:email], commit_info[:names])
         end

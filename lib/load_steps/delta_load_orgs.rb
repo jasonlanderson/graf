@@ -1,3 +1,4 @@
+require 'load_steps/load_helpers'
 require 'load_steps/load_step'
 require 'load_steps/delta_load_org_repos'
 require 'octokit_utils'
@@ -21,7 +22,7 @@ class DeltaLoadOrgs < LoadStep
       GithubLoad.log_current_msg("Loading Organization '#{org_hash["name"]}'", LogLevel::INFO)
       org_load_time = Time.now
       
-      organization = client.user(org_hash["name"])
+      organization = LoadHelpers.github_user(client, org_hash["name"])
       org = Org.find_by(git_id: organization[:attrs][:id].to_i) || \
         Org.create(
           :git_id => organization[:attrs][:id].to_i,

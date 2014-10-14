@@ -1,3 +1,4 @@
+require 'load_steps/load_helpers'
 require 'load_steps/load_step'
 require 'load_steps/load_repo_users'
 require 'load_steps/delta_load_repo_pull_requests'
@@ -23,7 +24,7 @@ class DeltaLoadOrgRepos < LoadStep
     if org.org_type == "org"
         repos = client.organization_repositories(org.login)
     elsif org.org_type == "user"
-        repos = client.user(org.login)[:rels][:repos].get.data #organization_repositories(org.login)
+        repos = LoadHelpers.github_user(client, org.login)[:rels][:repos].get.data #organization_repositories(org.login)
     end
         
     total_repo_count = repos.count
