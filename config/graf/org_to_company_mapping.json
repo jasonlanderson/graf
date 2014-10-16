@@ -70,19 +70,43 @@
     },
     {
       "company": "SAP",
-      "orgs": ["sap"]
+      "orgs": ["sap", "hybris"]
     },
     {
       "company": "Spotify",
       "orgs": ["spotify"]
     },
     {
+      "company": "Target",
+      "orgs": ["target"]
+    },
+    {
+      "company": "Twiitter",
+      "orgs": ["twitter"]
+    },
+    {
       "company": "HP",
       "orgs": ["hpcloud"]
     },
     {
+      "company": "1uptalent",
+      "orgs": ["1uptalent"]
+    },
+    {
+      "company": "Amazon",
+      "orgs": ["aws"]
+    },
+    {
+      "company": "Arch Linux ARM",
+      "orgs": ["archlinuxarm"]
+    },
+    {
       "company": "ActiveState",
       "orgs": ["ActiveState"]
+    },
+    {
+      "company": "ATT",
+      "orgs": ["att-innovate", "att"]
     },
     {
       "company": "GE",
@@ -117,19 +141,23 @@
       "orgs": ["Flynn"]
     },
     {
-      "company": "Imaginary Landscape, LLC.",
-      "orgs": ["ImaginaryLandscape", "imagescape"]
+      "company": "Intoximeters",
+      "orgs": ["intoximeters"]
     },
     {
       "company": "Intel",
       "orgs": ["intel-cloud"]
     },
     {
+      "company": "GoodCode",
+      "orgs": ["dobarkod"]
+    },
+    {
       "company": "Jumpbox",
       "orgs": ["toscanini"]
     },
     {
-      "company": "naxuat",
+      "company": "Naxuat Oy",
       "orgs": ["naxuat"]
     },
     {
@@ -145,6 +173,10 @@
       "orgs": ["putdotio"]
     },
     {
+      "company": "Redmine",
+      "orgs": ["redmine"]
+    },
+    {
       "company": "Yelp",
       "orgs": ["Yelp"]
     },
@@ -155,6 +187,10 @@
     {
       "company": "stormpath",
       "orgs": ["stormpath"]
+    },
+    {
+      "company": "Subuser",
+      "orgs": ["subuser-security"]
     },
     {
       "company": "Tes Global",
@@ -175,6 +211,10 @@
     {
       "company": "ZoomSystems",
       "orgs": ["zoomsystems"]
+    },
+    {
+      "company": "Zenoss, Inc",
+      "orgs": ["zenoss", "control-center"]
     },
     {
       "company": "Altoros",

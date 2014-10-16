@@ -9,10 +9,6 @@
      "alias": ["pivotal", "springsource", "cloudfoundry"]
     },
     {
-     "name": "Rbcon",
-     "alias": ["rbcon"]
-    },
-    {
      "name": "IBM",
      "alias": ["ibm"]
     },
@@ -21,8 +17,8 @@
       "alias": ["rackspace", "cloudkick"]
     },
     {
-     "name": "Mongo",
-     "alias": ["mongo", "10gen"]
+     "name": "MongoDB",
+     "alias": ["mongo", "mongodb"]
     },
     {
      "name": "Apcera",
@@ -74,7 +70,7 @@
     },
     {
      "name": "Google",
-     "alias": ["google"]
+     "alias": ["google", "gmail"]
     },
     {
      "name": "GOV.UK",
@@ -90,15 +86,39 @@
     },
     {
       "name": "SAP",
-      "alias": ["sap"]
+      "alias": ["sap", "hybris"]
+    },
+    {
+      "name": "Target",
+      "alias": ["target"]
+    },
+    {
+      "name": "Twitter",
+      "alias": ["twitter"]
     },
     {
       "name": "HP",
       "alias": ["hp", "hpcloud"]
     },
     {
+      "name": "1uptalent",
+      "alias": ["1uptalent"]
+    },
+    {
+      "name": "Amazon",
+      "alias": ["amazon"]
+    },
+    {
       "name": "ActiveState",
       "alias": ["activestate"]
+    },
+    {
+      "name": "Arch Linux ARM",
+      "alias": ["archlinuxarm"]
+    },
+    {
+      "name": "ATT",
+      "alias": ["att"]
     },
     {
       "name": "GE",
@@ -137,19 +157,27 @@
       "alias": ["flynn"]
     },
     {
-      "name": "Imaginary Landscape, LLC.",
+      "name": "Imaginary Landscape",
       "alias": ["imagescape"]
+    },
+    {
+      "name": "GoodCode",
+      "alias": ["goodcode"]
     },
     {
       "name": "Intel",
       "alias": ["intel"]
     },
     {
-      "name": "Jumpbox",
-      "alias": ["jumbox"]
+      "name": "Intoximeters",
+      "alias": ["intox"]
     },
     {
-      "name": "naxuat",
+      "name": "Jumpbox",
+      "alias": ["jumpbox"]
+    },
+    {
+      "name": "Naxuat Oy",
       "alias": ["naxuat"]
     },
     {
@@ -159,6 +187,10 @@
     {
       "name": "Pocket PaaS",
       "alias": ["endot"]
+    },
+    {
+      "name": "Redmine",
+      "alias": ["redmine"]
     },
     {
       "name": "Put.io",
@@ -171,6 +203,10 @@
     {
       "name": "Spotify",
       "alias": ["spotify"]
+    },
+    {
+      "name": "Subuser",
+      "alias": ["subuser"]
     },
     {
       "name": "Tes Global",
@@ -199,6 +235,10 @@
     {
       "name": "ZoomSystems",
       "alias": ["zoomsystems"]
+    },
+    {
+      "name": "Zenoss, Inc",
+      "alias": ["zenoss"]
     },
     {
       "name": "Altoros",
