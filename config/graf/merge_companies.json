@@ -2,7 +2,7 @@
   "companies": [
     {
       "name": "Independent",
-      "alias": ["available", "independent", "freelance"]
+      "alias": ["available", "independent", "freelance", "", "-", "student"]
     },
     {
      "name": "VMware",
@@ -17,10 +17,6 @@
      "alias": ["stark and wayne", "stark & wayne"]
     },
     {
-     "name": "Rbcon",
-     "alias": ["rbcon"]
-    },
-    {
      "name": "IBM",
      "alias": ["ibm"]
     },
@@ -29,7 +25,7 @@
       "alias": ["rackspace", "rackerlabs", "racker", "cloudkick"]
     },
     {
-     "name": "Rbcon",
+     "name": "MongoDB",
      "alias": ["mongo", "10gen"]
     },
     {
@@ -98,19 +94,43 @@
     },
     {
       "name": "SAP",
-      "alias": ["sap"]
+      "alias": ["sap", "hybris"]
     },
     {
       "name": "Spotify",
       "alias": ["spotfiy"]
     },
     {
+      "name": "Target",
+      "alias": ["target"]
+    },
+    {
+      "name": "Twitter",
+      "alias": ["twitter"]
+    },
+    {
       "name": "HP",
       "alias": ["hp", "hpcloud"]
     },
     {
+      "name": "1uptalent",
+      "alias": ["1uptalent"]
+    },
+    {
       "name": "ActiveState",
       "alias": ["activestate"]
+    },
+    {
+      "name": "Amazon",
+      "alias": ["amazon"]
+    },
+    {
+      "name": "Arch Linux ARM",
+      "alias": ["archlinuxarm"]
+    },
+    {
+      "name": "ATT",
+      "alias": ["att"]
     },
     {
       "name": "GE",
@@ -153,6 +173,14 @@
       "alias": ["ImaginaryLandscape"]
     },
     {
+      "name": "GoodCode",
+      "alias": ["dobarkod", "goodcode"]
+    },
+    {
+      "name": "Intoximeters",
+      "alias": ["intoximeters"]
+    },
+    {
       "name": "Intel",
       "alias": ["intel"]
     },
@@ -161,7 +189,7 @@
       "alias": ["jumpbox"]
     },
     {
-      "name": "naxuat",
+      "name": "Naxuat Oy",
       "alias": ["naxuat"]
     },
     {
@@ -177,12 +205,20 @@
       "alias": ["putdotio"]
     },
     {
+      "name": "Redmine",
+      "alias": ["redmine"]
+    },
+    {
       "name": "SoundCloud",
       "alias": ["soundcloud"]
     },
     {
       "name": "stormpath",
       "alias": ["stormpath"]
+    },
+    {
+      "name": "Subuser",
+      "alias": ["subuser"]
     },
     {
       "name": "Tes Global",
@@ -201,12 +237,16 @@
       "alias": ["uniqush"]
     },
     {
+      "name": "xebia",
+      "alias": ["xebia"]
+    },
+    {
       "name": "ZoomSystems",
       "alias": ["zoomsystems"]
     },
     {
-      "name": "xebia",
-      "alias": ["xebia"]
+      "name": "Zenoss, Inc",
+      "alias": ["zenoss"]
     },
     {
       "name": "Altoros",
