@@ -1,3 +1,4 @@
+require 'load_steps/load_helpers'
 require 'load_steps/load_step'
 require 'octokit_utils'
 require 'log_level'
@@ -21,7 +22,7 @@ class PostFixUsersWithoutCompanies < LoadStep
       # For each org which maps to this company
       mapping['orgs'].each { |org_name|
         begin
-          orgMembers = client.organization_members(org_name)
+          orgMembers = LoadHelpers.github_organization_members(client, org_name)
           orgMembers.each { |member|
             user = User.find_by(login: member[:attrs][:login])
   
