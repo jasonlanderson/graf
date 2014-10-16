@@ -24,8 +24,8 @@ class DeltaLoadRepoPullRequests < LoadStep
     begin
       #pull_requests = client.search_issues("repo=#{repo.full_name}+type:pr")[:items] ; sleep(3.0) #.search_issues(repo.full_name, options = {:type => "pr", :updated => "2014-05-27"})[:items]
       # TODO Ideally the command above should work with Octokit, but HTML encoding seems to be inconsistent, as we cannot add the "updated" param here
-      pull_requests = client.pulls(repo.full_name, state = "open")
-      pull_requests.concat(client.pulls(repo.full_name, state = "closed"))
+      pull_requests = LoadHelpers.github_pulls(client, repo.full_name, state = "open")
+      pull_requests.concat(LoadHelpers.github_pulls(client, repo.full_name, state = "closed"))
     #rescue => e
     rescue Exception 
       # TODO, these have been commented out because they'll crash and stop the load if given repo has no contribs

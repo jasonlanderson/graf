@@ -24,8 +24,8 @@ class LoadRepoPullRequests < LoadStep
     GithubLoad.log_current_msg("Initial memory before cleanup #{size} KB", LogLevel::INFO)
     begin
       # Fetch all pull requests for current repo from Github
-      pull_requests = client.pulls(repo.full_name, state = "open")
-      pull_requests.concat(client.pulls(repo.full_name, state = "closed"))
+      pull_requests = LoadHelpers.github_pulls(client, repo.full_name, state = "open")
+      pull_requests.concat(LoadHelpers.github_pulls(client, repo.full_name, state = "closed"))
     rescue Exception
       # GithubLoad.log_current_msg("The following error occured...", LogLevel::INFO)
       # GithubLoad.log_current_msg(e.message, LogLevel::INFO)

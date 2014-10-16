@@ -22,7 +22,7 @@ class DeltaLoadRepoCommits < LoadStep
     client = OctokitUtils.get_octokit_client
     begin
       last_completed = LoadHelpers.parse_last_load_date
-      commits = client.commits_since(repo.full_name, last_completed)
+      commits = LoadHelpers.github_commits_since(client, repo.full_name, last_completed)
     rescue Exception
       # GithubLoad.log_current_msg("The following error occured...", LogLevel::ERROR)
       # GithubLoad.log_current_msg(e.message, LogLevel::ERROR)

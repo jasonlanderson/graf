@@ -21,7 +21,7 @@ class LoadRepoUsers < LoadStep
     
     # Contributors are those who have submitted at least one commit to the repo
     begin
-      contributors = client.contributors(repo.full_name)        
+      contributors = LoadHelpers.github_contributors(client, repo.full_name)        
       if contributors
         contributors.each {|user| 
           unless User.find_by(login: user[:login].downcase) 
@@ -32,7 +32,7 @@ class LoadRepoUsers < LoadStep
         } if contributors.kind_of? Array 
       end
       # Collaborators are those that have direct commit access
-      collaborators = client.collaborators(repo.full_name)   
+      collaborators = LoadHelpers.github_collaborators(client, repo.full_name)   
       if collaborators
         collaborators.each {|user| 
           unless User.find_by(login: user[:login].downcase) 

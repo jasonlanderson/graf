@@ -4,10 +4,10 @@ require 'json'
 require 'constants'
 
 class LoadHelpers
-  @last_lookup_time = Time.now
-  @MAX_API_CALLS_PER_BLOCK = 25
-  @SECONDS_UNIT_TIME = 36
-  @api_calls_per_unit_time = @MAX_API_CALLS_PER_BLOCK
+  @@last_lookup_time = Time.now
+  @@MAX_API_CALLS_PER_BLOCK = 10
+  @@SECONDS_UNIT_TIME = 7.2
+  @@api_calls_per_unit_time = @@MAX_API_CALLS_PER_BLOCK
   
   # Done
   def self.merge(company_name)
@@ -95,20 +95,54 @@ class LoadHelpers
     client.user(user_name)
   end
 
+  def self.github_contributors(client, repo_name)
+    api_call_speed_regulator
+    client.contributors(repo_name);
+  end
+
+  def self.github_collaborators(client, repo_name)
+    api_call_speed_regulator
+    client.collaborators(repo_name);
+  end
+
+  def self.github_organization_repositories(client, login)
+    api_call_speed_regulator
+    client.organization_repositories(login);
+  end
+  
+  def self.github_commits(client, repo_name)
+    api_call_speed_regulator
+    client.commits(repo_name)
+  end
+
+  def self.github_organization_members(client, repo_name)
+    api_call_speed_regulator
+    client.organization_members(repo_name)  
+  end
+
+  def self.github_pulls(client, repo_name, state)
+    api_call_speed_regulator
+    client.pulls(repo_name, state)
+  end
+
+  def self.github_commits_since(client, repo_name, last_completed)
+    api_call_speed_regulator
+    client.commits_since(repo_name, last_completed)
+  end
+
   def self.api_call_speed_regulator
-    if @api_calls_per_unit_time == 0 && Time.now  <= (@last_lookup_time + @SECONDS_UNIT_TIME)
-      wait_time = (Time.now.to_i - @last_lookup_time.to_i)
-      wait_time = 0.1 if wait_time == 0
-      puts "Reached max API calls per minute limit.  Need to wait for #{ wait_time } seconds."
-      sleep(wait_time)
-      @api_calls_per_unit_time = @MAX_API_CALLS_PER_BLOCK
-      @last_lookup_time = Time.now
-    elsif Time.now  > (@last_lookup_time + @SECONDS_UNIT_TIME)
-      @last_lookup_time = Time.now
-      @api_calls_per_unit_time = @MAX_API_CALLS_PER_BLOCK
+    elapsed = Time.now.to_f - @@last_lookup_time.to_f
+    if @@api_calls_per_unit_time == 0 && elapsed  < ( @@SECONDS_UNIT_TIME)
+      wait_time = @@SECONDS_UNIT_TIME - elapsed
+      sleep(wait_time) if wait_time > 0
+      @@api_calls_per_unit_time = @@MAX_API_CALLS_PER_BLOCK
+      @@last_lookup_time = Time.now
+    elsif elapsed  >= @@SECONDS_UNIT_TIME
+      @@last_lookup_time = Time.now
+      @@api_calls_per_unit_time = @@MAX_API_CALLS_PER_BLOCK
     end
     
-    @api_calls_per_unit_time -= 1
+    @@api_calls_per_unit_time -= 1
   end
 
   # Done

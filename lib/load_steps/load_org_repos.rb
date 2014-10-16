@@ -22,7 +22,7 @@ class LoadOrgRepos < LoadStep
     client = OctokitUtils.get_octokit_client
     
     if org.org_type == "org"
-        repos = client.organization_repositories(org.login)
+        repos = LoadHelpers.github_organization_repositories(client,org.login)
     elsif org.org_type == "user"
         repos = LoadHelpers.github_user(client, org.login)[:rels][:repos].get.data #organization_repositories(org.login)
     end
