@@ -11,12 +11,14 @@ class LoadHelpers
   
   # Done
   def self.merge(company_name)
+    comp_name = company_name
+    if company_name.nil? || company_name.strip.length == 0
+      return "Independent"
+    end
     Constants.merge_companies.each { |company|
         company["alias"].each { |mapping|
-          if (company_name.nil? || company_name.strip.length == 0)
-             return "Independent"
-          elsif company_name.downcase.include?(mapping)
-             puts "Overriding user-defined company name"
+          if company_name.downcase.include?(mapping)
+             puts "Overriding user-defined company name by #{ company['name'] }"
              return company["name"]
           end
         }
