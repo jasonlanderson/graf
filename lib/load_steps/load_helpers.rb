@@ -4,10 +4,7 @@ require 'json'
 require 'constants'
 
 class LoadHelpers
-  @@last_lookup_time = Time.now
-  @@MAX_API_CALLS_PER_BLOCK = 10
-  @@SECONDS_UNIT_TIME = 7.4
-  @@api_calls_per_unit_time = @@MAX_API_CALLS_PER_BLOCK
+  @@MIN_REMAINING_API_QUOTA = 2
   
   # Done
   def self.merge(company_name)
@@ -60,7 +57,7 @@ class LoadHelpers
       pr_user = github_user(client, user_login) if !pr_user.fields.include?(:company)
       
       # Run GET request to get rest of user data
-      user_details = lookup_user_details(pr_user)
+      user_details = lookup_user_details(client, pr_user)
 
       # "Clean" company name, removing initial, capitilzing, etc
       company_name = merge(user_details[:attrs][:company])
@@ -87,64 +84,58 @@ class LoadHelpers
     return user
   end
 
-  def self.lookup_user_details(pr_user)
-    api_call_speed_regulator
+  def self.lookup_user_details(client, pr_user)
+    api_call_speed_regulator(client)
     pr_user[:_rels][:self].get.data
   end
 
   def self.github_user(client, user_name)
-    api_call_speed_regulator
+    api_call_speed_regulator(client)
     client.user(user_name)
   end
 
   def self.github_contributors(client, repo_name)
-    api_call_speed_regulator
+    api_call_speed_regulator(client)
     client.contributors(repo_name);
   end
 
   def self.github_collaborators(client, repo_name)
-    api_call_speed_regulator
+    api_call_speed_regulator(client)
     client.collaborators(repo_name);
   end
 
   def self.github_organization_repositories(client, login)
-    api_call_speed_regulator
+    api_call_speed_regulator(client)
     client.organization_repositories(login);
   end
   
   def self.github_commits(client, repo_name)
-    api_call_speed_regulator
+    api_call_speed_regulator(client)
     client.commits(repo_name)
   end
 
   def self.github_organization_members(client, repo_name)
-    api_call_speed_regulator
+    api_call_speed_regulator(client)
     client.organization_members(repo_name)  
   end
 
   def self.github_pulls(client, repo_name, state)
-    api_call_speed_regulator
+    api_call_speed_regulator(client)
     client.pulls(repo_name, state)
   end
 
   def self.github_commits_since(client, repo_name, last_completed)
-    api_call_speed_regulator
+    api_call_speed_regulator(client)
     client.commits_since(repo_name, last_completed)
   end
 
-  def self.api_call_speed_regulator
-    elapsed = Time.now.to_f - @@last_lookup_time.to_f
-    if @@api_calls_per_unit_time == 0 && elapsed  < ( @@SECONDS_UNIT_TIME)
-      wait_time = @@SECONDS_UNIT_TIME - elapsed
-      sleep(wait_time) if wait_time > 0
-      @@api_calls_per_unit_time = @@MAX_API_CALLS_PER_BLOCK
-      @@last_lookup_time = Time.now
-    elsif elapsed  >= @@SECONDS_UNIT_TIME
-      @@last_lookup_time = Time.now
-      @@api_calls_per_unit_time = @@MAX_API_CALLS_PER_BLOCK
+  def self.api_call_speed_regulator(client)
+    remaining = client.rate_limit_remaining
+    puts "rate_inf = #{ remaining }"
+    while remaining < @@MIN_REMAINING_API_QUOTA
+      sleep(1)
+      remaining = OctokitUtils.get_rate_limit
     end
-    
-    @@api_calls_per_unit_time -= 1
   end
 
   # Done
