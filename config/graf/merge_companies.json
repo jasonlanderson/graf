@@ -2,7 +2,7 @@
   "companies": [
     {
       "name": "Independent",
-      "alias": ["available", "independent", "freelance", "", "-", "student"]
+      "alias": ["available", "independent", "*independent", "freelance", "-", "student"]
     },
     {
      "name": "VMware",
