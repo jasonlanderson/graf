@@ -165,6 +165,10 @@
       "alias": ["codeclimate"]
     },
     {
+      "name": "Contegix LLC",
+      "alias": ["contegix"]
+    },
+    {
       "name": "Flynn",
       "alias": ["flynn"]
     },

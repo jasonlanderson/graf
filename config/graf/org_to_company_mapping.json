@@ -137,6 +137,10 @@
       "orgs": ["codeclimate"]
     },
     {
+      "company": "Contegix LLC",
+      "orgs": ["contegix"]
+    },
+    {
       "company": "Flynn",
       "orgs": ["Flynn"]
     },
