@@ -6,7 +6,7 @@ require 'constants'
 class LoadHelpers
   @@last_lookup_time = Time.now
   @@MAX_API_CALLS_PER_BLOCK = 10
-  @@SECONDS_UNIT_TIME = 7.2
+  @@SECONDS_UNIT_TIME = 7.4
   @@api_calls_per_unit_time = @@MAX_API_CALLS_PER_BLOCK
   
   # Done
