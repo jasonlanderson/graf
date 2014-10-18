@@ -2,11 +2,11 @@
   "mapping": [
     {
       "company": "VMware",
-      "orgs": ["vmware"]
+      "orgs": ["vmware", "vmwarechina"]
     },
     {
       "company": "Pivotal",
-      "orgs": ["pivotal", "cloudfoundry", "pivotallabs", "Springsource", "pivotal-cf"]
+      "orgs": ["pivotal", "cloudfoundry", "pivotallabs", "Springsource", "pivotal-cf", "spring-projects"]
     },
     {
       "company": "IBM",
@@ -125,6 +125,10 @@
       "orgs": ["emcvipr"]
     },
     {
+      "company": "CityIndex Ltd",
+      "orgs": ["cityindex"]
+    },
+    {
       "company": "CenturyLink",
       "orgs": ["CenturyLink", "CenturyLinkCloud"]
     },
@@ -238,7 +242,7 @@
     },
     {
       "company": "Cisco",
-      "orgs": ["Cisco"]
+      "orgs": ["Cisco", "cfcisco"]
     },
     {
       "company": "CloudCredo",
@@ -251,6 +255,10 @@
     {
       "company": "DTS Corporation",
       "orgs": ["bounscale"]
+    },
+    {
+      "company": "Facebook",
+      "orgs": ["facebook"]
     },
     {
       "company": "Forio",
