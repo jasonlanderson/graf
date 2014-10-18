@@ -37,6 +37,10 @@
      "alias": ["avarteq"]
     },
     {
+     "name": "CityIndex Ltd",
+     "alias": ["cityindex"]
+    },
+    {
      "name": "CoreOS",
      "alias": ["coreos"]
     },
@@ -279,6 +283,10 @@
     {
       "name": "DTS Corporation",
       "alias": ["dts.co"]
+    },
+    {
+      "name": "Facebook",
+      "alias": ["facebook"]
     },
     {
       "name": "Forio",
