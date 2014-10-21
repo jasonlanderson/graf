@@ -22,7 +22,7 @@ class OctokitUtils
   end
 
   def self.get_rate_limit()
-    get_octokit_client().rate_limit_remaining
+    get_octokit_client().rate_limit.remaining
   end
 
   def self.search_users(email)

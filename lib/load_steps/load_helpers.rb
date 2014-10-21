@@ -130,7 +130,7 @@ class LoadHelpers
   end
 
   def self.api_call_speed_regulator(client)
-    remaining = client.rate_limit_remaining
+    remaining = client.rate_limit.remaining
     puts "rate_inf = #{ remaining }"
     while remaining < @@MIN_REMAINING_API_QUOTA
       sleep(1)
