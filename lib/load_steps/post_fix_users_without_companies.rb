@@ -27,7 +27,7 @@ class PostFixUsersWithoutCompanies < LoadStep
             user = User.find_by(login: member[:attrs][:login])
   
             # Only put in a company if they don't already have one
-            if user && (!user.company || user.company == Company.find_by(name: "Independent"))
+            if user && (!user.company || user.company == Company.find_by(name: "independent"))
               GithubLoad.log_current_msg("#{user} is in #{company}", LogLevel::INFO)
               user.company = company
               user.save
