@@ -1,0 +1,116 @@
+{
+  "community": [
+    {
+      "company": "Docker, Inc.",
+      "login": [ "mzdaniel", "tiborvass", "ewindisch", "hollietealok"]
+    },
+    {
+      "company": "subuser",
+      "login": [ "timthelion"]
+    },
+    {
+      "company": "soundcloud",
+      "login": [ "bernerdschaefer"]
+    },
+    {
+      "company": "Imagescape",
+      "login": [ "dustinlacewell"]
+    },
+    {
+      "company": "Canonical Ltd",
+      "login": [ "hamo"]
+    },
+    {
+      "company": "Zenoss, Inc",
+      "login": [ "daniel-garcia"]
+    },
+     {
+      "company": "GoodCode",
+      "login": [ "aigeruth"]
+    },
+    {
+      "company": "Runnable",
+      "login": [ "anandkumarpatel"]
+    },
+    {
+      "company": "Spotify",
+      "login": [ "danielnorberg"]
+    },
+    {
+      "company": "Red Hat",
+      "login": [ "imain"]
+    },
+    {
+      "company": "Intoximeters",
+      "login": [ "thedude05"]
+    },
+    {
+      "company": "Hybris",
+      "login": [ "maltej"]
+    },
+    {
+      "company": "Twitter",
+      "login": [ "financecoding"]
+    },
+    {
+      "company": "Arch Linux ARM",
+      "login": [ "warheadsse"]
+    },
+    {
+      "company": "1uptalent",
+      "login": [ "amuino"]
+    },
+    {
+      "company": "Target",
+      "login": [ "mrallen1"]
+    },
+    {
+      "company": "AcademiaSinicaNLPLab",
+      "login": [ "viirya"]
+    },
+    {
+      "company": "Jumpbox",
+      "login": [ "kstaken"]
+    },
+    {
+      "company": "ZoomSystems",
+      "login": [ "fcarriedo"]
+    },
+    {
+      "company": "CoreOS",
+      "login": [ "bcwaldon"]
+    },
+    {
+      "company": "Amazon",
+      "login": [ "kzys"]
+    },
+    {
+      "company": "Rackspace",
+      "login": [ "wking"]
+    },
+    {
+      "company": "Nauxuat",
+      "login": [ "Sa2ajj"]
+    },
+    {
+      "company": "Zenoss, Inc",
+      "login": [ "daniel-garcia"]
+    },
+    {
+      "company": "Alphagov",
+      "login": [ "pwaller"]
+    },
+    {
+      "company": "Contegix",
+      "login": [ "thedude05"]
+    },
+    {
+      "company": "Redmine",
+      "login": [ "jbbarth"]
+    },
+    {
+      "company": "Codeclimate",
+      "login": [ "calavera"]
+    }    
+  ]
+}
