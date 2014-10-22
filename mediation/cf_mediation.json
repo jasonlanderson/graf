@@ -1,0 +1,36 @@
+{
+  "community": [
+    {
+      "company": "Pivotal",
+      "login": [ "jacksoncvm", "amitkgupta", "mstine", "matthewmcnew", "nierajsingh", "dbailey", "cdavisafc", "wilkinsona", "dsabeti", "caseymct", "pjk25", "datianshi"]
+    },
+    {
+      "company": "CityIndex",
+      "login": [ "mrdavidlaing"]
+    },
+    {
+      "company": "VMware",
+      "login": [ "joeldsa"]
+    },
+    {
+      "company": "IBM",
+      "login": [ "jgawor"]
+    },
+    {
+      "company": "Web Drive Ltd",
+      "login": [ "aristotelesneto"]
+    },
+    {
+      "company": "Cisco",
+      "login": [ "trastle"]
+    },
+     {
+      "company": "Stark & Wayne",
+      "login": [ "longnguyen11288"]
+    },
+    {
+      "company": "CentryLink",
+      "login": [ "scottdensmore"]
+    }   
+  ]
+}
