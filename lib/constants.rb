@@ -4,6 +4,7 @@ require 'load_steps/load_orgs'
 require 'load_steps/delta_load_orgs'
 require 'load_steps/post_fix_users_without_companies'
 require 'load_steps/post_fix_convert_users_without_companies_to_independent'
+require 'load_steps/post_fix_users_hidden_identities'
 require 'load_steps/post_delete_companies_without_users'
 require 'load_steps/post_delete_users_without_contribs'
 require 'load_steps/delta_load_repo_pull_requests'
@@ -19,6 +20,7 @@ class Constants
     PostFixUsersWithoutCompanies.new,
     #PostDeleteUsersWithoutContribs.new,
     PostDeleteCompaniesWithoutUsers.new,
+    PostFixUsersWithHiddenIdentity.new,
     PostFixConvertUsersWithoutCompaniesToIndependent.new
   ]
 
@@ -47,6 +49,7 @@ class Constants
   @@metrics = nil
   @@filters = nil
   @@email_matches = nil
+  @@mediation = nil
 
 
   def self.clear_constants
@@ -142,4 +145,17 @@ class Constants
     }      
   end
 
+  def self.mediation
+    if @@mediation
+      return @@mediation
+    end
+
+    if File.file?('mediation/mediation.json')
+      @@mediation = JSON.parse(File.read('mediation/mediation.json'))["community"]
+      puts "community #{ @@mediation.to_s }" 
+      return @@mediation
+    else
+      return []
+    end
+  end
 end
