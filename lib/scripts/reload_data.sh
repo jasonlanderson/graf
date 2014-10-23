@@ -1,16 +1,29 @@
 #!/bin/bash
-BASE_URL=http://localhost:3000/
+HOST_INFO="127.0.0.1:3000"
+HOST_NAME_INFO="localhost:3000"
 DELETE_PATH=delete_all_data
 LOAD_PATH=start_load
+USER_NAME=foo
+PASSWORD=hello
 
+BASE_URL=http://$HOST_INFO
+
+## login
+echo
+echo "- authenticate -"
+curl -o login.html -c cookie.txt -H "Accept:application/json" -X POST ${BASE_URL}/sessions -F "email=${USER_NAME}" -F "password=${PASSWORD}" -F "commit=Log in" -F "utf8=true", -H "Host:${HOST_NAME_INFO}", -H "Origin: ${BASE_URL}", -H "Referer: ${BASE_URL}/login"
+
+sleep 5
+## delete all data
 echo
 echo "- Deleting All Data -"
-curl $BASE_URL$DELETE_PATH
-echo
+curl -o delete_all_data.html -b cookie.txt -H "Accept:application/json" -X GET ${BASE_URL}/${DELETE_PATH} -F "email=${USER_NAME}" -F "password=${PASSWORD}" -F "commit=Log in" -F "utf8=true", -H "Host:${HOST_NAME_INFO}", -H "Origin: ${BASE_URL}", -H "Referer: ${BASE_URL}/" 
 
 sleep 5
 
+## load
 echo
 echo "- Loading All Data -"
-curl $BASE_URL$LOAD_PATH
 echo
+curl -o load.html -b cookie.txt -H 'Accept:application/json' -X GET ${BASE_URL}/${LOAD_PATH} -F "email=${USER_NAME}" -F "password=${PASSWORD}" -F "commit=Log in" -F "utf8=true", -H "Host:${HOST_NAME_INFO}", -H "Origin: ${BASE_URL}", -H "Referer: ${BASE_URL}/load"
+
