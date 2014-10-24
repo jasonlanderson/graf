@@ -5,14 +5,14 @@ HOST_INFO="127.0.0.1:3000"
 HOST_NAME_INFO="localhost:3000"
 USER_NAME=foo
 PASSWORD=hello
-WORK_DIR = $HOME
+WORK_DIR=$HOME
 
 ## don't modify the lines below
 DELETE_PATH=delete_all_data
 LOAD_PATH=start_load
 BASE_URL=http://$HOST_INFO
 
-cd $HOME
+cd $WORK_DIR
 
 ## login
 echo
