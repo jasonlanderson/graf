@@ -9,7 +9,8 @@
   <%= yield(:extra_headers) %>
 </head>
 <body>
-
+<div id='content'>
+<div class='page'>
 <div class="banner">GitHub Repository Analytics with Filtering</div><a href="#" class="tooltip"> <%= image_tag "tooltip.gif" %> <span style="font-size: 12px;">  
 GitHub Repository Analytics with Filtering (GRAF) is a web service that has the ability to collect and visually represent useful statistics on various Github repositories. At the moment, this application is only collecting data on repositories hosted by the "Cloud Foundry" Github organization. We plan to expand this application to collect data on repositories from other organizations (Openstack, Openshift, etc.) in the near future.
 <br><br>
@@ -27,6 +28,7 @@ Company affiliation is determined by polling each Github user's profile. If a us
 <hr>
 
 <%= yield %>
-
+</div>
+</div>
 </body>
 </html>

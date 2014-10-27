@@ -22,56 +22,20 @@
 <%# Body Section %>
 <%###############%>
 <%= render 'shared/last_load' %>
-
-<h2>Organizations</h2>
-<div style="float:left">
-  <% @drop_down_id = "org_filter" %>
-  <% @drop_down_data = @organizations %>
-  <% @drop_down_data_index = "login" %>
-  <% @drop_down_empty_label = "All" %>
-  <% @drop_down_selected = nil %>
-  <% @drop_down_width = "500px" %>
-  <%= render 'shared/drop_down' %>
-</div>
-
-<br><br>
-<h2>Filters</h2>
-Metric:
- <select id="metric_filter">
-    <option value="prs">Pull Requests</option>
-    <option value="avg_days_open">Average Days Opened</option>
-    <option value="percent_merged">Percent Merged</option>
-    <option value="commits">Commits</option>
-  </select>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-Group By: 
- <select id="group_by_filter">
-    <option value="month">Month</option>
-    <option value="quarter">Quarter</option>
-    <option value="year">Year</option>
-    <option value="repo">Repository</option>
-    <option value="state">State</option>
-    <option value="company" selected>Company</option>
-    <option value="user_login">User Login</option>
-    <option value="user_name">User Name</option>
-  </select>
-
-<br><br>
+<br>
 <% @filter_changed_function = 'analyticsFilterChanged' %>
 <%= render 'shared/search_criteria' %>
 
-
-<hr>
-
 <div style="margin-bottom: 0; padding-bottom: 0; font-weight:normal;" >
-  <p id="chart_title" style="display:inline; margin-bottom: 0; padding-bottom: 0; font-size:20px"> Pull Requests Grouped By Company</p>
-  <a href="#" class="tooltip"><%= image_tag "tooltip.gif" %><span style="font-size: 15px;">  
-  This pie chart represents all pull requests submitted to the Cloud Foundry Github repositories during the specifed time period. <br> Each slice represents a separate company, and the size of each slice is proportional to the company's quantity of contributions.
-  <br>
-  Each of the top 5 contributers have their own slice of the pie chart. The remaining contributers are then merged together into the "Others" slice.
-  </span></a>
-  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  <br><br>
+  <h2 id="chart_title"> Pull Requests Grouped By Company
+    <a href="#" class="tooltip"><%= image_tag "tooltip.gif" %>
+      <span style="font-size: 15px;">This pie chart represents all pull requests submitted to the Cloud Foundry Github repositories during the specifed time period. 
+        <br> Each slice represents a separate company, and the size of each slice is proportional to the company's quantity of contributions.
+        <br>
+        Each of the top 5 contributers have their own slice of the pie chart. The remaining contributers are then merged together into the "Others" slice.
+      </span>
+    </a>
+  </h2>
   
   <div>
     View As:
@@ -111,10 +75,9 @@ Group By:
 <%# This is the Table %>
 <%# ----------------- %>
 <br><br>
-<p id="table_title" style="margin-bottom: 0; padding-bottom: 0; font-size:20px; display:inline;"> 
+<h2 id="table_title">
 Pull Requests Sorted By Company
-</p>
-
+</h2>
 
 <a href="#" class="tooltip"> <%= image_tag "tooltip.gif" %> <span style="font-size: 15px;">  
 This table displays the amount of pull requests submitted by each contributer.
