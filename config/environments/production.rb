@@ -63,7 +63,7 @@ Graf::Application.configure do
 
   # Precompile additional assets.
   # application.js, application.css, and all non-JS/CSS in app/assets folder are already added.
-  config.assets.precompile += %w( commond.js search.js application.js report.js analytics.js analytics.css application.css report.css scaffolds.css)
+  config.assets.precompile += ['directory/*']
 
   # Ignore bad email addresses and do not raise email delivery errors.
   # Set this to true and configure the email server for immediate delivery to raise delivery errors.
