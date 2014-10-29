@@ -30,5 +30,20 @@ sleep 5
 ## load
 echo
 echo "- Loading All Data -"
-echo
 curl -o ${WORK_DIR}/load.html -b ${WORK_DIR}/cookie.txt -H "Accept:application/json" -X GET ${BASE_URL}/${LOAD_PATH} -F "email=${USER_NAME}" -F "password=${PASSWORD}" -F "commit=Log in" -F "utf8=true", -H "Host:${HOST_NAME_INFO}", -H "Origin: ${BASE_URL}", -H "Referer: ${BASE_URL}/load"
+
+## data load can take two hours, depending on the load of github servers
+sleep 7200
+## Here one must wait until data load completes.
+
+echo "- update caches for analytics page -"
+curl -o ${WORK_DIR}/load.html -b ${WORK_DIR}/cookie.txt -H "Accept:application/json" -X GET ${BASE_URL}/${LOAD_PATH} -F "email=${USER_NAME}" -F "password=${PASSWORD}" -F "commit=Log in" -F "utf8=true", -H "Host:${HOST_NAME_INFO}", -H "Origin: ${BASE_URL}", -H "Referer: ${BASE_URL}"
+
+sleep 6
+
+curl -o ${WORK_DIR}/load.html -b ${WORK_DIR}/cookie.txt -H "Accept:application/json" -X GET ${BASE_URL}/${LOAD_PATH} -F "email=${USER_NAME}" -F "password=${PASSWORD}" -F "commit=Log in" -F "utf8=true", -H "Host:${HOST_NAME_INFO}", -H "Origin: ${BASE_URL}", -H "Referer: ${BASE_URL}/analytics"
+
+sleep 6
+
+echo "- update caches for reports page -"
+curl -o ${WORK_DIR}/load.html -b ${WORK_DIR}/cookie.txt -H "Accept:application/json" -X GET ${BASE_URL}/${LOAD_PATH} -F "email=${USER_NAME}" -F "password=${PASSWORD}" -F "commit=Log in" -F "utf8=true", -H "Host:${HOST_NAME_INFO}", -H "Origin: ${BASE_URL}", -H "Referer: ${BASE_URL}/report"
