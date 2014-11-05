@@ -1,5 +1,5 @@
 /*! DataTables 1.10.0
- * ©2008-2014 SpryMedia Ltd - datatables.net/license
+ * ��2008-2014 SpryMedia Ltd - datatables.net/license
  */
 
 /**
@@ -112,7 +112,7 @@
 	
 	// U+2009 is thin space and U+202F is narrow no-break space, both used in many
 	// standards as thousands separators
-	var _re_formatted_numeric = /[',$£€¥%\u2009\u202F]/g;
+	var _re_formatted_numeric = /[',$�������%\u2009\u202F]/g;
 	
 	
 	var _empty = function ( d ) {
@@ -3464,12 +3464,13 @@
 		 *        table - scroll foot table
 		 *          tfoot - tfoot
 		 */
-		var scroller = $( _div, { 'class': classes.sScrollWrapper } )
-			.append(
+		var innerScroller = $( _div, {  id: settings.sTableId + '_innerScrollWrapper', 'class': classes.sScrollWrapper } )
+		innerScroller.append(
 				$(_div, { 'class': classes.sScrollHead } )
 					.css( {
 						overflow: 'hidden',
 						position: 'relative',
+						display:  'block',
 						border: 0,
 						width: scrollX ? size(scrollX) : '100%'
 					} )
@@ -3477,7 +3478,7 @@
 						$(_div, { 'class': classes.sScrollHeadInner } )
 							.css( {
 								'box-sizing': 'content-box',
-								width: scroll.sXInner || '100%'
+								width: innerScroller.sXInner || '100%'
 							} )
 							.append(
 								headerClone
@@ -3489,8 +3490,8 @@
 							)
 					)
 					.append( captionSide === 'top' ? caption : null )
-			)
-			.append(
+			);
+		innerScroller.append(
 				$(_div, { 'class': classes.sScrollBody } )
 					.css( {
 						overflow: 'auto',
@@ -3499,7 +3500,9 @@
 					} )
 					.append( table )
 			);
-	
+	    var scroller = $( _div, { id: settings.sTableId + '_outterScrollWrapper', 'class': ''} )
+			.append(innerScroller);
+				
 		if ( footer ) {
 			scroller.append(
 				$(_div, { 'class': classes.sScrollFoot } )
@@ -3523,10 +3526,11 @@
 			);
 		}
 	
-		var children = scroller.children();
+		var children = innerScroller.children();
 		var scrollHead = children[0];
 		var scrollBody = children[1];
-		var scrollFoot = footer ? children[2] : null;
+		var wrapperChild = scroller.children();
+		var scrollFoot = footer ? wrapperChild[1] : null;
 	
 		// When the body is scrolled, then we also want to scroll the headers
 		if ( scrollX ) {

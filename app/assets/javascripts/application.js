@@ -21,7 +21,7 @@
 //= require jquery.flot.stack
 //= require jquery.flot.selection.js
 //= require turbolinks
-//= require_tree .
 //= require jquery.multiselect
 //= require jquery.multiselect.filter
 //= require jquery.dataTables
+//= require_tree .
