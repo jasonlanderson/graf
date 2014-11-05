@@ -1,8 +1,8 @@
 REPORT_TABLE_OPTIONS = {
-  "sScrollY": "350px",
-  //"sScrollX": "800px",
+  "sScrollY": "550px",
+  "sScrollX": "960",
   "bPaginate": false,
-  "bAutoWidth" : true,
+  "bAutoWidth" : false,
   "bFilter": true,
   //"aaSorting": [[ 1, "desc" ]]
 };
@@ -89,7 +89,8 @@ function reportFilterChanged() {
 function updateReportTableCallback(result){
   $("#table_container").empty();
   $("#table_container").html(result);
-  $("#report_table").dataTable(REPORT_TABLE_OPTIONS);
+  var dt = $("#report_table").dataTable(REPORT_TABLE_OPTIONS);
+  dt.fnAdjustColumnSizing();
 }
 
 function updateSummaryTableCallback(result){

@@ -21,34 +21,13 @@
 <%# Body Section %>
 <%###############%>
 <%= render 'shared/last_load' %>
-
-<h2>Organizations:</h2>
-<div style="float:left">
-  <% @drop_down_id = "org_filter" %>
-  <% @drop_down_data = @organizations %>
-  <% @drop_down_data_index = "login" %>
-  <% @drop_down_empty_label = "All" %>
-  <% @drop_down_selected = nil %>
-  <% @drop_down_width = "500px" %>
-  <%= render 'shared/drop_down' %>
-</div>
-
-<br><br>
-<h2>Metric:</h2>
- <select id="metric_filter">
-    <option value="prs">Pull Requests</option>
-  </select>
-
-<br><br>
-
+<br>
 <% @filter_changed_function = 'reportFilterChanged' %>
 <%= render 'shared/search_criteria' %>
-<br>
-<br>
-<p id="chart_title" style="display:inline; margin-bottom: 0; padding-bottom: 0; font-size:20px"> Pull Request Summary</p>
-<b></b>
-<br>
-<br>
+
+<div style="margin-bottom: 0; padding-bottom: 0; font-weight:normal;" >
+<h2 id="chart_title" > Pull Request Summary</h2>
+
 <div id="loader" style="height:200px"><%= image_tag "spinner.gif" %></div>
 
 <div id="table_summary_container" style="width:350px; height:50px; "></div>
@@ -58,12 +37,8 @@
 <br>
 <br>
 <div style="margin-top: 50px; ">
-<p id="chart_title" style="display:inline; margin-bottom: 0; padding-bottom: 0; font-size:20px"> Pull Request Details</p>
+<h2 id="chart_title" style="display:inline;"> Pull Request Details</h2>
 <button id="download">Download to CSV</button>
-<br>
-<br>
-
-
-
 </div>
-<div id="table_container" style="width:1550px; height:500px; "></div>
+<div id="table_container" style="width:960px;; height:680px; font-size:12px;overflow:scroll;"></div>
+

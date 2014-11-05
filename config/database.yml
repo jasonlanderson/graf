@@ -10,11 +10,11 @@ development:
   # timeout: 5000
   adapter: mysql2
   encoding: utf8 
-  database: graf_db
+  database: graf_docker4_db
   #database: graf_db_cf
   pool: 10 
   username: graf_user 
-  password: graf_password 
+  password: time4fun 
   socket: /tmp/mysql.sock
   #socket: /var/run/mysqld/mysqld.sock
   reconnect: true
@@ -25,19 +25,19 @@ development:
 test:
   adapter: mysql2
   encoding: utf8 
-  database: graf_db_test
+  database: graf_docker3_db_test
   pool: 10 
   username: graf_user 
-  password: graf_password 
+  password: time4fun 
   socket: /tmp/mysql.sock
   reconnect: true
 
 production:
   adapter: mysql2
   encoding: utf8 
-  database: graf_db 
+  database: graf_docker3_db 
   pool: 10 
   username: graf_user 
-  password: graf_password 
+  password: time4fun 
   socket: /var/run/mysqld/mysqld.sock #/tmp/mysql.sock
   reconnect: true
