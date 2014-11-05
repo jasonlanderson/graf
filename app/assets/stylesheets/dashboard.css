@@ -1,0 +1,81 @@
+// Place all the styles related to the dashboard controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+
+#dashboard_companies,
+#dashboard_modules,
+#dashboard_engineers {
+  width: 100%;
+  display: block;
+}
+
+#dashboard_metric_chart_companies,
+#dashboard_metric_chart_modules,
+#dashboard_metric_chart_engineers { 
+  float: left;
+  width: 100%; 
+  height: 360px; 
+  font-size: 1em; 
+  position:relative; 
+  font-family: "PT Sans",Arial,sans-serif;
+}
+
+#dashboard_metric_chart_companies > canvas.flot-base {
+	border-collapse: separate;
+	display: table;
+	border-collapse: separate;
+	border-spacing: 2px;
+	border-color: gray;
+	left: -20px;
+}
+
+#dashboard_metric_chart_companies > div > div {
+  vertical-align:middle;
+}
+
+.legend table, .legend > div {
+    height: 80% !important;
+    width:  120px;
+    opacity: 1 !important;
+    float: right;
+    top: 50%;
+    display: inline;
+}
+ 
+.legend table {
+    border: none;
+    padding: 1px;
+    
+}
+
+#dashboard_table_container_companies,
+#dashboard_table_container_modules,
+#dashboard_table_container_engineers { 
+	width: 100%; 
+	font-size:14px; 
+	position:relative; 
+}
+
+#dashboard_table_companies_innerScrollWrapper > div.dataTables_scrollHead > div > table {
+  width:100%;
+}
+#dashboard_table_companies {
+  width: 448px;
+}
+#dashboard_table_companies > tbody > tr > td:nth-child(1),
+#dashboard_table_modules > tbody > tr > td:nth-child(1),
+#dashboard_table_engineers > tbody > tr > td:nth-child(1) {
+  color: #D32F1A;
+  padding: 3px 10px;
+}
+
+.table {
+  border-color: gray;
+}
+
+table.dataTable thead th, 
+table.dataTable thead tr {
+	font-family: 'PT Sans', arial, sans-serif;
+	font-size: 18px;
+	font-weight: 500;
+}

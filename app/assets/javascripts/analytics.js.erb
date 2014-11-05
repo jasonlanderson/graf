@@ -263,14 +263,12 @@ function updateAnalyticsTableCallback(result) {
 }
 
 ANALYTICS_TABLE_OPTIONS = {
-  "sScrollY": "350px",
-  //"sScrollX": "800px",
-  "bPaginate": false,
-  "bAutoWidth" : true,
+  "sScrollY": "100%",
+  "sScrollX": "100%",
+  "bPaginate": true,
+  "bAutoWidth": true,
   "bFilter": true,
   "bSort" : false,
-
-  //"aaSorting": [[ 1, "desc" ]]
 };
 
 
@@ -375,7 +373,7 @@ PIE_OPTIONS = {
   series: {
     pie: {
       show: true,
-      radius: 1,
+      radius: 0.92,
       label: {
         show: true,
         radius: 2/3,
@@ -389,7 +387,7 @@ PIE_OPTIONS = {
   legend: {
     labelBoxBorderColor: "none",
     backgroundOpacity: 0.5,
-    noColumns: 2
+    noColumns: 1
   }
 };
 PIE_OPTIONS.colors = CHART_COLORS;

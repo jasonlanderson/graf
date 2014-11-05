@@ -1,0 +1,16 @@
+<table id="<%= @table_handle %>">
+  <thead>
+    <tr>
+      <th><%= @label_header %></th>
+      <th><%= @data_header %></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @table_data.each { |rec| %>
+    <tr>
+      <td><%= rec[@label_index_name] %></td>
+      <td><%= rec[@data_index_name] %></td>
+    </tr>
+    <% } %>
+  </tbody>
+</table>

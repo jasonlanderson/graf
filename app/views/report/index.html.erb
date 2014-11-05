@@ -24,21 +24,18 @@
 <br>
 <% @filter_changed_function = 'reportFilterChanged' %>
 <%= render 'shared/search_criteria' %>
-
+<br><br>
 <div style="margin-bottom: 0; padding-bottom: 0; font-weight:normal;" >
-<h2 id="chart_title" > Pull Request Summary</h2>
-
-<div id="loader" style="height:200px"><%= image_tag "spinner.gif" %></div>
-
-<div id="table_summary_container" style="width:350px; height:50px; "></div>
-
+	<h2 id="report_summery_chart_title" > Pull Request Summary</h2>
+	<div id="report_table_summery_loader" style="height:200px"><%= image_tag "spinner.gif" %></div>
+	<div id="report_table_summary_container" style="width:390px; height:80px; "></div>
 </div>
-
-<br>
 <br>
 <div style="margin-top: 50px; ">
-<h2 id="chart_title" style="display:inline;"> Pull Request Details</h2>
-<button id="download">Download to CSV</button>
+  <h2 id="report_chart_title" style="display:inline;"> Pull Request Details</h2>
+  <button id="report_download">Download to CSV</button>
 </div>
-<div id="table_container" style="width:960px;; height:680px; font-size:12px;overflow:scroll;"></div>
+<br>
+<div id="report_table_loader" style="height:200px"><%= image_tag "spinner.gif" %></div>
+<div id="report_table_container" style="width:100%;height:100%;font-size:14px;overflow:hidden;"></div>
 

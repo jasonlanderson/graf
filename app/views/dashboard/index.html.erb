@@ -1,0 +1,100 @@
+<%################%>
+<%# Extra Headers %>
+<%################%>
+<% content_for(:extra_headers) do %>
+  <script type="text/javascript">
+    $(function() {
+      $( document ).tooltip();
+    });
+  
+    //
+    // Initial Page Load Activities
+    //
+    $(document).ready(function () {
+      setupDashboardReady();
+    });
+
+  </script>
+<% end %>
+
+
+<%###############%>
+<%# Body Section %>
+<%###############%>
+<%= render 'shared/last_load' %>
+<br>
+<% @filter_changed_function = 'dashboardFilterChanged' %>
+<%= render 'shared/search_criteria' %>
+
+<div id='group_by_section' style='display:none; margin-bottom: 0; padding-bottom: 0; font-weight:normal;'  >
+  <h2 id="dashboard_chart_title"> Pull Requests Grouped By Company
+    <a href="#" class="tooltip"><%= image_tag "tooltip.gif" %>
+      <span style="font-size: 15px;">This pie chart represents all pull requests submitted to the Github repositories during the specifed time period. 
+        <br> Each slice represents a separate company, and the size of each slice is proportional to the company's quantity of contributions.
+        <br>
+        Each of the top 5 contributers have their own slice of the pie chart. The remaining contributers are then merged together into the "Others" slice.
+      </span>
+    </a>
+  </h2>
+  
+  <div >
+    View As:
+    <select id="dashboard_view_type" >
+        <option value="pie">Pie Chart</option>
+        <option value="bar">Bar Chart</option>
+        <option value="line">Line Chart</option>
+    </select>
+
+    &nbsp;&nbsp;&nbsp;Rollup:
+    <select id="dashboard_rollup" >
+        <option value="5">5</option>
+        <option value="10">10</option>
+        <option value="15" selected>15</option>
+        <option value="20">20</option>
+    </select> 
+    
+    &nbsp;&nbsp;&nbsp;Timeframe:
+    <select id="dashboard_timeframe" > 
+        <option value="month">Month</option>
+        <option value="quarter">Quarter</option>
+        <option value="year">Year</option>
+    </select>   
+  </div>
+</div>
+
+<div >
+  <table cellspace="0" style="width:100%">
+   <tbody>
+	<tr>
+	  <td style="width:50.25%; vertical-align: top;margin-left:0px;margin-right:0px;float: left;">
+		<div class="body" style="margin-right:1em;">
+		<div id="dashboard_companies" >
+		  <h2 id="dashboard_table_title_companies">Contribution by companies</h2>
+		  <div id="dashboard_metric_chart_companies" class='dashboard_metric_chart_left'  style='width: 100%; height: 350px; margin-bottom: 1em; position: relative;' class='jqplot-target cz-color-0' ></div>
+		  <div id="dashboard_table_container_companies_loader" ><%= image_tag "spinner.gif" %></div>
+		  <div id="dashboard_table_container_companies" style='width:100%;overflow:hidden;margin-left:0px;margin-right:0px;float: left;'></div>
+		  <div class="spacer"></div>
+		</div>
+		<div id="dashboard_engineers" >
+		  <h2 id="dashboard_table_title_engineers">Contribution by engineers</h2>
+		  <div id="dashboard_metric_chart_engineers" class='dashboard_metric_chart_right'  style='width: 100%; height: 350px; margin-bottom: 1em; position: relative;' class='jqplot-event_canvas cz-color-0'></div>
+		  <div id="dashboard_table_container_engineers_loader" ><%= image_tag "spinner.gif" %></div>
+		  <div id="dashboard_table_container_engineers" style='width:100%;overflow:hidden;margin-left:0px;margin-right:0px;float: left;'></div>
+		  <div class="spacer"></div>
+		</div>
+	  </td>
+	  <td style="width:49%; vertical-align: top;margin-left:0px;margin-right:0px;float: right;">
+		<div class="body" style="margin-leftt:1em;">
+		<div id="dashboard_modules" >
+		  <h2 id="dashboard_table_title_modules">Contribution by modules</h2>
+		  <div id="dashboard_metric_chart_modules" class='dashboard_metric_chart_left' style='width: 100%; height: 350px; margin-bottom: 1em; position: relative;' class='jqplot-target cz-color-0' ></div>
+		  <div id="dashboard_table_container_modules_loader" ><%= image_tag "spinner.gif" %></div>
+		  <div id="dashboard_table_container_modules" style='width:100%;overflow:hidden;margin-left:0px;margin-right:0px;float: rightt;'></div>
+		  <div class="spacer"></div>
+        </div>
+	  </td>
+	</tr>
+  </tbody>
+ </table>
+</div>
+

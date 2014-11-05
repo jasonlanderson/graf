@@ -10,6 +10,7 @@ Graf::Application.routes.draw do  resources :github_loads
 
   # Main Page Paths
   get '/analytics', to: 'analytics#index'
+  get '/dashboard', to: 'dashboard#index'
   get '/report', to: 'report#index'
 
   # API Paths
@@ -48,7 +49,7 @@ Graf::Application.routes.draw do  resources :github_loads
 
   # You can have the root of your site routed with "root"
   # root 'welcome#index'
-  root :to => 'analytics#index'
+  root :to => 'dashboard#index'
 
   # Testing
   mount JasmineRails::Engine => '/specs' if defined?(JasmineRails)

@@ -36,64 +36,6 @@ div.header-links {
   float:right;
   font-size: 16px;
 }
-#summary_report_tableoutterScrollWrapper {
-  width:348px;
-}
-
-#summary_report_table {
-  width:100%;
-}
-
-#summary_report_table > tbody > tr {
-  background:#FFFFFF
-}
-
-#report_table_wrapper {
-  width: 960px;
-}
-
-
-#report_table_outterScrollWrapper {
-  width: 960px;
-  height: 600px;
-  display:table;
-  position:static;
-}
-
-#report_table_innerScrollWrapper {
-  width: 1520px;
-  height: 608px;
-  display:block;
-  position:relative;
-}
-
-#report_table_innerScrollWrapper > div.dataTables_scrollBody {
-  width: 100%;
-  margin-left: -10px;
-}
-
-#report_table_wrapper > div.dataTables_scroll > div.dataTables_scrollHead {
-  width:100%;
-  overflow:initial;
-  position:absolute;
-  display:inline;
-}
-
-#report_table {
-  width: 100%;
-  margine-left:0px;
-}
-
-.dataTables_scrollBody {
-  overflow:visible;
-}
-
-#report_table_wrapper > div.dataTables_scroll {
-  display:block;
-  position:absolution;
-  float:left;
-  text-align: left;
-}
 
 html, body {
     font-family: 'PT Sans', arial, sans-serif;
@@ -103,6 +45,11 @@ html, body {
     color: #41454d;
     margin: 0;
 }
+
+.dataTables_scrollBody {
+  overflow:visible;
+}
+
 
 a {
     color: #D32F1A;
@@ -249,7 +196,7 @@ div.page div.footer {
 }
 
 .spacer {
-    height: 20px;
+    height: 10px;
     clear: both;
 }
 

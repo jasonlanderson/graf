@@ -82,3 +82,76 @@ function showTooltip(x, y, contents, z) {
       'border-color': z,
   }).appendTo("body").fadeIn(200);
 }
+
+
+function bindToNode(node_id){
+  $(node_id).bind("plothover", function (event, pos, item) {
+    if (item) {
+      if ((previousPoint != item.dataIndex) || (previousLabel != item.series.label)) {
+        previousPoint = item.dataIndex;
+        previousLabel = item.series.label;
+
+        $("#flot-tooltip").remove();
+
+        var x = convertToDate(item.datapoint[0]),
+        y = item.datapoint[1];
+        z = item.series.color;
+
+        showTooltip(item.pageX, item.pageY,
+            "<b>" + item.series.label + "</b><br /> " + x + " : " + y ,
+            z);
+      }
+    }
+    else {
+        $("#flot-tooltip").remove();
+        previousPoint = null;
+    }
+  });
+}
+
+function common_populateTable(node_id, dtID, options, result) {
+  $(node_id).empty();
+  var canonicalResult = result.replace('<table id="metric_table">', '<table id="' + dtID + '" style="width:448px;">');
+  canonicalResult = canonicalResult.replace(/<thead>/g, '<thead style="width:100%;">');
+  canonicalResult = canonicalResult.replace(/<tbody>/g, '<tbody style="width:100%;">');
+  $(node_id).html(canonicalResult);
+  var table = $("#" + dtID).dataTable(options);
+
+  // TODO, this is probably in the wrong place
+  $("#" + dtID + " tbody").on( 'click', 'tr', function(){
+    var id = metric.fnGetData(this)[0];
+    // TODO, find a way to convert HTML entities back to plaintext
+    //console.log(String.fromCharCode(id));
+    console.log(id); 
+    $("#" + $("#group_by_filter").val() + "_filter").val(id)
+    storeFiltersToLocalStorage() 
+    window.location.assign('/report')
+  });
+  return table;
+}
+
+function updateChart(nodeId, viewType, options, result) {
+  $(nodeId).empty();
+  
+  if (result.response.length == 0) {
+    data = [{ label: "No Pull Requests", data: 1, color:'#E0E0E0' }];
+  }
+  else {
+    data = result.response;
+  }
+
+
+  if (viewType == "pie") {
+    options = options;
+  }
+  else if (viewType == "bar") {
+    result = parsePieToBar(data);
+    var data = result.data;
+    var options = result.options;
+  }
+  else {
+    options = LINE_OPTIONS;
+  }
+
+  $.plot($(nodeId), data, options);
+}

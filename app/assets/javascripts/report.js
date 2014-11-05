@@ -1,37 +1,59 @@
 REPORT_TABLE_OPTIONS = {
-  "sScrollY": "550px",
-  "sScrollX": "960",
-  "bPaginate": false,
-  "bAutoWidth" : false,
+  "sScrollY": "100%",
+  "sScrollX": "960px",
+  "bPaginate": true,
+  "bAutoWidth": true,
   "bFilter": true,
-  //"aaSorting": [[ 1, "desc" ]]
+  "bSort" : true,
+  "columns":  [ 
+               { "width":  "48px" },
+               { "width":  "76px" },
+               { "width": "288px" },
+               { "width":  "96px" },
+               { "width":  "67px" },
+               { "width":  "67px" },
+               { "width":  "67px" },
+               { "width":  "76px" },
+               { "width":  "76px" },
+               { "width":  "76px" }
+            ],
+  //"aaSorting": [[ 0, "asc" ]]
 };
 
 MIN_TABLE_OPTIONS = {
-  "sScrollY": "50px",
-  "sScrollX": "350px",
+  "sScrollY": "100%",
+  "sScrollX": "310px",
   "bPaginate": false,
-  "bAutoWidth" : false,
+  "bAutoWidth": true,
   "bFilter": false,
-  "bInfo": false,
+  "bSort" : false,
+  "columns":  [ 
+               { "width": "20%" },
+               { "width": "25%" },
+               { "width": "25%" },
+               { "width": "30%" }
+      ],
+  "showNEntries" : false,
+  "bInfo" : false
   //"aaSorting": [[ 1, "desc" ]]
 };
 
 function reportAJAX(data, responseType, callback){
   $.ajax({
     beforeSend: function() {
-      $('#loader').show();
-      $('#table_summary_container').hide();
-      $('#table_container').hide();
+      $('#report_table_summery_loader').show();
+      $('#report_table_loader').show();
+      $('#report_table_summary_container').hide();
+      $('#report_table_container').hide();
     },
     url: "report_data",
     data: data,
     method: 'POST',
     dataType: responseType,
     complete: function(){
-      $('#loader').hide();
-      $('#table_summary_container').show();
-      $('#table_container').show();
+      $('#report_table_summery_loader').hide();
+      $('#report_table_summary_container').show();
+      $('#report_table_container').show();
     },
     success: callback
   });
@@ -87,18 +109,14 @@ function reportFilterChanged() {
 }
 
 function updateReportTableCallback(result){
-  $("#table_container").empty();
-  $("#table_container").html(result);
-  var dt = $("#report_table").dataTable(REPORT_TABLE_OPTIONS);
-  dt.fnAdjustColumnSizing();
+  $('#report_table_loader').hide();
+  $("#report_table_container").empty();
+  $("#report_table_container").html(result);
+  $("#report_table").dataTable(REPORT_TABLE_OPTIONS);
 }
 
 function updateSummaryTableCallback(result){
-  $("#table_summary_container").empty();
-  $("#table_summary_container").html(result);
+  $("#report_table_summary_container").empty();
+  $("#report_table_summary_container").html(result);
   $("#summary_report_table").dataTable(MIN_TABLE_OPTIONS);
-  
-  // Couldn't get working with regular tables, uncomment below to see example 
-  //$("#summary_report_table").empty();
-  //$("#summary_report_table").html(result);
 }

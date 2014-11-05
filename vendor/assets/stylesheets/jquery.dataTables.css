@@ -16,12 +16,26 @@ table.dataTable {
 }
 table.dataTable thead th,
 table.dataTable tfoot th {
-  font-weight: bold;
+  //font-family: 'PT Sans', arial, sans-serif;
+  font-family: "Myriad Set Pro","Lucida Grande",Helvetica,Arial,Verdana,sans-serif;
+  font-size: 16px;
+  font-weight: normal;
+  border-right: 1px solid #CCC;
+  background-color: #F0F3FA;
+  text-align: left;
+  font-weight: normal;
+  border-bottom: 1px dotted #CECECE;
+  text-shadow: 1px 1px 0px white;
+  padding: 5px 6px;
+  text-align: center;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+  font-weight: 500;
 }
 table.dataTable thead th,
 table.dataTable thead td {
-  padding: 10px 18px;
-  border-bottom: 1px solid #111111;
+  padding: 10px 14px;
+  //border-bottom: 1px solid #111111;
 }
 table.dataTable thead th:active,
 table.dataTable thead td:active {
@@ -62,7 +76,7 @@ table.dataTable tbody tr.selected {
 }
 table.dataTable tbody th,
 table.dataTable tbody td {
-  padding: 8px 10px;
+  padding: 3px 10px;
 }
 table.dataTable th.center,
 table.dataTable td.center,
@@ -235,11 +249,17 @@ table.dataTable td {
 }
 .dataTables_wrapper .dataTables_filter input {
   margin-left: 0.5em;
+  margin-bottom: 0.8em;
+  height: 16px;
+  font-size: 14px;
+  width: 170px;
 }
 .dataTables_wrapper .dataTables_info {
-  clear: both;
-  float: left;
-  padding-top: 0.755em;
+	clear: both;
+	float: left;
+	margin-top: 10px;
+	font-color:#bcc1cb;
+	font-style:italic;
 }
 .dataTables_wrapper .dataTables_paginate {
   float: right;
@@ -250,8 +270,9 @@ table.dataTable td {
   box-sizing: border-box;
   display: inline-block;
   min-width: 1.5em;
-  padding: 0.5em 1em;
+  padding: 1px 4px;
   margin-left: 2px;
+  font-size: 13px;
   text-align: center;
   text-decoration: none !important;
   cursor: pointer;
@@ -347,7 +368,7 @@ table.dataTable td {
 .dataTables_wrapper .dataTables_info,
 .dataTables_wrapper .dataTables_processing,
 .dataTables_wrapper .dataTables_paginate {
-  color: #333333;
+  color:#bcc1cb;
 }
 .dataTables_wrapper .dataTables_scroll {
   clear: both;
@@ -424,7 +445,7 @@ table.dataTable tbody tr.odd, table.dataTable.display tbody tr.odd {
   background-color: #F9F9F9;
 }
 table.dataTable tbody tr.even, table.dataTable.display tbody tr.even {
-  background-color: #DDDDFF;
+  background-color: #e8e8f9;
 }
 /*table.dataTable tbody tr.even, table.dataTable.display tbody tr.even {
   background-color: #DDDDFF;
