@@ -1,33 +1,46 @@
 <table id="report_table" style='width: 1520px;'>
-    <thead>
-      <tr>
-        <th>&nbsp;</th>
-        <th>User</th>
-        <th>Title</th>
-        <th>Company</th>
-        <th>Repo</th>
-        <th>State</th>
-        <th>Days Open</th>
-        <th>Created</th>
-        <th>Closed</th>
-        <th>Merged</th>
+    <thead style="width:100%;">
+      <tr>        
+        <th style='width: 5%;'>#</th>
+        <th style='width: 8%;'>User</th>
+        <th style='width:30%;'>Title</th>
+        <th style='width:10%;'>Company</th>
+        <th style='width: 7%;'>Repo</th>
+        <th style='width: 7%;'>State</th>
+        <th style='width: 7%;'>Days Open</th>
+        <th style='width: 8%;'>Created</th>
+        <th style='width: 8%;'>Closed</th>
+        <th style='width: 8%;'>Merged</th>
       </tr>
     </thead>
-    <tbody>
-      <%  @table_data.each_with_index { |rec, index| %>
+    <tbody style="width:100%;" >
+      <%  @table_data.each_with_index { |rec, index|
+        user_name = ''
+        user_name = rec['user_name'] if rec['user_name'] 
+        title = ''
+        title     = rec['title'] if rec['title']
+        pr_number = rec['pr_number']
+        git_link = ''
+        git_link = PullRequest.get_github_pr_link(rec['repo_full_name'], rec['pr_number']) if rec['repo_full_name']
+        company = ''
+        company = rec['company'] if rec['company']
+        repo_name = ''
+        repo_name = rec['repo_name']
+      %>
       <tr>
         <td><%= index+1 %></td>
-        <td><%= rec['user_name'] %></td>
-
-        <td><a target="_blank" href="<%= PullRequest.get_github_pr_link(rec['repo_full_name'], rec['pr_number'])  %>"><%= rec['title'].titleize %></a></td>
-        <td><%= rec['company'] %></td>
-        <td><%= rec['repo_name'] %></td>
+        <td><%= html_escape(user_name[ 0 .. 100 ]) %></td>
+        <td><a target="_blank" href="<%= git_link %>"><%= html_escape(title[0 .. 200].titleize) %></a></td>
+        <td><%= html_escape(company[ 0 .. 100 ]) %></td>
+        <td><%= html_escape(repo_name[ 0 .. 100 ]) %></td>
         <td><%= rec['state'] %></td>
         <td><%= rec['days_open'] %></td>
         <td><%= DateUtils.db_format_to_human_slash_date_format(rec['date_created']) %></td>
         <td><%= DateUtils.db_format_to_human_slash_date_format(rec['date_closed']) %></td>
         <td><%= DateUtils.db_format_to_human_slash_date_format(rec['date_merged']) %></td>
       </tr>
-      <% } %>
+
+      <% } if @table_data && @table_data.rows.length > 0 %>
+
     </tbody>
   </table>
