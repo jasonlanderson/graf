@@ -1,1 +1,97 @@
-table_container { width: 1502px; height: 680px; font-size:12px; }
+
+#summary_report_tableoutterScrollWrapper {
+  width:100%;
+}
+
+#summary_report_table {
+  width:100%;
+  margin-left: 2px;
+}
+
+#summary_report_table_ScrollHeadInner {
+  width: 390px;
+}
+#summary_report_table_ScrollHeadInner > table > thead > tr,
+#summary_report_table_innerScrollWrapper > div.dataTables_scrollHead > div > table > thead 
+ {
+    font-family: 'Myriad Set Pro','Lucida Grande',Helvetica,Arial,Verdana,sans-serif;
+    font-size: 16px;
+    text-align: center;
+    text-shadow: 1px 1px 0px white;
+    text-align: center;
+    border-bottom: 1px dotted #CECECE;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    border-right: 1px solid #CCC;
+    background-color: #F0F3FA;
+    font-weight: 500;
+    width: 100%;
+}
+
+#report_table_container { 
+  width: 100%; 
+  height: 680px; 
+  font-size:14px; 
+}
+
+#report_table_outterScrollWrapper {
+  width: 960px;
+}
+
+#report_table_wrapper {
+  width: 960px;
+}
+
+#report_table_ScrollHeadInner {
+  width: 960px !important;
+}
+#report_table_innerScrollWrapper {
+  width: 960px;
+}
+
+#report_table_wrapper > div.dataTables_scroll > div.dataTables_scrollHead {
+  width:100%;
+  overflow:initial;
+  //position:absolute;
+  display:inline;
+}
+
+#report_table {
+  width: 960px;
+  margine-left:0px;
+  float:left;
+}
+
+#report_table_wrapper > div.dataTables_scroll {
+  display:block;
+  position:absolution;
+  float:left;
+  text-align: left;
+}
+
+#report_table_innerScrollWrapper > div.dataTables_scrollHead > div {
+  width: 100%;
+}
+
+#report_table_innerScrollWrapper > div.dataTables_scrollHead > div > table > thead 
+ {
+ 
+    font-family: 'Myriad Set Pro','Lucida Grande',Helvetica,Arial,Verdana,sans-serif;
+    font-size: 16px;
+    text-align: center;
+    text-shadow: 1px 1px 0px white;
+    padding: 5px 6px;
+    text-align: center;
+    border-bottom: 1px dotted #CECECE;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    border-right: 1px solid #CCC;
+    background-color: #F0F3FA;
+    font-weight: 500;
+    width:100%;
+}
+
+#report_table_innerScrollWrapper > div.dataTables_scrollHead > div > table > thead {
+  	padding-left: 14px;
+}
+

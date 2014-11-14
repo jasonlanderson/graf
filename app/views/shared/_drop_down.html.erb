@@ -10,5 +10,5 @@
   	%>
   <option value="<%= entry[@drop_down_data_index] %>" <%= @drop_down_selected == entry[@drop_down_data_index] ? "selected" : ""  %>> <%= entry[@drop_down_data_index] %></option>	
   <% end  
-  } %>
+  } if @drop_down_data %>
 </select>

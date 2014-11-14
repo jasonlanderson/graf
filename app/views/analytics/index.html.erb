@@ -47,10 +47,10 @@
 
     &nbsp;&nbsp;&nbsp;Rollup:
     <select id="rollup" >
-        <option value="5" selected>5</option>
+        <option value="5">5</option>
         <option value="10">10</option>
         <option value="15">15</option>
-        <option value="20">20</option>
+        <option value="20" selected>20</option>
     </select>    
 
     &nbsp;&nbsp;&nbsp;Timeframe:
@@ -74,15 +74,19 @@
 <%# ----------------- %>
 <%# This is the Table %>
 <%# ----------------- %>
-<br><br>
-<h2 id="chart_title">
-Pull Requests Sorted By Company
-</h2>
-
-<a href="#" class="tooltip"> <%= image_tag "tooltip.gif" %> <span style="font-size: 15px;">  
+<br>
+<div  style="display: inline-block;">
+  <h2 id="chart_title" style="display: inline-block;position:relative;"> Pull Requests Sorted By Company </h2>
+  &nbsp;&nbsp;
+  <a href="#" class="tooltip"> <%= image_tag "tooltip.gif" %> 
+  	<span style="font-size: 15px;">  
 This table displays the amount of pull requests submitted by each contributer.
-</span></a>
+    </span>
+  </a>
+</div>
+<br>
 <button onclick="window.location = '/report'">Drill Down</button>
 <button id="download">Download to CSV</button>
+<br><br>
 <div id="loader_1" style="height:600px"><%= image_tag "spinner.gif" %></div>
 <div id="table_container"></div>

@@ -1,5 +1,5 @@
 /*! DataTables 1.10.0
- * ��2008-2014 SpryMedia Ltd - datatables.net/license
+ * ������2008-2014 SpryMedia Ltd - datatables.net/license
  */
 
 /**
@@ -112,7 +112,7 @@
 	
 	// U+2009 is thin space and U+202F is narrow no-break space, both used in many
 	// standards as thousands separators
-	var _re_formatted_numeric = /[',$�������%\u2009\u202F]/g;
+	var _re_formatted_numeric = /[',$���������������������%\u2009\u202F]/g;
 	
 	
 	var _empty = function ( d ) {
@@ -3466,7 +3466,7 @@
 		 */
 		var innerScroller = $( _div, {  id: settings.sTableId + '_innerScrollWrapper', 'class': classes.sScrollWrapper } )
 		innerScroller.append(
-				$(_div, { 'class': classes.sScrollHead } )
+				$(_div, { id: settings.sTableId + '_ScrollHead', 'class': classes.sScrollHead } )
 					.css( {
 						overflow: 'hidden',
 						position: 'relative',
@@ -3475,10 +3475,10 @@
 						width: scrollX ? size(scrollX) : '100%'
 					} )
 					.append(
-						$(_div, { 'class': classes.sScrollHeadInner } )
+						$(_div, { id: settings.sTableId + '_ScrollHeadInner', 'class': classes.sScrollHeadInner } )
 							.css( {
 								'box-sizing': 'content-box',
-								width: innerScroller.sXInner || '100%'
+								width: (innerScroller && innerScroller.sXInner)? innerScroller.sXInner : '100%'
 							} )
 							.append(
 								headerClone
@@ -3492,7 +3492,7 @@
 					.append( captionSide === 'top' ? caption : null )
 			);
 		innerScroller.append(
-				$(_div, { 'class': classes.sScrollBody } )
+				$(_div, { id: settings.sTableId + '_innerScrollBody', 'class': classes.sScrollBody } )
 					.css( {
 						overflow: 'auto',
 						height: size( scrollY ),
@@ -4023,9 +4023,9 @@
 					column = columns[ visibleColumns[i] ];
 					outerWidth = $(headerCells[i]).outerWidth();
 	
-					total += column.sWidthOrig === null ?
+					total += (column.sWidthOrig == null || outerWidth == $(headerCells[i]).width()) ?
 						outerWidth :
-						parseInt( column.sWidth, 10 ) + outerWidth - $(headerCells[i]).width();
+						parseInt( column.width.replace(/xp/g, '').replace(/;/g, ''), 10 ) + outerWidth - $(headerCells[i]).width();
 				}
 	
 				tmpTable.width( _fnStringToCss( total ) );

@@ -12,8 +12,8 @@ class DateUtils
 
   def self.db_format_to_human_slash_date_format(input_date)
     # If empty, return empty
-    if input_date == nil || input_date == ""
-      return input_date
+    if input_date == nil 
+      return ""
     end
 
     if input_date.is_a? String

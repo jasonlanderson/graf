@@ -12,7 +12,7 @@ development:
   encoding: utf8 
   database: graf_docker4_db
   #database: graf_db_cf
-  pool: 10 
+  pool: 30 
   username: graf_user 
   password: time4fun 
   socket: /tmp/mysql.sock
@@ -35,9 +35,10 @@ test:
 production:
   adapter: mysql2
   encoding: utf8 
-  database: graf_docker3_db 
-  pool: 10 
+  database: graf_docker4_db 
+  pool: 100 
   username: graf_user 
   password: time4fun 
-  socket: /var/run/mysqld/mysqld.sock #/tmp/mysql.sock
+  socket: /tmp/mysql.sock
+  #socket: /var/run/mysqld/mysqld.sock #/tmp/mysql.sock
   reconnect: true
