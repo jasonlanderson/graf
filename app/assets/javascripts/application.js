@@ -10,15 +10,15 @@
 // Read Sprockets README (https://github.com/sstephenson/sprockets#sprockets-directives) for details
 // about supported directives.
 //
-//= require jquery
+//= require jquery.min.js
 //= require jquery_ujs
 //= require jquery.ui.all
-//= require jquery.flot
-//= require jquery.flot.pie
-//= require jquery.flot.time
-//= require jquery.flot.navigate
-//= require jquery.flot.resize
-//= require jquery.flot.stack
+//= require jquery.flot.min.js
+//= require jquery.flot.pie.min.js
+//= require jquery.flot.time.min.js
+//= require jquery.flot.navigate.min.js
+//= require jquery.flot.resize.min.js
+//= require jquery.flot.stack.min.js
 //= require jquery.flot.selection.js
 //= require turbolinks
 //= require jquery.multiselect
