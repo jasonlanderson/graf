@@ -16,20 +16,17 @@ function analyticsAJAX(data, format, responseType, callback){
   console.log(data)
   $.ajax({
       beforeSend: function() {
-        $('#loader').show();
-        $('#loader_1').show();
-        $('#metric_chart').hide();
-        $('#table_container').hide();
+        $('#analytics_chart_loader').show();
+        $('#analytics_dt_loader').show();
+        $('#analytics_metric_chart').hide();
+        $('#analytics_table_container').hide();
       },
       url: "analytics_data",
       data: data,
       method: 'POST',
       dataType: responseType,
       complete: function(){
-       $('#loader').hide();
-       $('#loader_1').hide();
-       $('#metric_chart').show();
-       $('#table_container').show();
+        console.log("completes rendering analystics page.");
       },
       success: callback,
       error: function(XMLHttpRequest, textStatus, errorThrown) { 
@@ -73,7 +70,7 @@ function setupAnalyticsReady() {
   $("#view_type").multiselect(SINGLE_SELECT_OPTIONS);
 
   $("#metric_filter").change(function () {
-    metricChanged();
+    analyticsMetricChanged();
   });
 
   $("#group_by_filter").change(function () {
@@ -122,7 +119,7 @@ function setupAnalyticsReady() {
   // TODO: Put in its own function
   var previousPoint = null;
 
-  $("#metric_chart").bind("plothover", function (event, pos, item) {
+  $("#analytics_metric_chart").bind("plothover", function (event, pos, item) {
     if (item) {
       if ((previousPoint != item.dataIndex) || (previousLabel != item.series.label)) {
         previousPoint = item.dataIndex;
@@ -152,7 +149,7 @@ function analyticsFilterChanged() {
   refreshAnalyticsData();
 }
 
-function metricChanged() {
+function analyticsMetricChanged() {
   // Make restrictions
   restrictFilters();
   restrictGroupBys();
@@ -179,10 +176,11 @@ function refreshAnalyticsChartData() {
   }
 
   // Update Chart
-  analyticsAJAX(data, $("#view_type").val(), 'json', updateChartCallback);
+  analyticsAJAX(data, $("#view_type").val(), 'json', updateAnalyticChartCallback);
 
   // Update the titles
-  $("#chart_title").html($("#metric_filter option:selected").text() +  " Grouped By " + $("#group_by_filter option:selected").text());
+  var title = $("#metric_filter option:selected").text() +  " Grouped By " + $("#group_by_filter option:selected").text();
+  $("#analytics_chart_title").html(title);
 }
 
 function refreshAnalyticsTableData() {
@@ -198,37 +196,8 @@ function refreshAnalyticsTableData() {
 
   // Make API calls to update the data in table
   analyticsAJAX(data, 'table', 'text', updateAnalyticsTableCallback);
-  $("#table_title").html($("#metric_filter option:selected").text() +  " Grouped By " + $("#group_by_filter option:selected").text());
-}
-
-function restrictGroupBys() {
-  // allowDataRefresh param false to prevent any data refreshes from happening until done
-  allowDataRefresh = false;
-
-  // Restrict the group by
-  var validGroupBys = METRICS.base_metrics[METRICS.metrics[$("#metric_filter").val()].base_metric].group_by;
-
-  if ( validGroupBys.indexOf($("#group_by_filter").val()) < 0) {
-    $("#group_by_filter").val(validGroupBys[0]);
-  }
-  $(function() {
-    $("#group_by_filter option").each(function(i){
-      var indexOf = validGroupBys.indexOf($(this).val());
-      if (indexOf >= 0) {
-        // Enable
-        enableGroupBy($(this).val());
-      }
-      else {
-        // Disable
-        disableGroupBy($(this).val());
-      }
-    });
-  });
-  // Refresh the group by filter
-  $("#group_by_filter").multiselect(SINGLE_SELECT_OPTIONS).multiselect('refresh');
-
-  // re-enabling data refreshing
-  allowDataRefresh = true;
+  var title = $("#metric_filter option:selected").text() +  " Grouped By " + $("#group_by_filter option:selected").text();
+  $("#analytics_dt_title").html(title);
 }
 
 function disableGroupBy(groupBy) {
@@ -245,8 +214,8 @@ function enableGroupBy(groupBy) {
 // Data Table
 //
 function updateAnalyticsTableCallback(result) {
-  $("#table_container").empty();
-  $("#table_container").html(result);
+  $("#analytics_table_container").empty();
+  $("#analytics_table_container").html(result);
   //var metric = $("#metric_table").dataTable();
   var metric = $("#metric_table").dataTable(ANALYTICS_TABLE_OPTIONS);
 
@@ -260,15 +229,22 @@ function updateAnalyticsTableCallback(result) {
     storeFiltersToLocalStorage() 
     window.location.assign('/report')
   });
+  $('#analytics_dt_loader').hide();
+  $('#analytics_table_container').show();
 }
 
 ANALYTICS_TABLE_OPTIONS = {
   "sScrollY": "100%",
-  "sScrollX": "100%",
+  "sScrollX": "960px",
+  "sXInner": "960px",
   "bPaginate": true,
-  "bAutoWidth": true,
+  "bAutoWidth" : true,
   "bFilter": true,
   "bSort" : false,
+  "columns":  [ 
+         { "width": "600px" },
+         { "width": "300px" }
+      ]
 };
 
 
@@ -312,8 +288,8 @@ function enableChartView(viewName) {
     $("#view_type option[value=" + viewName + "]").removeAttr('disabled');
 }
 
-function updateChartCallback(result){
-  $("#metric_chart").empty();
+function updateAnalyticChartCallback(result){
+  $("#analytics_metric_chart").empty();
 
   if (result.response.length == 0) {
     data = [{ label: "No Pull Requests", data: 1, color:'#E0E0E0' }];
@@ -336,7 +312,10 @@ function updateChartCallback(result){
     options = LINE_OPTIONS;
   }
 
-  $.plot($("#metric_chart"), data, options);
+  $.plot($("#analytics_metric_chart"), data, options);
+  
+  $('#analytics_chart_loader').hide();
+  $('#analytics_metric_chart').show();
 }
 
 function parsePieToBar(data) {
