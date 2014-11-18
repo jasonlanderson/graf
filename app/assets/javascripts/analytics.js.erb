@@ -26,6 +26,8 @@ function analyticsAJAX(data, format, responseType, callback){
       method: 'POST',
       dataType: responseType,
       complete: function(){
+        $('#analytics_dt_loader').hide();
+        $('#analytics_table_container').show();
         console.log("completes rendering analystics page.");
       },
       success: callback,
@@ -381,19 +383,25 @@ LINE_OPTIONS = {
     }
   },
   xaxis: {
+    position: "bottom",
     mode: "time",
     minTickSize: [1, "month"]
   },
   legend: {
     position: "nw",
-    noColumns: 3
+    noColumns: 2,
+    margin: [20, 10],
+    labelBoxBorderColor: "none"
   },
   yaxis: {
+    position: "left",
     minTickSize: 5
   },
   grid: {
         hoverable: true,
-        borderWidth: 1
+        borderWidth: 1,
+        labelMargin: 30,
+        axisMargin:  1
   }
 };
 

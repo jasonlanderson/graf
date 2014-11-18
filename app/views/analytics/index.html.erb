@@ -75,7 +75,7 @@
 <%# ----------------- %>
 <%# This is the Table %>
 <%# ----------------- %>
-<div  style="display: inline-block;">
+<div  style="display: inline-block;padding-top:40px;">
   <h2 id="analytics_dt_title" style="display: inline-block;position:relative;"> Pull Requests Sorted By Company </h2>
   &nbsp;&nbsp;
   <a href="#" class="tooltip"> <%= image_tag "tooltip.gif" %> 
@@ -88,5 +88,5 @@ This table displays the amount of pull requests submitted by each contributer.
 <button onclick="window.location = '/report'">Drill Down</button>
 <button id="download">Download to CSV</button>
 <br><br>
-<div id="analytics_dt_loader" style="height:600px"><%= image_tag "spinner.gif" %></div>
+<div id="analytics_dt_loader" style="height:600px;"><%= image_tag "spinner.gif" %></div>
 <div id="analytics_table_container"></div>
