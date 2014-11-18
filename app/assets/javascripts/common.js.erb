@@ -109,6 +109,36 @@ function bindToNode(node_id){
   });
 }
 
+function restrictGroupBys() {
+  // allowDataRefresh param false to prevent any data refreshes from happening until done
+  allowDataRefresh = false;
+
+  // Restrict the group by
+  var validGroupBys = METRICS.base_metrics[METRICS.metrics[$("#metric_filter").val()].base_metric].group_by;
+
+  if ( validGroupBys.indexOf($("#group_by_filter").val()) < 0) {
+    $("#group_by_filter").val(validGroupBys[0]);
+  }
+  $(function() {
+    $("#group_by_filter option").each(function(i){
+      var indexOf = validGroupBys.indexOf($(this).val());
+      if (indexOf >= 0) {
+        // Enable
+        enableGroupBy($(this).val());
+      }
+      else {
+        // Disable
+        disableGroupBy($(this).val());
+      }
+    });
+  });
+  // Refresh the group by filter
+  $("#group_by_filter").multiselect(SINGLE_SELECT_OPTIONS).multiselect('refresh');
+
+  // re-enabling data refreshing
+  allowDataRefresh = true;
+}
+
 function common_populateTable(node_id, dtID, options, result) {
   $(node_id).empty();
   var canonicalResult = result.replace('<table id="metric_table">', '<table id="' + dtID + '" style="width:448px;">');

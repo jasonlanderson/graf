@@ -26,8 +26,8 @@
 <% @filter_changed_function = 'analyticsFilterChanged' %>
 <%= render 'shared/search_criteria' %>
 
-<div style="margin-bottom: 0; padding-bottom: 0; font-weight:normal;" >
-  <h2 id="chart_title"> Pull Requests Grouped By Company
+<div style="margin-bottom: 0; padding-bottom: 0; font-weight:normal;margin-top:40px;" >
+  <h2 id="analytics_chart_title"> Pull Requests Grouped By Company
     <a href="#" class="tooltip"><%= image_tag "tooltip.gif" %>
       <span style="font-size: 15px;">This pie chart represents all pull requests submitted to the Cloud Foundry Github repositories during the specifed time period. 
         <br> Each slice represents a separate company, and the size of each slice is proportional to the company's quantity of contributions.
@@ -69,14 +69,14 @@
 <%# ----------------- %>
 <br>
 <div>
-<div id="metric_chart"></div>
+<div id="analytics_chart_loader" style="height:600px"><%= image_tag "spinner.gif" %></div>
+<div id="analytics_metric_chart"></div>
 </div>
 <%# ----------------- %>
 <%# This is the Table %>
 <%# ----------------- %>
-<br>
 <div  style="display: inline-block;">
-  <h2 id="chart_title" style="display: inline-block;position:relative;"> Pull Requests Sorted By Company </h2>
+  <h2 id="analytics_dt_title" style="display: inline-block;position:relative;"> Pull Requests Sorted By Company </h2>
   &nbsp;&nbsp;
   <a href="#" class="tooltip"> <%= image_tag "tooltip.gif" %> 
   	<span style="font-size: 15px;">  
@@ -88,5 +88,5 @@ This table displays the amount of pull requests submitted by each contributer.
 <button onclick="window.location = '/report'">Drill Down</button>
 <button id="download">Download to CSV</button>
 <br><br>
-<div id="loader_1" style="height:600px"><%= image_tag "spinner.gif" %></div>
-<div id="table_container"></div>
+<div id="analytics_dt_loader" style="height:600px"><%= image_tag "spinner.gif" %></div>
+<div id="analytics_table_container"></div>
