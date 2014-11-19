@@ -6,26 +6,60 @@
   <%= stylesheet_link_tag    "application", media: "all", "data-turbolinks-track" => true %>
   <%= javascript_include_tag "application", "data-turbolinks-track" => true %>
   <%= csrf_meta_tags %>
+  <% if Constants.get_settings["community"] == 'cloudfoundry' %>
+  <link rel="icon" href="http://cloudfoundry.org/images/favicon.ico" type="image/png">
+  <% else %>
+    <link rel="icon" href="https://d3oypxn00j2a10.cloudfront.net/0.12.6/favicon_whale.png" type="image/png">
+  <% end %>
   <%= yield(:extra_headers) %>
 </head>
 <meta charset="UTF-8">
 <body>
 <div id='content'>
 <div class='page'>
-<div class="banner">GitHub Repository Analytics with Filtering</div><a href="#" class="tooltip"> <%= image_tag "tooltip.gif" %> <span style="font-size: 12px;">  
-GitHub Repository Analytics with Filtering (GRAF) is a web service that has the ability to collect and visually represent useful statistics on various Github repositories. At the moment, this application is only collecting data on repositories hosted by the "Cloud Foundry" Github organization. We plan to expand this application to collect data on repositories from other organizations (Openstack, Openshift, etc.) in the near future.
-<br><br>
-These statistics are collected through the Github API. We use the API's functions to gather information on every "Pull Request" that has been contributed to the Cloud Foundry repositories. Once this data has been successfully collected and stored into our database, our application allows the user to generate figures that are customized by timeframe, repository, company, etc.
-<br><br>
-Company affiliation is determined by polling each Github user's profile. If a user does not have an affliated company listed on their profile, the application then checks to see whether the user is a member of any corporate Github organizations. If they are not, the user is assumed to be independent.
-<br>
-</span> </a>
-
-<div class="header-links">[
-  <a href="#" onclick="window.location = '/dashboard'">Dashboard</a> | <a href="#" onclick="window.location = '/analytics'">Analytics</a> | <a href="#" onclick="window.location = '/report'">Reports</a>]
-  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  <a href="#" onclick="window.location = '/release_notes/_system_notes'">v.20141030</a>
+<div class="banner">
+  <% community = Constants.get_settings["community"]
+  if community == 'cloudfoundry' %>
+  <div style='display:block;height:90px;width:960px'>
+    <a href="http://cloudfoundry.org/index.html">
+      <img src="http://cloudfoundry.org/images/logo_org.png" alt="GRAF for the Cloud Foundry Community." style='height:90px;width:149px;'>
+    </a>
+  </div>
+  <br>
+  <div style='display:inline;'>
+    <span> GitHub Repository Analytics for the Cloud Foundry Community </span>
+  <% else %>
+   <div style='display:block;height:90px;width:960px'>
+    <a href="https://www.docker.com/">
+      <img src="https://d3oypxn00j2a10.cloudfront.net/0.12.6/img/homepage/docker-whale-home-logo-@2x.png?e2946566d408" alt="GRAF for the Docker Community." style='height:90px;width:190px;'>
+    </a>
+  </div>
+  <br>
+  <div style='display:inline;'>
+    <span> GitHub Repository Analytics for the Docker Community </span>
+  <% end %>
+	<span>
+		<a href="#" class="tooltip"> <%= image_tag "tooltip.gif" %> <span style="font-size: 12px;"> <br> 
+		GitHub Repository Analytics with Filtering (GRAF) is a web service that has the ability to collect and visually represent useful statistics on various Github repositories. At the moment, this application is only collecting data on repositories hosted by the "Cloud Foundry" Github organization. We plan to expand this application to collect data on repositories from other organizations (Openstack, Openshift, etc.) in the near future.
+		<br><br>
+		These statistics are collected through the Github API. We use the API's functions to gather information on every "Pull Request" that has been contributed to the Cloud Foundry repositories. Once this data has been successfully collected and stored into our database, our application allows the user to generate figures that are customized by timeframe, repository, company, etc.
+		<br><br>
+		Company affiliation is determined by polling each Github user's profile. If a user does not have an affliated company listed on their profile, the application then checks to see whether the user is a member of any corporate Github organizations. If they are not, the user is assumed to be independent.
+		<br>
+	    </a>
+    </span>
+   </div>
+   <br><br>
+   <div class="header-links" style='display:block;padding-bottom:10px;'>
+     [ <a href="#" onclick="window.location = '/dashboard'">Dashboard</a> | <a href="#" onclick="window.location = '/analytics'">Analytics</a> | 
+	   <a href="#" onclick="window.location = '/report'">Reports</a>]
+	   <a href="#" onclick="window.location = '/release_notes/_system_notes'">v.20141030</a>
+	  <br>
+   </div>
 </div>
+
+
+
 <hr>
 
 <%= yield %>
