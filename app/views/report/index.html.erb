@@ -20,8 +20,6 @@
 <%###############%>
 <%# Body Section %>
 <%###############%>
-<%= render 'shared/last_load' %>
-<br>
 <% @filter_changed_function = 'reportFilterChanged' %>
 <%= render 'shared/search_criteria' %>
 <br><br>
@@ -37,5 +35,5 @@
 </div>
 <br>
 <div id="report_table_loader" style="height:200px"><%= image_tag "spinner.gif" %></div>
-<div id="report_table_container" style="width:100%;height:100%;font-size:14px;overflow:hidden;"></div>
+<div id="report_table_container" style="width:100%;font-size:14px;overflow:hidden;"></div>
 

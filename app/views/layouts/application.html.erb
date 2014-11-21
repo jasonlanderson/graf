@@ -15,54 +15,63 @@
 </head>
 <meta charset="UTF-8">
 <body>
-<div id='content'>
-<div class='page'>
+<div id='content' style='position:relative;'>
+<div class='page' style='height:100%;'>
 <div class="banner">
-  <% community = Constants.get_settings["community"]
-  if community == 'cloudfoundry' %>
-  <div style='display:block;height:90px;width:960px'>
-    <a href="http://cloudfoundry.org/index.html">
-      <img src="http://cloudfoundry.org/images/logo_org.png" alt="GRAF for the Cloud Foundry Community." style='height:90px;width:149px;'>
-    </a>
-  </div>
-  <br>
-  <div style='display:inline;'>
-    <span> GitHub Repository Analytics for the Cloud Foundry Community </span>
-  <% else %>
-   <div style='display:block;height:90px;width:960px'>
-    <a href="https://www.docker.com/">
-      <img src="https://d3oypxn00j2a10.cloudfront.net/0.12.6/img/homepage/docker-whale-home-logo-@2x.png?e2946566d408" alt="GRAF for the Docker Community." style='height:90px;width:190px;'>
-    </a>
-  </div>
-  <br>
-  <div style='display:inline;'>
-    <span> GitHub Repository Analytics for the Docker Community </span>
+  <div style='display:inline;height:90px;width:960px;'>
+    <table style='width:960px;'><tbody><tr>
+    <% community = Constants.get_settings["community"]
+    if community == 'cloudfoundry' %>
+      <td style='float:left;padding: 4px 10px;'>
+        <a href="http://cloudfoundry.org/index.html">
+          <img src="http://cloudfoundry.org/images/logo_org.png" alt="Community Analytics for the Cloud Foundry Foundation." style='height:80px;width:132px;'>
+       </a>
+      </td>
+      <td style='width:500px;'>
+        <span style='font-size: 24px;font-weight:500;line-height:30px;'> Community Analytics: Cloud Foundry Foundation </span>
+    <% else %>
+      <td style='float:left;padding: 4px 10px;'>
+        <a href="https://www.docker.com/">
+          <img src="https://d3oypxn00j2a10.cloudfront.net/0.12.6/img/homepage/docker-whale-home-logo-@2x.png?e2946566d408" alt="Community Analytics for the Docker Community." style='height:80px;width:132px;'>
+        </a>
+      </td>
+      <td style='width:500px;'>
+        <span style='font-size: 24px;font-weight:500;line-height:30px;'> Community Analytics: Ducker </span>
   <% end %>
-	<span>
-		<a href="#" class="tooltip"> <%= image_tag "tooltip.gif" %> <span style="font-size: 12px;"> <br> 
-		GitHub Repository Analytics with Filtering (GRAF) is a web service that has the ability to collect and visually represent useful statistics on various Github repositories. At the moment, this application is only collecting data on repositories hosted by the "Cloud Foundry" Github organization. We plan to expand this application to collect data on repositories from other organizations (Openstack, Openshift, etc.) in the near future.
-		<br><br>
-		These statistics are collected through the Github API. We use the API's functions to gather information on every "Pull Request" that has been contributed to the Cloud Foundry repositories. Once this data has been successfully collected and stored into our database, our application allows the user to generate figures that are customized by timeframe, repository, company, etc.
-		<br><br>
-		Company affiliation is determined by polling each Github user's profile. If a user does not have an affliated company listed on their profile, the application then checks to see whether the user is a member of any corporate Github organizations. If they are not, the user is assumed to be independent.
-		<br>
-	    </a>
-    </span>
-   </div>
-   <br><br>
-   <div class="header-links" style='display:block;padding-bottom:10px;'>
-     [ <a href="#" onclick="window.location = '/dashboard'">Dashboard</a> | <a href="#" onclick="window.location = '/analytics'">Analytics</a> | 
-	   <a href="#" onclick="window.location = '/report'">Reports</a>]
-	   <a href="#" onclick="window.location = '/release_notes/_system_notes'">v.20141030</a>
-	  <br>
-   </div>
+        <span>
+          <a href="#" class="tooltip"> <%= image_tag "tooltip.gif" %> <span style="font-size: 12px;"> <br> 
+            GitHub Repository Analytics with Filtering (GRAF) is a web service that has the ability to collect and visually represent useful statistics on various Github repositories. At the moment, this application is only collecting data on repositories hosted by the "Cloud Foundry" Github organization. We plan to expand this application to collect data on repositories from other organizations (Openstack, Openshift, etc.) in the near future. <br><br>
+            These statistics are collected through the Github API. We use the API's functions to gather information on every "Pull Request" that has been contributed to the Cloud Foundry repositories. Once this data has been successfully collected and stored into our database, our application allows the user to generate figures that are customized by timeframe, repository, company, etc.
+            <br><br>
+            Company affiliation is determined by polling each Github user's profile. If a user does not have an affliated company listed on their profile, the application then checks to see whether the user is a member of any corporate Github organizations. If they are not, the user is assumed to be independent.
+          </a>
+        </span>
+      </td>
+      <td>
+         <div class="bannermenu" style='display: inline;right:20px;'>
+           <ul id='menu-bannermenu'>
+             <li class='menu-item current-menu-item'><a href="#" onclick="window.location = '/dashboard'">Dashboard</a></li>
+             <li class='menu-item'><a href="#" onclick="window.location = '/analytics'">Analytics</a></li>
+             <li class='menu-item'><a href="#" onclick="window.location = '/report'">Reports</a></li>
+           </ul>
+         </div>
+      </td>
+    </tr></tbody></table>
+  </div>
 </div>
-
-
-
 <hr>
 
 <%= yield %>
+</div>
+<div id="footer_content" class='footer'>
+  <div class='footer_content'>
+    <span style='margin-left:40px;'>IBM®</span>
+    <span style='margin-left:40px'>Copyright© 2014 All rights reserved</span>
+    <span style='margin-left:40px''> 
+      <a href="#" onclick="window.location = '/release_notes/_system_notes'">Release: v1.0.0  build #20141120</a>
+    </span>
+    <%= render 'shared/last_load' %>
+  </div>
 </div>
 </div>
 </body>
