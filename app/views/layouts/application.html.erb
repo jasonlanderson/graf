@@ -24,19 +24,19 @@
     if community == 'cloudfoundry' %>
       <td style='float:left;padding: 4px 10px;'>
         <a href="http://cloudfoundry.org/index.html">
-          <img src="http://cloudfoundry.org/images/logo_org.png" alt="Community Analytics for the Cloud Foundry Foundation." style='height:80px;width:132px;'>
+          <img src="http://cloudfoundry.org/images/logo_org.png" alt="Community Analytics for the Cloud Foundry Foundation." style='height:80px;width:120px;'>
        </a>
       </td>
-      <td style='width:500px;'>
-        <span style='font-size: 24px;font-weight:500;line-height:30px;'> Community Analytics: Cloud Foundry Foundation </span>
+      <td style='width:100%;'>
+        <span style='font-size: 23px;font-weight:500;line-height:30px;'> Community Analytics: Cloud Foundry Foundation</span>
     <% else %>
       <td style='float:left;padding: 4px 10px;'>
         <a href="https://www.docker.com/">
-          <img src="https://d3oypxn00j2a10.cloudfront.net/0.12.6/img/homepage/docker-whale-home-logo-@2x.png?e2946566d408" alt="Community Analytics for the Docker Community." style='height:80px;width:132px;'>
+          <img src="https://d3oypxn00j2a10.cloudfront.net/0.12.6/img/homepage/docker-whale-home-logo-@2x.png?e2946566d408" alt="Community Analytics for the Docker Community." style='height:80px;width:120px;'>
         </a>
       </td>
-      <td style='width:500px;'>
-        <span style='font-size: 24px;font-weight:500;line-height:30px;'> Community Analytics: Ducker </span>
+      <td style='width:100%;'>
+        <span style='font-size: 23px;font-weight:500;line-height:30px;'> Community Analytics: Docker </span>
   <% end %>
         <span>
           <a href="#" class="tooltip"> <%= image_tag "tooltip.gif" %> <span style="font-size: 12px;"> <br> 
@@ -44,11 +44,11 @@
             These statistics are collected through the Github API. We use the API's functions to gather information on every "Pull Request" that has been contributed to the Cloud Foundry repositories. Once this data has been successfully collected and stored into our database, our application allows the user to generate figures that are customized by timeframe, repository, company, etc.
             <br><br>
             Company affiliation is determined by polling each Github user's profile. If a user does not have an affliated company listed on their profile, the application then checks to see whether the user is a member of any corporate Github organizations. If they are not, the user is assumed to be independent.
-          </a>
+          </a><br><br><br>
         </span>
       </td>
       <td>
-         <div class="bannermenu" style='display: inline;right:20px;'>
+         <div class="bannermenu" style='display: inline;right:10px;'>
            <ul id='menu-bannermenu'>
              <li class='menu-item current-menu-item'><a href="#" onclick="window.location = '/dashboard'">Dashboard</a></li>
              <li class='menu-item'><a href="#" onclick="window.location = '/analytics'">Analytics</a></li>
