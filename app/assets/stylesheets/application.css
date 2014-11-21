@@ -28,6 +28,16 @@ div.banner {
   background-color: #ffffff;
 }
 
+div.inner_banner {
+  margin-right: 5px;
+  margin-bottom: 0;
+  padding-bottom: 0;
+  font-weight:normal;
+  float:left;
+  font-size: 24px;
+  background-color: #ffffff;
+}
+
 div.header-links {
   margin-right: 5px;
   margin-bottom: 0;
@@ -40,7 +50,7 @@ div.header-links {
 html, body {
     font-family: 'PT Sans', arial, sans-serif;
     font-size: 14px;
-    padding-top:14px;
+    padding-top:4px;
     height: 100%;
     color: #41454d;
     margin: 0;
@@ -188,11 +198,23 @@ div.page div.body {
     padding: 10px;
 }
 
-div.page div.footer {
-    background: #eee;
-    color: #888;
-    padding: 1em 1em;
-    font-size: 9pt;
+.footer {
+    height: 70px;
+    min-width:  1100px;
+    background: #F1F1F1;
+    border-top: 3px solid #BC2B18;
+    clear: both;
+    position: relative;
+    bottom: 0px;
+}
+
+.footer_content {
+    color: #000;
+    font-size: 12pt;
+    text-shadow: 1px 1px 0px #FFF;
+    margin: 0 auto;
+    padding-top: 20px;
+    padding-right: 20px;
 }
 
 .spacer {
@@ -445,10 +467,11 @@ body .ui-tooltip {
     border-width: 2px;
     background-color: white;
     opacity: 0.8;
+    height:100%;
 }
 
 /* new top menu */
-ul#menu-stackamenu {
+ul#menu-bannermenu {
     margin: 0;
     padding: 0;
     list-style-image: none;
@@ -456,19 +479,19 @@ ul#menu-stackamenu {
     font-family: 'PT Sans Narrow', arial, sans-serif;
 }
 
-ul#menu-stackamenu li {
+ul#menu-bannermenu li {
     margin: 0;
     padding: 0;
     display: inline-block;
 }
 
-div.stackamenu {
+div.bannermenu {
     text-align: left;
     padding-bottom: 10px;
     margin-left: 240px;
 }
 
-div.stackamenu a {
+div.bannermenu a {
     display: inline-block;
     color: #972D24;
     border-radius: 0;
@@ -480,7 +503,7 @@ div.stackamenu a {
     /*box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.7);*/
 }
 
-div.stackamenu a span {
+div.bannermenu a span {
     color: #943a3a;
     font-size: 110%;
     position: relative;
@@ -488,30 +511,30 @@ div.stackamenu a span {
     margin-right: 10px;
 }
 
-div.stackamenu a:hover {
+div.bannermenu a:hover {
     background: #c8e7ed;
     /*color: white;*/
 }
 
-div.stackamenu a:hover span {
+div.bannermenu a:hover span {
     /*background: #c8e7ed;*/
     /*color: white;*/
     /*text-shadow: 0 -1px 0 #2c96c5;*/
 }
 
-div.stackamenu li.current-menu-item a {
+div.bannermenu li.current-menu-item a {
     background: #4bb2c5;
     color: white;
     /*box-shadow: 0 3px 0 #436281;*/
 }
 
-div.stackamenu li.current-menu-item a:hover {
+div.bannermenu li.current-menu-item a:hover {
     background: #4bb2c5;
     /*color: white;*/
     /*box-shadow: 0 3px 0 #2b99ca;*/
 }
 
-div.stackamenu li.current-menu-item a span {
+div.bannermenu li.current-menu-item a span {
     color: white;
     /*text-shadow: 0 -1px 0 #436281;*/
 }
