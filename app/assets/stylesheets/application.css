@@ -25,7 +25,7 @@ div.banner {
   font-weight:normal;
   float:left;
   font-size: 24px;
-  background-color: #ffffff;
+  background-color: #fff;
 }
 
 div.inner_banner {
@@ -35,7 +35,7 @@ div.inner_banner {
   font-weight:normal;
   float:left;
   font-size: 24px;
-  background-color: #ffffff;
+  background-color: #fff;
 }
 
 div.header-links {
@@ -477,6 +477,7 @@ ul#menu-bannermenu {
     list-style-image: none;
     list-style-type: none;
     font-family: 'PT Sans Narrow', arial, sans-serif;
+    float: right;
 }
 
 ul#menu-bannermenu li {
@@ -488,27 +489,27 @@ ul#menu-bannermenu li {
 div.bannermenu {
     text-align: left;
     padding-bottom: 10px;
-    margin-left: 240px;
+    margin-left: 200px;
 }
 
 div.bannermenu a {
     display: inline-block;
     color: #972D24;
     border-radius: 0;
-    font-size: 18px;
+    font-size: 16px;
     /*text-transform: uppercase;*/
     margin: 5px 0;
-    padding: 5px 20px;
+    padding: 5px 7px;
     background: #eceef3;
     /*box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.7);*/
 }
 
 div.bannermenu a span {
     color: #943a3a;
-    font-size: 110%;
+    font-size: 100%;
     position: relative;
     top: 2px;
-    margin-right: 10px;
+    margin-right: 0px;
 }
 
 div.bannermenu a:hover {

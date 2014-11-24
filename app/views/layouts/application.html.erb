@@ -15,7 +15,7 @@
 </head>
 <meta charset="UTF-8">
 <body>
-<div id='content' style='position:relative;'>
+<div id='content' >
 <div class='page' style='height:100%;'>
 <div class="banner">
   <div style='display:inline;height:90px;width:960px;'>
@@ -27,16 +27,16 @@
           <img src="http://cloudfoundry.org/images/logo_org.png" alt="Community Analytics for the Cloud Foundry Foundation." style='height:80px;width:132px;'>
        </a>
       </td>
-      <td style='width:500px;'>
-        <span style='font-size: 24px;font-weight:500;line-height:30px;'> Community Analytics: Cloud Foundry Foundation </span>
+      <td style='width:570px;padding-bottom: 30px;'>
+        <span style='font-size: 22px;font-weight:500;line-height:30px;'> Community Analytics: Cloud Foundry Foundation </span>
     <% else %>
       <td style='float:left;padding: 4px 10px;'>
         <a href="https://www.docker.com/">
           <img src="https://d3oypxn00j2a10.cloudfront.net/0.12.6/img/homepage/docker-whale-home-logo-@2x.png?e2946566d408" alt="Community Analytics for the Docker Community." style='height:80px;width:132px;'>
         </a>
       </td>
-      <td style='width:500px;'>
-        <span style='font-size: 24px;font-weight:500;line-height:30px;'> Community Analytics: Ducker </span>
+      <td style='width:570px;padding-bottom: 30px;'>
+        <span style='font-size: 22px;font-weight:500;line-height:30px;'> Community Analytics: Docker </span>
   <% end %>
         <span>
           <a href="#" class="tooltip"> <%= image_tag "tooltip.gif" %> <span style="font-size: 12px;"> <br> 
@@ -50,6 +50,7 @@
       <td>
          <div class="bannermenu" style='display: inline;right:20px;'>
            <ul id='menu-bannermenu'>
+             <br><br><br>
              <li class='menu-item current-menu-item'><a href="#" onclick="window.location = '/dashboard'">Dashboard</a></li>
              <li class='menu-item'><a href="#" onclick="window.location = '/analytics'">Analytics</a></li>
              <li class='menu-item'><a href="#" onclick="window.location = '/report'">Reports</a></li>
@@ -59,14 +60,16 @@
     </tr></tbody></table>
   </div>
 </div>
+<br>
 <hr>
+<br>
 
 <%= yield %>
 </div>
 <div id="footer_content" class='footer'>
   <div class='footer_content'>
-    <span style='margin-left:40px;'>IBM®</span>
-    <span style='margin-left:40px'>Copyright© 2014 All rights reserved</span>
+    <span style='margin-left:40px;'>IBM��</span>
+    <span style='margin-left:40px'>Copyright�� 2014 All rights reserved</span>
     <span style='margin-left:40px''> 
       <a href="#" onclick="window.location = '/release_notes/_system_notes'">Release: v1.0.0  build #20141120</a>
     </span>
