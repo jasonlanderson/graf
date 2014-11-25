@@ -16,7 +16,7 @@
 <meta charset="UTF-8">
 <body>
 <div id='content' >
-<div class='page' style='height:100%;'>
+<div class='page' style='height:100%; display:block;'>
 <div class="banner">
   <div style='display:inline;height:90px;width:960px;'>
     <table style='width:960px;'><tbody><tr>
@@ -27,7 +27,7 @@
           <img src="http://cloudfoundry.org/images/logo_org.png" alt="Community Analytics for the Cloud Foundry Foundation." style='height:80px;width:120px;'>
        </a>
       </td>
-      <td style='width:570px;padding-bottom: 30px;'>
+      <td style='width:570px;padding-bottom: 0px;'>
         <span style='font-size: 22px;font-weight:500;line-height:30px;'> Community Analytics: Cloud Foundry Foundation </span>
     <% else %>
       <td style='float:left;padding: 4px 10px;'>
@@ -35,7 +35,7 @@
           <img src="https://d3oypxn00j2a10.cloudfront.net/0.12.6/img/homepage/docker-whale-home-logo-@2x.png?e2946566d408" alt="Community Analytics for the Docker Community." style='height:80px;width:120px;'>
         </a>
       </td>
-      <td style='width:570px;padding-bottom: 30px;'>
+      <td style='width:570px;padding-bottom: 0px;'>
         <span style='font-size: 22px;font-weight:500;line-height:30px;'> Community Analytics: Docker </span>
   <% end %>
         <span>
@@ -50,7 +50,7 @@
       <td>
          <div class="bannermenu" style='display: inline;right:10px;'>
            <ul id='menu-bannermenu'>
-             <br><br><br>
+             <br style='line-height: 42px;'>
              <li class='menu-item current-menu-item'><a href="#" onclick="window.location = '/dashboard'">Dashboard</a></li>
              <li class='menu-item'><a href="#" onclick="window.location = '/analytics'">Analytics</a></li>
              <li class='menu-item'><a href="#" onclick="window.location = '/report'">Reports</a></li>
@@ -60,10 +60,7 @@
     </tr></tbody></table>
   </div>
 </div>
-<br>
-<hr>
-<br>
-
+<hr class='theme'></hr>
 <%= yield %>
 </div>
 <div id="footer_content" class='footer'>
