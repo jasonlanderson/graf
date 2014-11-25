@@ -26,6 +26,7 @@ div.banner {
   float:left;
   font-size: 24px;
   background-color: #fff;
+  height:90px;
 }
 
 div.inner_banner {
@@ -144,7 +145,7 @@ input[type="submit"] {
 
 div.drops {
     height: 60px;
-    margin-top: 10px;
+    margin-top: 0px;
 }
 
 div.drop label {
@@ -472,12 +473,11 @@ body .ui-tooltip {
 
 /* new top menu */
 ul#menu-bannermenu {
-    margin: 0;
-    padding: 0;
     list-style-image: none;
     list-style-type: none;
     font-family: 'PT Sans Narrow', arial, sans-serif;
     float: right;
+    -webkit-margin-before: -4px;
 }
 
 ul#menu-bannermenu li {
@@ -488,7 +488,6 @@ ul#menu-bannermenu li {
 
 div.bannermenu {
     text-align: left;
-    padding-bottom: 10px;
     margin-left: 200px;
 }
 
@@ -561,4 +560,15 @@ div.bannermenu li.current-menu-item a span {
     font-weight: bold;
     color: red;
     margin: 0.5em 0;
+}
+
+.theme {
+	display: inline-block;
+	margin-top: -16px;
+	border-style: inset;
+	border-top-width: 1px;
+	border-bottom-width:0px;
+	border-color: #9A9A9A;
+	height: 0px;
+	width:960px;
 }
