@@ -21,7 +21,7 @@ class AnalyticUtils
     sql_stmt = get_base_analytics_data(label_columns, data_column, metric_tables,
                               rollup_method, rollup_count, show_rollup_remainder,
                               order_via_group_bys, search_criteria, true)
-
+    puts "AnalyticUtils::get_analytics_data: sql_stmt = #{sql_stmt}"
     # If we're planning to show the rollup remainder then we need to do the limit the other way
     if !rollup_count.nil? && show_rollup_remainder
       top_x_query = sql_stmt
@@ -62,10 +62,18 @@ class AnalyticUtils
     sql_stmt += where_clause_stmt(search_criteria)
     group_by_label_cols = label_columns.map {|column| column[:alias]}
     sql_stmt += "GROUP BY #{group_by_label_cols.join(", ")} "
+    sql_outter_stmt = not_null_select(sql_stmt, group_by_label_cols)
+   
+    sql_outter_stmt += order_by_rollup(label_columns, data_column, rollup_method, order_via_group_bys)
+    return sql_outter_stmt
+  end
 
-    sql_stmt += order_by_rollup(label_columns, data_column, rollup_method, order_via_group_bys)
-
-    return sql_stmt
+  def self.not_null_select(inner_sql, select_columns)
+    new_columns = []
+    select_columns.each do | column |
+      new_columns.push("#{ column } IS NOT NULL")
+    end
+    return "SELECT * from ( #{ inner_sql } ) g where #{ new_columns.join(' AND ') } "
   end
 
   def self.inner_join_rollup(label_columns, data_column, metric_tables,
