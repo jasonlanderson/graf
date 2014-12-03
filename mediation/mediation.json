@@ -1,4 +1,5 @@
 {
   "community": [
+    "users": [  {"login": "required", "name": "optional"} ]
   ]
 }

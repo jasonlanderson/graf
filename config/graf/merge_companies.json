@@ -14,7 +14,7 @@
     },
     {
      "name": "Stark & Wayne",
-     "alias": ["stark and wayne", "stark & wayne", "https://starkandwayne.com/", "http://starkandwayne.com/"]
+     "alias": ["stark and wayne", "stark & wayne", "https://starkandwayne.com", "http://starkandwayne.com"]
     },
     {
      "name": "IBM",
@@ -103,6 +103,10 @@
     {
       "name": "Spotify",
       "alias": ["spotfiy"]
+    },
+    {
+      "name": "Swisscom IT Services Finance",
+      "alias": ["Swisscom IT Services Finance"]
     },
     {
       "name": "Target",

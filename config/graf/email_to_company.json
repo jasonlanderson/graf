@@ -213,6 +213,10 @@
       "alias": ["spotify"]
     },
     {
+      "name": "Swisscom",
+      "alias": ["swisscom.ch"]
+    },
+    {
       "name": "Subuser",
       "alias": ["subuser"]
     },
