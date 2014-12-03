@@ -5,6 +5,7 @@ require 'load_steps/delta_load_orgs'
 require 'load_steps/post_fix_users_without_companies'
 require 'load_steps/post_fix_convert_users_without_companies_to_independent'
 require 'load_steps/post_fix_users_hidden_identities'
+require 'load_steps/post_fix_users_without_name'
 require 'load_steps/post_delete_companies_without_users'
 require 'load_steps/post_delete_users_without_contribs'
 require 'load_steps/delta_load_repo_pull_requests'
@@ -17,6 +18,7 @@ class Constants
     #PreLoadUserCache.new,
     PreLoadStackalytics.new,
     LoadOrgs.new,
+    PostFixUsersWithoutName.new,
     PostFixUsersWithoutCompanies.new,
     #PostDeleteUsersWithoutContribs.new,
     PostDeleteCompaniesWithoutUsers.new,
