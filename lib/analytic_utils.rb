@@ -62,10 +62,10 @@ class AnalyticUtils
     sql_stmt += where_clause_stmt(search_criteria)
     group_by_label_cols = label_columns.map {|column| column[:alias]}
     sql_stmt += "GROUP BY #{group_by_label_cols.join(", ")} "
-    sql_outter_stmt = not_null_select(sql_stmt, group_by_label_cols)
-   
-    sql_outter_stmt += order_by_rollup(label_columns, data_column, rollup_method, order_via_group_bys)
-    return sql_outter_stmt
+
+    sql_stmt += order_by_rollup(label_columns, data_column, rollup_method, order_via_group_bys)
+
+    return sql_stmt
   end
 
   def self.not_null_select(inner_sql, select_columns)
