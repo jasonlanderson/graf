@@ -14,7 +14,14 @@ class PostFixUsersWithHiddenIdentity < LoadStep
     Constants.mediation.each do |mapping|
       puts "assigning user #{mapping['login']} to company #{mapping['company']}"
       company = LoadHelpers.create_company_if_not_exist(mapping['company'])
-      User.where(login:  mapping['login']).update_all(company_id: company.id) if mapping['login'].length > 0
+      mapping['users'].each do | user |
+        if user.length == 2
+          puts "updating user #{ user['name'] }"
+          User.where(login:  user['login']).update_all(company_id: company.id, name: user['name']) 
+        else
+          User.where(login:  user['login']).update_all(company_id: company.id) 
+        end
+      end
     end
   end
 

@@ -2,115 +2,123 @@
   "community": [
     {
       "company": "Docker, Inc.",
-      "login": [ "mzdaniel", "tiborvass", "ewindisch", "hollietealok"]
+      "users": [ 
+      	{"login": "mzdaniel"}, 
+        {"login": "tiborvass"},
+        {"login": "ewindisch"},
+        {"login": "hollietealok"} ]
     },
     {
       "company": "subuser",
-      "login": [ "timthelion"]
+      "users": [ {"login": "timthelion"} ]
     },
     {
       "company": "soundcloud",
-      "login": [ "bernerdschaefer"]
+      "users": [ {"login": "bernerdschaefer"} ]
+    },
+    {
+      "company": "IBM",
+      "users": [ {"login": "duglin"} ]
     },
     {
       "company": "Imagescape",
-      "login": [ "dustinlacewell"]
+      "users": [ {"login": "dustinlacewell"} ]
     },
     {
       "company": "Canonical Ltd",
-      "login": [ "hamo"]
+      "users": [ {"login": "hamo"} ]
     },
     {
       "company": "Zenoss, Inc",
-      "login": [ "daniel-garcia"]
+      "users": [ {"login": "daniel-garcia"} ]
     },
      {
       "company": "GoodCode",
-      "login": [ "aigeruth"]
+      "users": [ {"login": "aigeruth"} ]
     },
     {
       "company": "Runnable",
-      "login": [ "anandkumarpatel"]
+      "users": [ {"login": "anandkumarpatel"} ]
     },
     {
       "company": "Spotify",
-      "login": [ "danielnorberg"]
+      "users": [ {"login": "danielnorberg"} ]
     },
     {
       "company": "Red Hat",
-      "login": [ "imain"]
+      "users": [ {"login": "imain"} ]
     },
     {
       "company": "Intoximeters",
-      "login": [ "thedude05"]
+      "users": [ {"login": "thedude05"} ]
     },
     {
       "company": "Hybris",
-      "login": [ "maltej"]
+      "users": [ {"login": "maltej"} ]
     },
     {
       "company": "Twitter",
-      "login": [ "financecoding"]
+      "users": [ {"login": "financecoding"} ]
     },
     {
       "company": "Arch Linux ARM",
-      "login": [ "warheadsse"]
+      "users": [ {"login": "warheadsse"}]
     },
     {
       "company": "1uptalent",
-      "login": [ "amuino"]
+      "users": [ {"login": "amuino"} ]
     },
     {
       "company": "Target",
-      "login": [ "mrallen1"]
+      "users": [ {"login": "mrallen1"} ]
     },
     {
       "company": "AcademiaSinicaNLPLab",
-      "login": [ "viirya"]
+      "users": [ {"login": "viirya"} ]
     },
     {
       "company": "Jumpbox",
-      "login": [ "kstaken"]
+      "users": [ {"login": "kstaken"} ]
     },
     {
       "company": "ZoomSystems",
-      "login": [ "fcarriedo"]
+      "users": [ {"login": "fcarriedo"} ]
     },
     {
       "company": "CoreOS",
-      "login": [ "bcwaldon"]
+      "users": [ {"login": "bcwaldon"} ]
     },
     {
       "company": "Amazon",
-      "login": [ "kzys"]
+      "users": [ {"login": "kzys"} ]
     },
     {
       "company": "Rackspace",
-      "login": [ "wking"]
+      "users": [ {"login": "wking"} ]
     },
     {
       "company": "Nauxuat",
-      "login": [ "Sa2ajj"]
+      "users": [ {"login": "Sa2ajj"} ]
     },
     {
       "company": "Zenoss, Inc",
-      "login": [ "daniel-garcia"]
+      "users": [ {"login": "daniel-garcia"} ]
     },
     {
       "company": "Alphagov",
-      "login": [ "pwaller"]
+      "users": [ "{"login": pwaller"} ]
     },
     {
       "company": "Contegix",
-      "login": [ "thedude05"]
+      "users": [ {"login": "thedude05"} ]
     },
     {
       "company": "Redmine",
-      "login": [ "jbbarth"]
+      "users": [ {"login": "jbbarth"} ]
     },
     {
       "company": "Codeclimate",
-      "login": [ "calavera"]
+      "users": [ {"login": "calavera"} ]
     }    
   ]
 }
