@@ -185,3 +185,13 @@ function updateChart(nodeId, viewType, options, result) {
 
   $.plot($(nodeId), data, options);
 }
+
+function setSelectedPageButtonStyle(buttonIndex) {
+  var nodes = $("#menu-bannermenu").children();
+  for (var i = 0; i < nodes.length; i++) {
+    bNode = nodes[i];
+    if (bNode.className)
+      bNode.className = "menu-item";
+  }
+  nodes[1 + buttonIndex].className = "menu-item current-menu-item";
+}

@@ -27,6 +27,8 @@ function dashboardAJAX(loaderID, widgetID, data, format, responseType, callback)
 }
 
 function setDashboardVisibility(element_id){
+
+  setSelectedPageButtonStyle(0);
   if ($("#dashboard_view_type").val() == "line") {
     //document.getElementById(element_id).style.visibility = 'visible' ;
     $("#" + element_id).multiselect('enable')

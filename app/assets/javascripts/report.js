@@ -60,6 +60,8 @@ function reportAJAX(data, responseType, callback){
 }
 
 function setupReportReady() {
+
+  setSelectedPageButtonStyle(2);
   // Load local values 
   loadFiltersFromLocalStorage();
   
