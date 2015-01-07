@@ -4,7 +4,7 @@ source 'https://rubygems.org'
 gem 'rails', '4.0.2'
 
 # User added
-gem 'octokit'
+gem "octokit", "~> 3.7.0"
 gem "flot-rails", "~> 0.0.4"
 #gem "jquery-datatables-rails"
 gem "jquery-ui-rails"
