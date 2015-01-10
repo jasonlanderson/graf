@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '4.0.2'
+gem 'rails', '4.2'
 
 # User added
 gem "octokit", "~> 3.7.0"
@@ -9,7 +9,6 @@ gem "flot-rails", "~> 0.0.4"
 #gem "jquery-datatables-rails"
 gem "jquery-ui-rails"
 gem "httparty"
-gem 'jquery-rails'
 gem 'faker'
 #gem 'jquery-multiselect-rails', :git => 'git://github.com/arojoal/jquery-multiselect-rails.git'
 gem 'mysql2'
