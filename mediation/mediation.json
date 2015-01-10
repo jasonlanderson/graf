@@ -1,5 +1,109 @@
 {
   "community": [
-    "users": [  {"login": "required", "name": "optional"} ]
+    {
+      "company": "Pivotal",
+      "users": [ 
+        {"login":"jacksoncvm"}, 
+        {"login": "amitkgupta"}, 
+        {"login":"mstine"}, 
+        {"login": "matthewmcnew"}, 
+        {"login": "nierajsingh"}, 
+        {"login": "dbailey"}, 
+        {"login": "cdavisafc"}, 
+        {"login": "wilkinsona"},
+        {"login": "dsabeti"}, 
+        {"login": "caseymct"}, 
+        {"login": "pjk25"}, 
+        {"login": "datianshi"} ]
+    },
+    {
+      "company": "CityIndex",
+      "users": [ {"login": "mrdavidlaing"} ]
+    },
+    {
+      "company": "VMware",
+      "users": [ {"login": "joeldsa"} ]
+    },
+    {
+      "company": "IBM",
+      "users": [ {"login": "animeshsingh"},
+                 {"login": "avmgithub"},
+                 {"login": "brahmaroutu"},
+                 {"login": "bravera"},
+                 {"login": "brunssen"},
+                 {"login": "caijj"},
+                 {"login": "chibi03"},
+                 {"login": "christo4ferris"},
+                 {"login": "chuanran"},
+                 {"login": "DanLavine"},
+                 {"login": "davidcurrie"},
+                 {"login": "davidcurrie"},
+                 {"login": "dims"},
+                 {"login": "duglin"},
+                 {"login": "elsony"},
+                 {"login": "fraenkel"},
+                 {"login": "fraenkel"},
+                 {"login": "haiwanglaile"},
+                 {"login": "hately"},
+                 {"login": "ibm-julian-friedman"},
+                 {"login": "ipoddar-ibm"},
+                 {"login": "iwinoto"},
+                 {"login": "jackfengibm"},
+                 {"login": "jasonlanderson"},
+                 {"login": "jberkhahn"},
+                 {"login": "jgawor"},
+                 {"login": "jgwestibm"},
+                 {"login": "JimmyMa"},
+                 {"login": "jgawor"},
+                 {"login": "julz"},
+                 {"login": "KaiYoung"},
+                 {"login": "kkbankol"},
+                 {"login": "knolleary"},
+                 {"login": "krook"},
+                 {"login": "liurui-1"},
+                 {"login": "mbehrendt"},
+                 {"login": "opiethehokie"},
+                 {"login": "parente"},
+                 {"login": "petersca"},
+                 {"login": "pineapplemartini"},
+                 {"login": "pradine"},
+                 {"login": "praveend"},
+                 {"login": "programsam"},
+                 {"login": "randala"},
+                 {"login": "rboykin"},
+                 {"login": "rehanaltaf"},
+                 {"login": "rwonly"},
+                 {"login": "ryanjbaxter"},
+                 {"login": "shaofengshi"},
+                 {"login": "simonleung8"},
+                 {"login": "spaungam"},
+                 {"login": "stewartnickolas"},
+                 {"login": "stopyro"},
+                 {"login": "sykesm"},
+                 {"login": "xingzhou"},
+                 {"login": "xuhaihong"},
+                 {"login": "zhang-hua"},
+                 {"login": "jgawor"} ]
+    },
+    {
+      "company": "Web Drive Ltd",
+      "users": [ {"login": "aristotelesneto"} ]
+    },
+    {
+      "company": "Cisco",
+      "users": [ {"login": "trastle"} ]
+    },
+     {
+      "company": "Stark & Wayne",
+      "users": [ {"login": "longnguyen11288"} ]
+    },
+    {
+      "company": "CentryLink",
+      "users": [ {"login": "scottdensmore"} ]
+    },
+    {
+      "company": "Swisscom",
+      "users": [ {"login": "nicregez", "name": "Nicolas Regez"} ]
+    }
   ]
 }
