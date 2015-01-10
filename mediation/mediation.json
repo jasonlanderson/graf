@@ -61,6 +61,7 @@
                  {"login": "knolleary"},
                  {"login": "krook"},
                  {"login": "liurui-1"},
+                 {"login": "maximilien"},
                  {"login": "mbehrendt"},
                  {"login": "opiethehokie"},
                  {"login": "parente"},
@@ -104,6 +105,118 @@
     {
       "company": "Swisscom",
       "users": [ {"login": "nicregez", "name": "Nicolas Regez"} ]
+    },
+    {
+      "company": "Docker, Inc.",
+      "users": [ 
+      	{"login": "mzdaniel"}, 
+        {"login": "tiborvass"},
+        {"login": "ewindisch"},
+        {"login": "hollietealok"} ]
+    },
+    {
+      "company": "subuser",
+      "users": [ {"login": "timthelion"} ]
+    },
+    {
+      "company": "soundcloud",
+      "users": [ {"login": "bernerdschaefer"} ]
+    },
+    {
+      "company": "Imagescape",
+      "users": [ {"login": "dustinlacewell"} ]
+    },
+    {
+      "company": "Canonical Ltd",
+      "users": [ {"login": "hamo"} ]
+    },
+    {
+      "company": "GoodCode",
+      "users": [ {"login": "aigeruth"} ]
+    },
+    {
+      "company": "Runnable",
+      "users": [ {"login": "anandkumarpatel"} ]
+    },
+    {
+      "company": "Spotify",
+      "users": [ {"login": "danielnorberg"} ]
+    },
+    {
+      "company": "Red Hat",
+      "users": [ {"login": "imain"} ]
+    },
+    {
+      "company": "Intoximeters",
+      "users": [ {"login": "thedude05"} ]
+    },
+    {
+      "company": "Hybris",
+      "users": [ {"login": "maltej"} ]
+    },
+    {
+      "company": "Twitter",
+      "users": [ {"login": "financecoding"} ]
+    },
+    {
+      "company": "Arch Linux ARM",
+      "users": [ {"login": "warheadsse"}]
+    },
+    {
+      "company": "1uptalent",
+      "users": [ {"login": "amuino"} ]
+    },
+    {
+      "company": "Target",
+      "users": [ {"login": "mrallen1"} ]
+    },
+    {
+      "company": "AcademiaSinicaNLPLab",
+      "users": [ {"login": "viirya"} ]
+    },
+    {
+      "company": "Jumpbox",
+      "users": [ {"login": "kstaken"} ]
+    },
+    {
+      "company": "ZoomSystems",
+      "users": [ {"login": "fcarriedo"} ]
+    },
+    {
+      "company": "CoreOS",
+      "users": [ {"login": "bcwaldon"} ]
+    },
+    {
+      "company": "Amazon",
+      "users": [ {"login": "kzys"} ]
+    },
+    {
+      "company": "Rackspace",
+      "users": [ {"login": "wking"} ]
+    },
+    {
+      "company": "Nauxuat",
+      "users": [ {"login": "Sa2ajj"} ]
+    },
+    {
+      "company": "Zenoss, Inc",
+      "users": [ {"login": "daniel-garcia"} ]
+    },
+    {
+      "company": "Alphagov",
+      "users": [ {"login": "pwaller"} ]
+    },
+    {
+      "company": "Contegix",
+      "users": [ {"login": "thedude05"} ]
+    },
+    {
+      "company": "Redmine",
+      "users": [ {"login": "jbbarth"} ]
+    },
+    {
+      "company": "Codeclimate",
+      "users": [ {"login": "calavera"} ]
     }
   ]
 }
