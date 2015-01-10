@@ -60,8 +60,12 @@ class LoadHelpers
       user_details = lookup_user_details(client, pr_user)
 
       # "Clean" company name, removing initial, capitilzing, etc
-      company_name = merge(user_details[:attrs][:company])
-      company = create_company_if_not_exist(company_name)
+      if user_details 
+        company_name = merge(user_details[:attrs][:company])
+        company = create_company_if_not_exist(company_name)
+      else
+        company = nil
+      end
 
       # TODO, Determine whether always removing middle initial is such a good idea. Searching with initial seems to break github search
 
@@ -85,8 +89,15 @@ class LoadHelpers
   end
 
   def self.lookup_user_details(client, pr_user)
-    api_call_speed_regulator(client)
-    pr_user[:_rels][:self].get.data
+    begin
+      api_call_speed_regulator(client)
+      pr_user[:_rels][:self].get.data
+    rescue Exception => e
+      GithubLoad.log_current_msg("The following error occured wh loading PR user details #{ pr_user } ...", LogLevel::ERROR)
+      GithubLoad.log_current_msg(e.message, LogLevel::ERROR)
+      GithubLoad.log_current_msg(e.backtrace.join("\n"), LogLevel::ERROR)
+      return nil
+    end
   end
 
   def self.github_user(client, user_name)
@@ -95,13 +106,27 @@ class LoadHelpers
   end
 
   def self.github_contributors(client, repo_name)
-    api_call_speed_regulator(client)
-    client.contributors(repo_name);
+    begin
+      api_call_speed_regulator(client)
+      client.contributors(repo_name)
+    rescue Exception => e
+      GithubLoad.log_current_msg("The following error occured wh loading contributors for repo #{ repo_name } ...", LogLevel::ERROR)
+      GithubLoad.log_current_msg(e.message, LogLevel::ERROR)
+      GithubLoad.log_current_msg(e.backtrace.join("\n"), LogLevel::ERROR)
+      return nil
+    end
   end
 
   def self.github_collaborators(client, repo_name)
-    api_call_speed_regulator(client)
-    client.collaborators(repo_name);
+    begin
+      api_call_speed_regulator(client)
+      client.collaborators(repo_name);
+    rescue Exception => e
+      GithubLoad.log_current_msg("The following error occured wh loading collaborators for repo #{ repo_name } ...", LogLevel::ERROR)
+      GithubLoad.log_current_msg(e.message, LogLevel::ERROR)
+      GithubLoad.log_current_msg(e.backtrace.join("\n"), LogLevel::ERROR)
+      return nil
+    end
   end
 
   def self.github_organization_repositories(client, login)
