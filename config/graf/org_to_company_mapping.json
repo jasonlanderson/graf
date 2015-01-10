@@ -2,7 +2,7 @@
   "mapping": [
     {
       "company": "VMware",
-      "orgs": ["vmware", "vmwarechina"]
+      "orgs": ["vmware"]
     },
     {
       "company": "Pivotal",
@@ -251,10 +251,6 @@
     {
       "company": "CloudSoft Corp",
       "orgs": ["cloudsoft"]
-    },
-    {
-      "company": "DTS Corporation",
-      "orgs": ["bounscale"]
     },
     {
       "company": "Facebook",
