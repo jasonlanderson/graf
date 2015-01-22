@@ -9,7 +9,7 @@ DATE_PICKER_OPTIONS = {
 //
 function loadFiltersFromLocalStorage() {
   // Load and parse local storage
-  var values = window.localStorage.getItem('vals');
+  var values = window.sessionStorage.getItem('vals');
   values = $.parseJSON(values);
   for (v in values){
     $("#" + toUnderscore(v) + "_filter").val(values[v]);
@@ -18,8 +18,8 @@ function loadFiltersFromLocalStorage() {
 
 function storeFiltersToLocalStorage() {
   // TODO?: This will not save state if commits is selected
-  values = createSearchCriteriaJSON();
-  localStorage.setItem('vals', JSON.stringify(values));
+  var values = createSearchCriteriaJSON();
+  sessionStorage.setItem('vals', JSON.stringify(values));
 }
 
 //
