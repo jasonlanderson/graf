@@ -15,6 +15,20 @@
 </head>
 <meta charset="UTF-8">
 <body>
+  <script type="text/javascript">
+    //
+    // Initial Page Load Activities
+    //
+    var last_load_time = window.localStorage.getItem('data_load_time');
+    var current_load_time = '<%=@load_completion_time %>';
+
+    if ( last_load_time == null) {
+      window.localStorage.setItem('data_load_time', current_load_time )
+    } else if ( last_load_time < current_load_time) {
+      window.sessionStorage.removeItem('vals');
+      window.localStorage.setItem('data_load_time', current_load_time )
+    }
+  </script>
 <div id='content' >
 <div class='page' style='height:100%; display:block;'>
 <div class="banner">
