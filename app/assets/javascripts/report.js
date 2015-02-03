@@ -64,7 +64,7 @@ function setupReportReady() {
   setSelectedPageButtonStyle(2);
   // Load local values 
   loadFiltersFromLocalStorage();
-  
+  $("#search_section").css('display', '');
   // Run the filter update on load to get the data      
   refreshReportData();
 
